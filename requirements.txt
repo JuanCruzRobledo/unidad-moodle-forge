@@ -1,0 +1,5 @@
+# Dependencias Python de la skill
+# python -m pip install -r requirements.txt
+# Despues de instalar playwright, correr tambien: playwright install chromium
+playwright
+pyyaml
