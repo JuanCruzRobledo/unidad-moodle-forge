@@ -25,7 +25,7 @@ Un archivo `estado.yml` por materia guarda en qué unidad y sub-sección quedast
 ## Instalación
 
 ```bash
-npx skills add https://github.com/TU-USUARIO/unidad-moodle-forge
+npx skills add https://github.com/JuanCruzRobledo/unidad-moodle-forge
 ```
 
 La skill se carga sola cuando pedís armar o continuar el material de una unidad del aula virtual.
