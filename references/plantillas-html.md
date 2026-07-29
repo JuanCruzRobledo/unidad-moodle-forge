@@ -439,6 +439,19 @@ margin-bottom: 20px; font-family: sans-serif; color: #1a237e; line-height: 1.6;"
 </details>
 ```
 
+Este bloque puede quedar breve (resumen + link al PDF descargable) en vez de repetir la
+consigna completa palabra por palabra — la consigna completa vive en el documento con
+membrete que se convierte a PDF (`references/plantilla-pdf-practica.md`). Sumale un link
+directo al recurso:
+
+```html
+<p style="margin-top: 20px; background-color: #e3f2fd; padding: 10px; border-radius: 6px; text-align: center;">
+  <a href="URL_PDF_DOCUMENTO_PRACTICA" target="_blank" rel="noopener" style="font-weight: bold;">
+    📄 Descargar la consigna completa (PDF)
+  </a>
+</p>
+```
+
 ### Descripción de la tarea de entrega — variante Programación 1 (Python, archivo único)
 
 ```html

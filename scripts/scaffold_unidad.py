@@ -69,6 +69,7 @@ def nueva_unidad_dict(numero: int, nombre: str, carpeta: str, cantidad_actividad
         "practica": {
             "consigna_html_status": STATUS_PENDIENTE,
             "entrega_html_status": STATUS_PENDIENTE,
+            "documento_html_status": STATUS_PENDIENTE,
             "pdf_status": STATUS_PENDIENTE,
             "pdf_confirmado_por_usuario": False,
         },

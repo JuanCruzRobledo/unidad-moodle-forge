@@ -37,9 +37,10 @@ unidades:
             guion_status: pendiente
             link_pegado: false
     practica:
-      consigna_html_status: generado
-      entrega_html_status: generado
-      pdf_status: pendiente        # pendiente | generado -- NUNCA pasar a "generado" sin confirmación explícita del usuario sobre el HTML
+      consigna_html_status: generado    # bloque breve en la pagina de Moodle, ver plantillas-html.md
+      entrega_html_status: generado     # bloque de formato de entrega en la pagina de Moodle
+      documento_html_status: generado   # documento-practica.html: la consigna completa con membrete, ver plantilla-pdf-practica.md
+      pdf_status: pendiente        # pendiente | generado -- NUNCA pasar a "generado" sin confirmación explícita del usuario sobre documento-practica.html
       pdf_confirmado_por_usuario: false
     microteaching:
       status: pendiente
@@ -68,6 +69,9 @@ evaluaciones_curso:          # Fase 7 — aparte, opcional, se activa solo si el
 - `pdf_status` en `practica` solo puede pasar a `generado` si
   `pdf_confirmado_por_usuario: true` está seteado primero — es la compuerta de
   aprobación de SKILL.md hecha dato, para que quede auditable qué pasó y cuándo.
+  La confirmación es sobre `documento-practica.html` (el documento con
+  membrete, ver `plantilla-pdf-practica.md`), no sobre `consigna-practica.html`
+  (el bloque de la página de Moodle).
 - `notebooklm.link_pegado` queda en `false` hasta que el usuario devuelva la URL
   real del notebook — mientras tanto el HTML de la actividad tiene el placeholder
   `URL_IA_NOTEBOOKLM`.

@@ -19,7 +19,7 @@ El usuario es docente/tutor de una materia en el campus TUP y quiere producir el
 0. Relevar estado     → qué unidad/sub-sección falta (lee estado.yml)
 1. Introducción       → HTML: banner+resultados, video, sección foro, hoja de ruta
 2. Actividades        → HTML por actividad + XML (5 preguntas c/u) + guion NotebookLM
-3. Práctica (TP)      → consigna HTML + entrega HTML (según carrera) + PDF *bajo aprobación*
+3. Práctica (TP)      → documento PDF con membrete *bajo aprobación* → entrega HTML → consigna breve HTML (Moodle)
 4. Microteaching      → HTML banner + contenido
 5. Autoevaluación     → HTML + XML (10 preguntas)
 6. Encuesta de cierre → HTML (casi fijo entre unidades)
@@ -28,7 +28,7 @@ El usuario es docente/tutor de una materia en el campus TUP y quiere producir el
 
 Las fases 1 a 6 son por unidad y se repiten unidad tras unidad. La fase 7 es **aparte**: solo se dispara cuando el usuario la pide explícitamente y después de que las unidades estén encaminadas — no se mezcla con el material de unidad porque vive en una sección de curso distinta (`Evaluaciones`, no `Autoevaluación`).
 
-**Nunca generes el PDF de la Práctica sin que el usuario haya confirmado antes que el HTML de la consigna está bien.** El PDF es una conversión fiel de ese HTML (no un documento aparte que puede quedar desincronizado) — generarlo antes de la confirmación duplica el trabajo si el HTML cambia.
+**Nunca generes el PDF de la Práctica sin que el usuario haya confirmado antes que el documento (`documento-practica.html`) está bien.** El PDF es una conversión fiel de ese documento (no un HTML aparte que puede quedar desincronizado) — generarlo antes de la confirmación duplica el trabajo si el documento cambia. Este documento **no es** el bloque `consigna-practica.html` que va en la página de Moodle — son dos archivos distintos, ver Fase 3.
 
 ## Fase 0 — Relevar estado
 
@@ -46,7 +46,15 @@ Si el tema se presta, sumá una Actividad Lúdica (mismo archivo de referencia, 
 
 ## Fase 3 — Práctica / Trabajo Práctico
 
-Generá la consigna (banner + descripción del TP integrador) y el bloque de entrega usando la variante correcta según la carrera/materia: Python de archivo único (Programación 1), o estructura de paquetes en Java (Programación 2/3) — las 3 variantes están en `references/plantillas-html.md` § Trabajo Práctico. Mostrale el HTML al usuario y **esperá su confirmación explícita antes de correr `scripts/render_pdf.py`** sobre ese archivo — recién ahí generás el PDF fiel (Playwright respeta los estilos inline, `<details>`, flexbox e iframes tal cual se ven en el navegador). Actualizá `estado.yml` marcando el PDF como generado.
+Acá se generan **tres archivos distintos**, no uno solo, y **en este orden** — no es
+arbitrario: el formato de entrega (punto 2) describe qué se entrega, y eso recién se
+sabe con precisión una vez que la consigna completa (punto 1) está escrita; el
+resumen para la página de Moodle (punto 3) linkea al PDF ya generado, así que
+necesita que el PDF ya exista.
+
+1. **`documento-practica.html`** — PRIMERO. El documento completo con membrete institucional que el alumno descarga como PDF desde la pestaña Práctica. Es un documento sobrio (sin tarjetas ni degradés del resto del aula), con estructura tipo TP real de cátedra: Objetivo general, Marco teórico (opcional), y el cuerpo de la consigna — que puede ser un **Caso Práctico** con pasos numerados (TP de código/procedimental), **preguntas de análisis por sección temática** (TP de reflexión/teoría), o una combinación de ambos según lo que pida el TP real — cerrando con Consideraciones y Conclusiones esperadas. Ver `references/plantilla-pdf-practica.md` para la plantilla completa y cuándo usar cada bloque. Mostraselo al usuario y **esperá su confirmación explícita antes de correr `scripts/render_pdf.py`** sobre ese archivo, pasando `--materia "<nombre de la materia>"` para que agregue el membrete (logo UTN + institución en el encabezado, barra de color + número de página en el pie, repetidos en cada hoja vía `header_template`/`footer_template` de Playwright — no se duplican a mano en el HTML). Recién ahí generás el PDF fiel. Actualizá `estado.yml` marcando `documento_html_status` y, tras la confirmación, `pdf_status` como generado.
+2. **`entrega-practica.html`** — SEGUNDO, ya con la consigna confirmada a mano. El bloque de formato de entrega, usando la variante correcta según la carrera/materia: Python de archivo único (Programación 1), o estructura de paquetes en Java (Programación 2/3) — las 3 variantes están en `references/plantillas-html.md` § Trabajo Práctico. Necesita la consigna ya escrita porque describe qué archivo(s) exactos entrega el alumno (nombre del TP, cantidad de fichas/archivos, etc.), no se puede redactar bien antes.
+3. **`consigna-practica.html`** — TERCERO. El bloque `<details>` que va en la página de Moodle (banner + resumen breve del TP). Con el documento PDF (punto 1) ya generado, este bloque es un resumen corto con un link de descarga al PDF, no la letra completa del TP.
 
 ## Fase 4 — Microteaching
 
@@ -70,7 +78,8 @@ Solo si el usuario la pide explícitamente. Vive fuera de la carpeta de unidades
 - **Fidelidad 1:1 con la plantilla oficial.** El prompt oficial del PDF de plantillas es explícito: "reescribí el contenido respetando exactamente su estructura, estilos e IDs, sin eliminar, resumir ni fusionar información". Aplicá esa misma regla vos: no simplifiques ni fusiones bloques de la plantilla al completarlos.
 - **La estructura de tabs/carpetas calca la jerarquía real confirmada**, no la que se asume a priori — 5 sub-secciones hijas (Actividades, Práctica, Microteaching, Autoevaluación, Encuesta de cierre) más la Introducción viviendo en la raíz de la unidad. Ver `references/estructura-aula-real.md` para el detalle y las inconsistencias reales que NO hay que replicar.
 - **NotebookLM nunca se automatiza.** Entregable = guion fuente, nunca un link inventado.
-- **El PDF de la Práctica nunca se genera sin aprobación explícita del HTML** que lo origina.
+- **El PDF de la Práctica nunca se genera sin aprobación explícita del documento (`documento-practica.html`)** que lo origina.
+- **El PDF de la Práctica no es una captura de la página de Moodle.** Es un documento con membrete institucional (ver `references/plantilla-pdf-practica.md`), no el HTML con tarjetas/degradés de `consigna-practica.html`.
 
 ## Componentes de la skill
 
@@ -78,10 +87,12 @@ Solo si el usuario la pide explícitamente. Vive fuera de la carpeta de unidades
 |---|---|
 | `scripts/scaffold_unidad.py` | Crea la carpeta de una unidad nueva (6 sub-carpetas) y crea/actualiza `estado.yml` en la raíz de la materia |
 | `scripts/generar_pregunta_xml.py` | Convierte un YAML simple de preguntas a XML de Moodle importable |
-| `scripts/render_pdf.py` | Convierte un HTML ya confirmado a PDF fiel (Playwright + Chromium) |
+| `scripts/render_pdf.py` | Convierte un HTML ya confirmado a PDF fiel (Playwright + Chromium); con `--materia` agrega membrete institucional (header/footer repetidos) |
 | `references/plantillas-html.md` | Los bloques HTML oficiales de cada sub-sección, listos para completar |
+| `references/plantilla-pdf-practica.md` | Plantilla del documento con membrete que se convierte en el PDF descargable de la Práctica |
 | `references/estructura-aula-real.md` | Jerarquía real confirmada del aula + inconsistencias a no replicar |
 | `references/formato-preguntas-moodle-xml.md` | Schema de pregunta Moodle XML + convención de códigos |
 | `references/notebooklm-guion.md` | Spec de configuración de NotebookLM por tipo de material + plantilla de guion |
 | `references/estado-yml-schema.md` | Esquema del archivo de estado por materia |
 | `assets/plantilla-oficial-extraida.txt` | Texto completo de la plantilla oficial (fuente original, trazabilidad) |
+| `assets/logo-utn-tup.jpg` | Logo institucional UTN/TUP, extraído de un TP real de cátedra, usado en el membrete del PDF |
