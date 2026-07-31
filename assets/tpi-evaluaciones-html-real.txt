@@ -1,0 +1,373 @@
+HTML REAL — Trabajo Práctico Integrador y Evaluaciones (curso-level)
+=====================================================================
+
+Fuente: recorrido de SOLO LECTURA del campus TUP (tup.sied.utn.edu.ar), curso
+Programación 3 (id=44), section=61 ("Trabajo Practico Integrador") y section=63
+("Evaluaciones"). Relevado en vivo con claude-in-chrome (lectura de estilos vía
+DOM, nunca "Guardar" en el editor de Moodle — no se modificó nada del aula real).
+
+Este archivo es la contraparte de `assets/plantilla-oficial-extraida.txt` (que
+documenta la plantilla oficial en PDF para Introducción/Actividades/Práctica) pero
+para las dos secciones curso-level que no estaban cubiertas: Trabajo Práctico
+Integrador (TPI) y Evaluaciones. No es un dump completo de la sección — se
+descartó a propósito contenido oculto, duplicado o legacy (ver "Qué se descartó"
+al final). Cada bloque abajo es HTML real confirmado con estilos inline exactos,
+capturado con `node.getAttribute('style')` sobre el DOM en vivo.
+
+---------------------------------------------------------------------
+## SECCIÓN "Trabajo Practico Integrador" (section=61)
+
+### 1. Banner + intro de la sección (vive en el resumen de sección, no en un módulo)
+
+```html
+<div style="text-align: center; padding: 20px 10px; border-bottom: 2px solid #FFFFFF;
+margin-bottom: 20px; background-color: #001855;">
+  <h2 style="color: #ffffff; font-size: 2rem; font-family: 'Segoe UI', sans-serif; margin: 0;">
+    <strong>📚 TRABAJO INTEGRADOR - PROGRAMACIÓN III</strong>
+  </h2>
+</div>
+<div style="background-color: #f9fbff; padding: 25px; border-radius: 15px; border: 1px solid #d0e3f7;
+font-family: 'Poppins', sans-serif; color: #2c3e50; line-height: 1.7; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
+  <p style="font-size: 1.1rem; color: #2c3e50; line-height: 1.8; margin-bottom: 15px;">
+    En esta sección vas a encontrar todo lo necesario para preparar tu Trabajo Integrador de la
+    materia: desde la consigna oficial 🧾, las pautas de evaluación 📌.
+  </p>
+  <p style="font-size: 1.1rem; color: #2c3e50; line-height: 1.8;">
+    🔍 Explorá cada recurso con atención y no dudes en consultar si tenés dudas. ¡Estamos para
+    acompañarte en este proceso! 💪✨
+  </p>
+</div>
+```
+
+Nota clave: el banner reutiliza EXACTAMENTE el mismo componente `background-color:
+#001855` que ya está documentado en `plantillas-html.md` para Actividades/Práctica/
+Microteaching/Autoevaluación/Encuesta — confirma que el TPI y Evaluaciones no
+inventan un sistema visual nuevo para el banner, solo agregan tarjetas nuevas debajo.
+
+### 2. Tarjeta de descarga + video de presentación (descripción del recurso PDF principal)
+
+```html
+<div style="background-color: #f4f7ff; padding: 22px; border-radius: 12px; border: 1px solid #d6e0ff;
+border-left: 6px solid #4a7bdc; margin-top: 15px; font-family: sans-serif; color: #001855;
+line-height: 1.75; box-shadow: 0 4px 10px rgba(0, 24, 85, 0.08);">
+  <h2 style="color: #001855; margin: 0 0 12px; text-align: center; font-family: sans-serif;">
+    📥 Descargá el Trabajo Práctico Integrador (TPI)
+  </h2>
+  <p style="margin: 0 0 16px;">
+    En esta sección vas a encontrar el <strong>TPI</strong> para descargar y comenzar a trabajar.
+    Te recomendamos bajarlo, leerlo completo y dejarlo a mano para ir avanzando durante la cursada.
+  </p>
+  <div style="background-color: #ffffff; border: 1px solid #d6e0ff; border-radius: 10px; padding: 16px;">
+    <h3 style="margin: 0 0 10px; color: #001855; font-family: sans-serif;">🎥 Mirá el video de presentación</h3>
+    <p style="margin: 0 0 12px;">
+      Antes de empezar, mirá este video donde se explica <strong>qué se va a hacer</strong>, cómo
+      organizarse y qué esperamos como resultado final.
+    </p>
+    <a href="URL_VIDEO_PRESENTACION" target="_blank" rel="noopener" style="display: inline-block;
+    background-color: #4a7bdc; color: #ffffff; text-decoration: none; padding: 10px 14px;
+    border-radius: 8px; font-weight: bold;"> ▶️ Ver video de presentación </a>
+    <div style="background-color: #ffffff; padding: 12px; border-radius: 8px; border: 1px dashed #d6e0ff;
+    margin-top: 14px;">
+      ✅ <strong>Recomendación:</strong> Tomá nota de los puntos clave del video para evitar errores
+      frecuentes al armar la entrega.
+    </div>
+  </div>
+</div>
+```
+
+El recurso descargable en sí (el archivo PDF con la consigna) es un `resource`
+(mod_resource) subido a mano — no un HTML de Moodle. Confirma el mecanismo ya
+usado por la skill: la consigna completa se entrega como PDF con membrete
+(`scripts/render_pdf.py`), y este bloque es solo el envoltorio/presentación en la
+página de Moodle, con el mismo espíritu que `consigna-practica.html` de unidad.
+
+### 3. Label "Método de Entrega" (bloque de reglas de entrega, separado de la consigna)
+
+```html
+<div style="background-color: #f4f7ff; border: 1px solid #d6e0ff; border-left: 6px solid #4a7bdc;
+padding: 18px; border-radius: 10px; font-family: sans-serif; color: #001855; line-height: 1.6;
+box-shadow: 0 4px 10px rgba(0, 24, 85, 0.08); margin-bottom: 20px;">
+  <h4 style="color: #001855; font-size: 1.8rem; margin: 0; font-family: sans-serif;">
+    📤 Entrega del Trabajo Integrador
+  </h4>
+</div>
+<div style="background-color: #ffffff; border: 1px solid #e1e8ff; padding: 20px; border-radius: 8px;
+font-family: sans-serif; color: #333; line-height: 1.7; margin-bottom: 20px;">
+  <p style="margin-top: 0;">📌 <strong>Método de Entrega</strong></p>
+  <p>
+    La entrega del Trabajo Práctico Integrador deberá realizarse <strong>exclusivamente en formato
+    .zip</strong>. El archivo comprimido deberá contener obligatoriamente:
+  </p>
+  <ul style="padding-left: 25px;">
+    <li>💻 El código fuente completo desarrollado, una carpeta con el front y otra carpeta con el
+      back todo comprimido en un mismo .zip.</li>
+    <li>📄 El documento en formato PDF confeccionado según las consignas establecidas.</li>
+  </ul>
+  <p>Además, dentro del archivo <strong>README.md</strong> del repositorio deberán incluir obligatoriamente:</p>
+  <ul style="padding-left: 25px;">
+    <li>🎥 El enlace al video demostrativo del proyecto, asegurando que cuente con permisos públicos
+      de visualización.</li>
+    <li>📚 El enlace a la documentación en PDF o, alternativamente, el archivo PDF subido directamente
+      en la raíz del repositorio.</li>
+  </ul>
+  <!-- Caja de aviso: mismo componente ya documentado en plantillas-html.md (tarjeta
+       "Tiempo estimado" reusa fondo claro + borde izquierdo de color de acento) -->
+  <div style="background-color: #fff3e0; padding: 15px; border-radius: 8px; margin-top: 20px;
+  border-left: 4px solid #ff9800;">
+    <p style="margin: 0; font-size: 1rem; color: #e65100;">
+      <strong>⚠️ Importante:</strong> No se considerarán entregas incompletas ni aquellas que no
+      respeten el formato solicitado. Verifiquen cuidadosamente que todos los elementos requeridos
+      se encuentren incluidos antes de realizar la entrega.
+    </p>
+  </div>
+  <div style="background-color: #fde8e8; padding: 12px 15px; border-radius: 4px; margin-top: 15px;
+  border-left: 4px solid #d32f2f;">
+    <strong>🚫 No enviar el video en formato .mp4</strong><br>
+    El video demostrativo no debe adjuntarse dentro del archivo .zip. Deberá compartirse únicamente
+    mediante un enlace público (YouTube, Drive u otro servicio similar) incluido en el archivo
+    README.md del repositorio.
+  </div>
+</div>
+```
+
+### 4. Página "Pautas de Evaluación y Fechas de entrega" (mod_page, contenido completo)
+
+Vive en un recurso tipo **Página** aparte (no en la vista de la sección), con el mismo
+sistema de tarjetas. Paleta confirmada de sub-bloques dentro de esta página:
+
+- Tarjeta principal: `background-color: #f4f7ff; border: 1px solid #d6e0ff; border-left: 6px
+  solid #4a7bdc; padding: 22px; border-radius: 12px;`
+- Sub-tarjeta blanca (ej. "Forma de realización y entrega"): `background: #ffffff; border: 1px
+  solid #d6e0ff; border-radius: 10px; padding: 16px;`
+- Nota informativa (celeste): `background: #e3ebff; padding: 12px; border-radius: 8px;
+  border-left: 4px solid #4a7bdc;`
+- Nota de alerta (roja): `background: #fde8e8; padding: 12px; border-radius: 8px;
+  border-left: 4px solid #d32f2f;`
+
+Texto completo real (para ver la profundidad de contenido esperada — no copiar
+literal, es de Programación 3, pero sí calcar la estructura de secciones):
+
+```
+📌 PAUTAS DE APROBACIÓN DEL TRABAJO PRÁCTICO INTEGRADOR (TPI)
+El Trabajo Práctico Integrador (TPI) contará con dos instancias para su aprobación...
+
+📤 Forma de realización y entrega
+El TPI se realiza en forma individual.
+Se deberá entregar:
+📁 Carpeta digital con el proyecto integrador, cumpliendo todas las pautas establecidas para el TPI.
+🎥 Video explicativo de entre 10 y 15 minutos de duración.
+  Al inicio del video, deben presentarse con la cámara encendida (sin excepción).
+⚠️ Nota importante: No se aceptarán entregas fuera de término ni videos que no cumplan
+  con los tiempos y requisitos indicados.
+
+📝 Evaluación
+✅ Primera instancia
+  Fecha límite de entrega: [FECHA].
+  Se debe enviar carpeta digital + video explicativo.
+  La devolución será realizada a través de la plataforma institucional, indicando si el
+  trabajo fue: Aprobado, o Requiere correcciones.
+  📉 En caso de no aprobación en esta primera instancia, deberá presentarse a la siguiente instancia.
+🔄 Recuperatorio (segunda instancia)
+  La instancia recuperatoria se tomará en la misma fecha que el primer llamado a mesa de examen final.
+  Quienes tengan ambos parciales aprobados con nota ≥ 6 deberán inscribirse en la primera mesa de
+  examen para realizar la entrega del TPI y así poder aprobar la materia.
+🧾 Mesa de Examen final (última instancia)
+  Si el TPI no fuera aprobado en la primera o segunda instancia, su aprobación será requisito
+  obligatorio para poder rendir en mesa de examen final.
+  Una semana antes de la fecha del examen final deberá enviarse:
+  📂 Carpeta digital actualizada con las correcciones solicitadas.
+  📽 Nueva grabación del video explicativo, incorporando todas las modificaciones indicadas.
+  La devolución final se comunicará por correo electrónico, informando si el/la estudiante
+  queda habilitado/a para rendir el examen final.
+  ⚠️ Atención: No se aceptarán correcciones parciales ni videos incompletos.
+
+📣 Recomendaciones
+  Organicen los tiempos con anticipación.
+  Revisen que los archivos se abran correctamente antes de la entrega.
+  Respeten la duración del video (ni menor a 10 minutos ni mayor a 15).
+  Mantengan un lenguaje claro, académico y ordenado en la presentación.
+  Ante dudas sobre las consignas, consulten al equipo docente con anticipación.
+
+📢 Mensaje final
+  👉 ¡A estar atentos, organizados y responsables con las entregas!
+```
+
+### 5. Otros recursos de la sección (solo estructura, sin contenido propio a copiar)
+
+- `assign` "Entrega del Trabajo Integrador" — Apertura/Cierre con fecha, sin descripción
+  HTML propia más allá del label de "Método de Entrega" ya cubierto arriba.
+- `forum` "🤔 Foro de Consultas - Trabajo Práctico Integrador".
+- `resource` "Rúbrica de Corrección del TPI" — PDF de rúbrica, subido a mano.
+
+---------------------------------------------------------------------
+## SECCIÓN "Evaluaciones" (section=63)
+
+### 1. Banner + tabla de fechas de examen (vive en el resumen de sección)
+
+```html
+<div style="text-align: center; padding: 20px 10px; border-bottom: 2px solid #FFFFFF;
+margin-bottom: 20px; background-color: #001855;">
+  <h2 style="color: #ffffff; font-size: 2rem; font-family: 'Segoe UI', sans-serif; margin: 0;">
+    <strong>✅ Evaluaciones - [NOMBRE MATERIA]</strong>
+  </h2>
+</div>
+<div style="background-color: #e0f7fa; border: 4px solid #0097a7; border-radius: 10px; padding: 15px;
+color: #000000; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+  <h3 style="text-align: center; font-family: sans-serif;">
+    <strong>📅 FECHAS DE EXAMEN DE [NOMBRE MATERIA]</strong>
+  </h3>
+  <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+    <thead>
+      <tr style="background-color: #b2ebf2;">
+        <th style="border: 1px solid #0097a7; padding: 8px; text-align: left;">PARCIALES</th>
+        <th style="border: 1px solid #0097a7; padding: 8px; text-align: left;">Fecha de Examen</th>
+        <th style="border: 1px solid #0097a7; padding: 8px; text-align: left;">Fecha de Recuperatorio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #0097a7; padding: 8px;">1er Parcial</td>
+        <td style="border: 1px solid #0097a7; padding: 8px;">[FECHA INICIO] al [FECHA FIN]</td>
+        <td style="border: 1px solid #0097a7; padding: 8px;">[FECHA INICIO] al [FECHA FIN]</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #0097a7; padding: 8px;">2do Parcial</td>
+        <td style="border: 1px solid #0097a7; padding: 8px;">[FECHA INICIO] al [FECHA FIN]</td>
+        <td style="border: 1px solid #0097a7; padding: 8px;">[FECHA INICIO] al [FECHA FIN]</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #0097a7; padding: 8px;">Integrador</td>
+        <td style="border: 1px solid #0097a7; padding: 8px;">[FECHA]</td>
+        <td style="border: 1px solid #0097a7; padding: 8px;">Con la primer mesa de examen</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+Esta tabla usa una paleta propia (celeste/turquesa, `#0097a7`/`#e0f7fa`/`#b2ebf2`),
+distinta del resto del aula — es el único componente de tipo "tabla resumen" real
+confirmado en curso-level. No confundir con la tabla Pomodoro de la Introducción de
+unidad (esa es verde `#27ae60`).
+
+### 2. Tarjeta título por instancia de evaluación ("Primer/Segundo Parcial", "Integrador")
+
+```html
+<div style="background-color: #e3f2fd; border: 2px solid #64b5f6; padding: 20px; border-radius: 12px;
+font-family: sans-serif; color: #0a1f44; line-height: 1.6;">
+  <h3 style="color: #0a1f44; margin-bottom: 15px; border-bottom: 2px solid #90caf9; padding-bottom: 10px;
+  font-family: sans-serif;">
+    ✨ [NOMBRE DE LA INSTANCIA] – [NOMBRE MATERIA]
+  </h3>
+  <p style="font-weight: bold; color: #0d47a1;">🗓️ Fecha apertura: [DÍA DE LA SEMANA], [FECHA]</p>
+  <p>
+    El [NOMBRE DE LA INSTANCIA EN MAYÚSCULAS] consiste en la <strong>[DESCRIPCIÓN BREVE DE LA
+    CONSIGNA]</strong>, asegurando que [CRITERIO CLAVE DE APROBACIÓN].
+  </p>
+  <p style="color: #0d47a1; font-weight: bold; text-align: center; margin-top: 25px;">
+    ¡A aprovechar esta instancia y a darlo todo! ¡Muchos éxitos! 💪🚀
+  </p>
+</div>
+```
+
+### 3. Tarjeta "Importante" con video de referencia (descripción del recurso de consigna)
+
+```html
+<div style="background-color: #eef4ff; border: 2px solid #b7cdfa; padding: 20px; border-radius: 12px;
+font-family: Arial, sans-serif; color: #1f2d3d; line-height: 1.6;">
+  <h2 style="color: #0d47a1; margin-top: 0; font-family: sans-serif;">📘 Importante – [NOMBRE DE LA INSTANCIA]</h2>
+  <p style="margin-bottom: 12px;">
+    Les pedimos que <strong>lean atentamente el documento de [NOMBRE DE LA INSTANCIA]</strong>, ya
+    que allí encontrarán la consigna completa, los requisitos de entrega y todos los detalles que
+    deben tener en cuenta para realizarlo correctamente.
+  </p>
+  <p style="margin-bottom: 12px;">
+    Además, les dejamos un <strong>video de ejemplo</strong> para que puedan observar con mayor
+    claridad <strong>qué es lo que se espera en esta entrega</strong>.
+  </p>
+  <div style="background-color: #e3f2fd; border-left: 4px solid #1e88e5; padding: 12px 15px; border-radius: 8px;
+  margin-top: 15px;">
+    <p style="margin: 0; font-weight: bold; color: #0d47a1;">▶️ Video de referencia:</p>
+    <p style="margin: 8px 0 0 0;">
+      <a href="URL_VIDEO_EJEMPLO" style="color: #1565c0; font-weight: bold; text-decoration: underline;">
+        Ver video de ejemplo
+      </a>
+    </p>
+  </div>
+</div>
+```
+
+La consigna completa en sí (la letra del examen) es, igual que en el TPI, un PDF
+subido como recurso — no HTML. Confirma otra vez el mismo mecanismo de
+`render_pdf.py --materia` para el documento con membrete.
+
+### 4. Tarjeta de descripción de la tarea de "Entrega" (assign)
+
+```html
+<div style="background-color: #f9f9ff; border: 2px solid #cbb2ff; padding: 18px; border-radius: 10px;
+font-family: sans-serif; color: #333; line-height: 1.6;">
+  <h3 style="color: #5a189a; margin-bottom: 12px; font-family: sans-serif;">
+    📤 Entrega de [NOMBRE DE LA INSTANCIA]
+  </h3>
+  <p>En este espacio deberás <strong>subir tu resolución de [NOMBRE DE LA INSTANCIA]</strong>.</p>
+  <p>
+    Recordá que la entrega estará habilitada desde <strong>[FECHA/HORA DE APERTURA]</strong> hasta
+    <strong>[FECHA/HORA DE CIERRE]</strong>.
+  </p>
+  <p style="background: #fff3cd; padding: 10px; border-left: 5px solid #ffcd39; border-radius: 8px;
+  margin-top: 15px;">
+    ⚠️ <strong>Importante:</strong> la entrega debe realizarse en un <strong>único archivo con
+    extensión "[CONVENCIÓN DE NOMBRE]"</strong><br>
+    <strong>[REGLA ADICIONAL DE FORMATO, ej. dónde va el link del video].</strong>
+  </p>
+  <p style="font-size: 1.05em; color: #5a189a; font-weight: bold; text-align: center; margin-top: 18px;">
+    ¡Revisá bien tu archivo antes de enviarlo y mucho éxito! 🚀✨
+  </p>
+</div>
+```
+
+### 5. Certificado (mod_customcert) — solo estructura, no HTML propio
+
+El "Certificado"/Constancia es un módulo de tipo **customcert** (no un Label ni una
+Página) — Moodle genera el PDF del certificado automáticamente a partir de una
+plantilla configurada en el propio módulo, no a partir de HTML que redacte la
+cátedra. Lo único relevante para replicar conceptualmente es la **restricción de
+acceso** que confirmamos en vivo: el certificado queda oculto/bloqueado hasta que
+la actividad de Entrega correspondiente esté "marcada como realizada" (o, en
+variantes reales, hasta que se cumpla una condición de fecha o de dirección de
+correo institucional). No hay HTML de contenido para calcar acá — solo la regla
+de gating: **1 assign de Entrega → 1 customcert de Constancia, con restricción de
+disponibilidad atada al estado de esa Entrega.**
+
+---------------------------------------------------------------------
+## Qué se descartó a propósito (duplicado / oculto / legacy) — NO replicar
+
+- **Variantes por mesa de examen/recuperatorio/extraordinario**: el curso real
+  tiene, para cada parcial, 2-4 módulos de "Entrega" casi idénticos (normal,
+  recuperatorio, extraordinario con fecha específica) y hasta 3 `customcert`
+  distintos con restricciones de acceso distintas (por grupo, por fecha, por
+  email). Es ruido operativo de gestión de mesas de examen de una cátedra real
+  con años de uso — la plantilla nueva modela **una sola instancia canónica**
+  (consigna → entrega → certificado) y deja a criterio del docente clonarla si
+  necesita variantes.
+- **Resource "Trabajo Practico Integrador - JPA"**: es un PDF alternativo para
+  una variante tecnológica específica de Programación 3 (JPA vs. Spring Boot),
+  junto con una segunda tarjeta "Recursos disponibles" (plantilla base para el
+  back + datos para consumir desde el front). No aplica a materias sin ramas
+  tecnológicas paralelas — se documenta como patrón opcional de "recursos
+  complementarios descargables", no como bloque obligatorio.
+- **"Entrega del Trabajo Integrador para la Mesa de Examen del 27/07/2026"**:
+  variante de entrega restringida a un grupo (`REG`) — mismo motivo que el punto
+  de mesas de examen arriba.
+- **"Entrega del Proyecto Final" (oculta, sin estilo)**: un `assign` con texto
+  plano sin ningún formato (ni banner, ni tarjetas) — es contenido legacy /
+  cargado apurado, no representa el estándar visual real del aula. Confirma la
+  regla ya documentada en `estructura-aula-real.md` ("Inconsistencias reales
+  detectadas — NO replicar"): que algo exista en el aula real no lo vuelve
+  plantilla válida si rompe el propio estándar visual del curso.
+- **"Evaluación del desempeño de tutores" (feedback, oculto por email)**: foro/
+  encuesta de gestión interna, fuera del alcance de esta skill.
+- **Múltiples `customcert` casi idénticos por parcial** (ej. "Constancia Examen
+  Segundo Parcial", "(fecha entrega 04-06-2026)", "(Fecha Emisión 27-05-26)"):
+  se registran como el mismo componente conceptual (1 certificado por instancia
+  aprobada), no como 3 componentes distintos.

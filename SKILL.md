@@ -23,16 +23,28 @@ El usuario es docente/tutor de una materia en el campus TUP y quiere producir el
 4. Microteaching      → HTML banner + contenido
 5. Autoevaluación     → HTML + XML (10 preguntas)
 6. Encuesta de cierre → HTML (casi fijo entre unidades)
-7. (final, opcional)  → Evaluaciones curso-level (parciales/recuperatorios)
+7. (final, opcional)  → Evaluaciones y Trabajo Práctico Integrador (curso-level)
 ```
 
-Las fases 1 a 6 son por unidad y se repiten unidad tras unidad. La fase 7 es **aparte**: solo se dispara cuando el usuario la pide explícitamente y después de que las unidades estén encaminadas — no se mezcla con el material de unidad porque vive en una sección de curso distinta (`Evaluaciones`, no `Autoevaluación`).
+Las fases 1 a 6 son por unidad y se repiten unidad tras unidad. La fase 7 es **aparte**:
+solo se dispara cuando el usuario la pide explícitamente y después de que las
+unidades estén encaminadas — no se mezcla con el material de unidad porque vive en
+secciones de curso distintas (`Evaluaciones` y `Trabajo Practico Integrador`, no
+`Autoevaluación` ni `Práctica`).
 
 **Nunca generes el PDF de la Práctica sin que el usuario haya confirmado antes que el documento (`documento-practica.html`) está bien.** El PDF es una conversión fiel de ese documento (no un HTML aparte que puede quedar desincronizado) — generarlo antes de la confirmación duplica el trabajo si el documento cambia. Este documento **no es** el bloque `consigna-practica.html` que va en la página de Moodle — son dos archivos distintos, ver Fase 3.
 
 ## Fase 0 — Relevar estado
 
 Antes de escribir nada, buscá `estado.yml` en la raíz de la carpeta de la materia (ver esquema completo en `references/estado-yml-schema.md`). Si no existe, es la primera unidad: creala con `scripts/scaffold_unidad.py`. Si existe, leelo para saber qué sub-secciones de qué unidad ya están `generado`, `confirmado` o `pendiente` — así no repetís trabajo ni perdés el hilo entre sesiones. Preguntale al usuario solo por lo que el estado no resuelve (ej. "¿confirmás que el HTML de la Práctica quedó bien para generar el PDF?").
+
+**Heurística de clasificación (por texto, sin necesidad de scrapear nada en cada corrida)**: al leer el programa de la materia, cada unidad/bloque cae en uno de tres destinos según su título u objetivo:
+
+- Contiene "Evaluación Integradora", "Examen", "Parcial" → va a la pestaña **Evaluaciones** (Fase 7, `references/plantilla-evaluacion.md`).
+- Contiene "Proyecto Integrador", "Trabajo Integrador", "Defensa Final" → va a la pestaña **Trabajo Práctico Integrador** (Fase 7, `references/plantilla-tpi-standalone.md`).
+- Todo lo demás → flujo normal de unidad (Fases 1-6).
+
+Esto es puro análisis del texto del programa — no requiere volver a recorrer el aula real cada vez que arranca una unidad nueva.
 
 ## Fase 1 — Introducción de la unidad
 
@@ -68,9 +80,48 @@ Mismo patrón que Actividades pero con **exactamente 10 preguntas** en el XML (`
 
 Bloque fijo (`references/plantillas-html.md` § Encuesta de cierre) — el contenido no cambia entre unidades salvo el nombre de la unidad en el banner. No hace falta pedirle nada al usuario acá.
 
-## Fase 7 — Evaluaciones (curso-level, opcional y al final)
+## Fase 7 — Evaluaciones y Trabajo Práctico Integrador (curso-level, opcional y al final)
 
-Solo si el usuario la pide explícitamente. Vive fuera de la carpeta de unidades (es una sección de curso aparte, con parciales/recuperatorios/certificados) — no la generes de oficio ni la mezcles con el material de unidad. Documentá su propio estado en `estado.yml` bajo una clave separada.
+Solo si el usuario la pide explícitamente, o si la heurística de clasificación de
+Fase 0 detectó una unidad/bloque que corresponde a alguna de las dos. Viven fuera
+de la carpeta de unidades (son secciones de curso aparte) — no las generes de
+oficio ni las mezcles con el material de unidad. Documentá su propio estado en
+`estado.yml` bajo las claves separadas `evaluaciones_curso` y
+`trabajo_practico_integrador` (ver `references/estado-yml-schema.md`).
+
+Las dos siguen el mismo flujo mínimo de 3 pasos, con su propia plantilla:
+
+1. **Consigna → PDF con membrete.** Escribí el documento completo
+   (`documento-tpi.html` o `documento-evaluacion-<nombre>.html`), mostraselo al
+   usuario, y **recién con su confirmación explícita** corré
+   `scripts/render_pdf.py --materia "<materia>"` — mismo mecanismo y misma
+   regla dura que la Práctica de unidad (`plantilla-pdf-practica.md`). Nunca
+   generes el PDF sin ese OK.
+2. **Presentación en Moodle.** El bloque HTML que va en la página de la
+   sección: banner + tarjeta de descarga con link al PDF ya generado (+ tabla
+   de fechas de examen si es Evaluaciones). Ver plantillas abajo.
+3. **Entrega / certificado / foro.** La tarjeta de descripción del `assign` de
+   entrega (con las reglas de formato), y la nota de que el certificado (si
+   aplica) es un módulo nativo del LMS gateado a que esa entrega esté marcada
+   como realizada — no HTML que redacte la cátedra. El foro de consultas es
+   nativo, sin HTML propio.
+
+**Evaluaciones** (parciales, recuperatorios, Integrador de nota): usá
+`references/plantilla-evaluacion.md`. Modela una instancia canónica
+(consigna → tarjeta "Importante" con video de referencia opcional → entrega →
+certificado gateado → foro) que se clona por cada parcial real de la materia —
+no le agregues variantes por mesa de examen/grupo salvo que el usuario las pida.
+
+**Trabajo Práctico Integrador** (proyecto final del curso): usá
+`references/plantilla-tpi-standalone.md`. Mismo espíritu que la Práctica de
+unidad pero a escala de curso: consigna completa en PDF, bloque de "Método de
+Entrega" separado de la consigna, y foro/rúbrica nativos sin HTML propio.
+
+Ambas plantillas están contrastadas contra HTML real relevado en vivo (curso
+Programación 3, TUP) — ver `assets/tpi-evaluaciones-html-real.txt` para el
+detalle completo, incluida la sección de qué se descartó a propósito (variantes
+por mesa de examen, recursos específicos de una materia, contenido legacy sin
+estilo) para no confundir ruido operativo real con el estándar a replicar.
 
 ## Reglas duras
 
@@ -90,9 +141,12 @@ Solo si el usuario la pide explícitamente. Vive fuera de la carpeta de unidades
 | `scripts/render_pdf.py` | Convierte un HTML ya confirmado a PDF fiel (Playwright + Chromium); con `--materia` agrega membrete institucional (header/footer repetidos) |
 | `references/plantillas-html.md` | Los bloques HTML oficiales de cada sub-sección, listos para completar |
 | `references/plantilla-pdf-practica.md` | Plantilla del documento con membrete que se convierte en el PDF descargable de la Práctica |
+| `references/plantilla-tpi-standalone.md` | Plantilla curso-level del Trabajo Práctico Integrador (Fase 7) |
+| `references/plantilla-evaluacion.md` | Plantilla curso-level de Evaluaciones — parciales/recuperatorios (Fase 7) |
 | `references/estructura-aula-real.md` | Jerarquía real confirmada del aula + inconsistencias a no replicar |
 | `references/formato-preguntas-moodle-xml.md` | Schema de pregunta Moodle XML + convención de códigos |
 | `references/notebooklm-guion.md` | Spec de configuración de NotebookLM por tipo de material + plantilla de guion |
 | `references/estado-yml-schema.md` | Esquema del archivo de estado por materia |
 | `assets/plantilla-oficial-extraida.txt` | Texto completo de la plantilla oficial (fuente original, trazabilidad) |
+| `assets/tpi-evaluaciones-html-real.txt` | HTML real relevado en vivo para TPI y Evaluaciones curso-level, con notas de qué NO replicar |
 | `assets/logo-utn-tup.jpg` | Logo institucional UTN/TUP, extraído de un TP real de cátedra, usado en el membrete del PDF |

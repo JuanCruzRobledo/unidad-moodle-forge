@@ -55,10 +55,30 @@ evaluaciones_curso:          # Fase 7 — aparte, opcional, se activa solo si el
   activa: false
   parciales:
     - nombre: "Primer parcial"
-      status: pendiente
+      consigna_html_status: pendiente    # presentacion-evaluacion-<nombre>.html (banner + tarjeta "Importante")
+      pdf_status: pendiente               # documento-evaluacion-<nombre>.html -> PDF, ver plantilla-evaluacion.md
+      pdf_confirmado_por_usuario: false   # gate: pdf_status NUNCA pasa a generado sin esto en true
+      entrega_status: pendiente           # entrega-evaluacion-<nombre>.html (tarjeta de descripción del assign)
+      certificado_status: pendiente       # customcert (u equivalente del LMS) ya configurado y gateado, no HTML
+      foro_status: pendiente              # foro de consultas nativo, sin HTML propio
   recuperatorios:
     - nombre: "Recuperatorio primer parcial"
-      status: pendiente
+      consigna_html_status: pendiente
+      pdf_status: pendiente
+      pdf_confirmado_por_usuario: false
+      entrega_status: pendiente
+      certificado_status: pendiente
+      foro_status: pendiente
+
+trabajo_practico_integrador:   # Fase 7 — curso-level, ver plantilla-tpi-standalone.md
+  activo: false
+  consigna_html_status: pendiente    # presentacion-tpi.html (banner + tarjeta de descarga + video)
+  pdf_status: pendiente              # documento-tpi.html -> PDF
+  pdf_confirmado_por_usuario: false  # mismo gate que en practica y evaluaciones_curso
+  metodo_entrega_status: pendiente   # metodo-entrega-tpi.html
+  entrega_status: pendiente          # assign de entrega del TPI
+  certificado_status: pendiente      # si el TPI emite certificado propio; na si no aplica
+  foro_status: pendiente             # foro de consultas del TPI
 ```
 
 ## Reglas de uso
@@ -75,5 +95,15 @@ evaluaciones_curso:          # Fase 7 — aparte, opcional, se activa solo si el
 - `notebooklm.link_pegado` queda en `false` hasta que el usuario devuelva la URL
   real del notebook — mientras tanto el HTML de la actividad tiene el placeholder
   `URL_IA_NOTEBOOKLM`.
+- El mismo gate de `pdf_status` aplica en `evaluaciones_curso.parciales[]`,
+  `evaluaciones_curso.recuperatorios[]` y `trabajo_practico_integrador`: nunca
+  pasa a `generado` sin `pdf_confirmado_por_usuario: true` seteado primero, y la
+  confirmación es siempre sobre el `documento-*.html` con membrete (ver
+  `plantilla-evaluacion.md` / `plantilla-tpi-standalone.md`), no sobre el bloque
+  de presentación que va en la página de Moodle.
+- `certificado_status` documenta si el módulo de certificado del LMS (no HTML)
+  ya está configurado y con su regla de disponibilidad gateada a la Entrega
+  correspondiente — si el usuario todavía no lo armó en el LMS, se anota
+  `pendiente` y se le avisa, no se inventa contenido de certificado.
 - Cuando arrancás una sesión nueva, leé este archivo completo antes de preguntarle
   nada al usuario — la mayoría de "¿en qué quedamos?" se responde solo con esto.

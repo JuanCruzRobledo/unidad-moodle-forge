@@ -18,9 +18,9 @@ Curso (ej. "Programación 3", id=44)
 ├── section=N+4 → "Autoevaluación 🔍"  (hija de la unidad)
 ├── section=N+5 → "Encuesta de cierre 🗳️" (hija de la unidad)
 ├── ... el patrón se repite +6 secciones por cada unidad siguiente
-├── "Trabajo Practico Integrador" (puede existir también como sección de curso aparte, según materia)
+├── "Trabajo Practico Integrador" (curso-level, confirmado en vivo — ver plantilla-tpi-standalone.md)
 ├── "Encuentros Sincrónicos" (curso-level)
-├── "Evaluaciones" (curso-level: parciales, recuperatorios, certificados — NO es la Autoevaluación de unidad)
+├── "Evaluaciones" (curso-level: parciales, recuperatorios, certificados — NO es la Autoevaluación de unidad, ver plantilla-evaluacion.md)
 └── Secciones de gestión (Comisiones, Entrenamiento, Gestión Académica, etc. — fuera de alcance)
 ```
 
@@ -72,7 +72,14 @@ URL real.
 - Sección de curso **"Evaluaciones"** (parciales, recuperatorios, certificados) —
   distinta de la Autoevaluación de cada unidad, con sus propios foros de consulta
   por examen y tareas de entrega con ventana de fechas. Se trabaja como fase aparte
-  (ver SKILL.md, Fase 7), no como parte del material de unidad.
+  (ver SKILL.md, Fase 7), no como parte del material de unidad. Plantilla:
+  `references/plantilla-evaluacion.md`. HTML real relevado en vivo (banner,
+  tabla de fechas de examen, tarjetas de consigna/entrega, regla de gating del
+  certificado): `assets/tpi-evaluaciones-html-real.txt`.
+- Sección de curso **"Trabajo Practico Integrador"** — el proyecto final del
+  curso, también fuera de la jerarquía de unidades (ver SKILL.md, Fase 7).
+  Plantilla: `references/plantilla-tpi-standalone.md`. Mismo asset de HTML real
+  que Evaluaciones: `assets/tpi-evaluaciones-html-real.txt`.
 - Foros de nivel curso: "Avisos generales", "Punto de Partida: Instalaciones y
   Ayuda", "Avisos de la comisión" — no existe un "Foro social" con ese nombre exacto
   en el curso real relevado.
