@@ -80,6 +80,12 @@ def nueva_unidad_dict(numero: int, nombre: str, carpeta: str, cantidad_actividad
             "preguntas_xml_status": STATUS_PENDIENTE,
         },
         "encuesta_cierre": {"status": STATUS_PENDIENTE},
+        "importacion": {
+            "status": STATUS_PENDIENTE,
+            "curso_url": "",
+            "fecha": "",
+            "reporte": "",
+        },
     }
 
 

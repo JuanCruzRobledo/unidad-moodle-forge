@@ -10,11 +10,34 @@ bloques — cada `<div>`, lista o script se conserva tal cual, solo cambia el co
 Donde el bloque trae un comentario `<!-- ... -->` que es una instrucción para quien
 arma la plantilla (no para el HTML final), quitalo al usar el bloque.
 
+**Convención de generación — un archivo por bloque, nunca un HTML concatenado.**
+Confirmado recorriendo el aula real (ver `references/estructura-aula-real.md` y
+`references/importacion-moodle.md`): cada `<div>` de nivel superior de esta
+referencia es un componente independiente en Moodle, no un fragmento de una misma
+página. Por eso cada bloque se genera como su **propio archivo `.html`**, nunca
+concatenado con los demás bloques de la misma sub-sección:
+
+- El **primer bloque** de cada sub-sección (el banner grande con el título) es el
+  campo **Descripción** de esa sección/sub-sección de Moodle — se edita en
+  `course/editsection.php`, **no es un Label**. Se genera siempre como
+  `00-descripcion-seccion.html`.
+- **Cada bloque siguiente es un Label independiente** (`mod_label`) — se genera
+  como `01-<slug>.html`, `02-<slug>.html`, ... en el mismo orden en que aparecen
+  en esta referencia.
+- **Única excepción**: el bloque "Cuestionario de la Actividad" (dentro de
+  Actividades) no es un Label — va en el campo **Descripción** del `mod_quiz`
+  correspondiente. Se genera aparte, como `cuestionario-actividad-N.html`.
+
+Cada encabezado de bloque de acá abajo trae una nota `→` con el nombre de archivo
+que le corresponde y su destino real en Moodle.
+
 ---
 
 ## Introducción
 
 ### Banner de introducción de unidad (resultados de aprendizaje)
+
+→ `00-descripcion-seccion.html` — Descripción de la sección raíz de la unidad (`editsection.php`), **no es un Label**.
 
 ```html
 <div style="background-color: #ffffff; border: 1px solid #ccc; padding: 30px; border-radius: 12px;
@@ -45,6 +68,8 @@ existente) antes de reemplazarlo — no se inventa una nueva.
 
 ### Video de introducción a la unidad (colapsable)
 
+→ `01-video-introduccion.html` — Label independiente.
+
 ```html
 <div style="margin-bottom: 30px; font-family: 'Segoe UI', sans-serif; border: 1px solid #ccc;
 border-radius: 12px; background-color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
@@ -65,6 +90,8 @@ border-radius: 12px; background-color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,
 
 ### Sección antes del foro de la unidad
 
+→ `02-banner-foro.html` — Label independiente.
+
 ```html
 <div style="background: linear-gradient(to right, #fff6e5, #ffe9cc); width: 100%; padding: 30px;
 border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); margin-bottom: 30px;
@@ -80,6 +107,8 @@ font-family: 'Segoe UI', sans-serif; border-left: 6px solid #f4a261;">
 ```
 
 ### Hoja de ruta de la unidad (con tabla Pomodoro)
+
+→ `03-hoja-de-ruta.html` — Label independiente.
 
 ```html
 <div style="background-color: #faf5f8; border: 1px solid #ccc; padding: 30px; border-radius: 12px;
@@ -182,6 +211,8 @@ box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-family: 'Segoe UI', sans-serif; ma
 
 ### Banner principal de la sección
 
+→ `Actividades/00-descripcion-seccion.html` — Descripción de la sub-sección Actividades, **no es un Label**. Se genera una sola vez por unidad (no por actividad).
+
 ```html
 <div style="text-align: center; padding: 20px 10px; border-bottom: 2px solid #FFFFFF;
 margin-bottom: 20px; background-color: #001855;">
@@ -192,6 +223,8 @@ margin-bottom: 20px; background-color: #001855;">
 ```
 
 ### Cuerpo para cada actividad (con tarjetas Infografía / PDF / IA)
+
+→ `Actividades/actividad-N/actividad-N.html` — Label independiente. Lleva **solo** este bloque `<details>` — el bloque "Cuestionario de la Actividad" (más abajo) NO va acá, va aparte.
 
 ```html
 <details style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 15px; border-radius: 8px;
@@ -322,6 +355,8 @@ Link útil para comprimir la infografía antes de subirla: https://www.iloveimg.
 
 ### Cuerpo actividad lúdica (opcional)
 
+→ `Actividades/actividad-ludica.html` — Label independiente.
+
 ```html
 <details style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 15px; border-radius: 8px;
 margin-bottom: 20px; font-family: sans-serif; color: #1a237e; line-height: 1.6;">
@@ -373,6 +408,8 @@ margin-bottom: 20px; font-family: sans-serif; color: #1a237e; line-height: 1.6;"
 
 ### Descripción para cada cuestionario (igual para todos)
 
+→ `Actividades/actividad-N/cuestionario-actividad-N.html` — va en el campo **Descripción** del `mod_quiz` "Cuestionario – Actividad N" (con "Mostrar descripción en la página del curso" activado), **no en el Label de la actividad**.
+
 ```html
 <div style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 15px; border-radius: 8px;
 margin-bottom: 20px; font-family: sans-serif; color: #1a237e; line-height: 1.6;">
@@ -398,6 +435,8 @@ margin-bottom: 20px; font-family: sans-serif; color: #1a237e; line-height: 1.6;"
 
 ### Banner principal de la sección
 
+→ `Practica/00-descripcion-seccion.html` — Descripción de la sub-sección Práctica, **no es un Label**.
+
 ```html
 <div style="text-align: center; padding: 20px 10px; border-bottom: 2px solid #FFFFFF;
 margin-bottom: 20px; background-color: #001855;">
@@ -408,6 +447,8 @@ margin-bottom: 20px; background-color: #001855;">
 ```
 
 ### Descripción del Trabajo Práctico
+
+→ `Practica/consigna-practica.html` — Label independiente (ver Fase 3 de `SKILL.md`: lleva **solo** este bloque `<details>`, sin el banner de arriba).
 
 ```html
 <details style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 15px; border-radius: 8px;
@@ -453,6 +494,8 @@ directo al recurso:
 ```
 
 ### Descripción de la tarea de entrega — variante Programación 1 (Python, archivo único)
+
+→ `Practica/entrega-practica.html` — Descripción de la Tarea (`mod_assign`) de entrega, mismo archivo para las 3 variantes de abajo (se usa la que corresponda a la carrera/materia).
 
 ```html
 <div style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 15px; border-radius: 8px;
@@ -575,6 +618,8 @@ responsabilidad**, para mantener el proyecto ordenado."
 
 ### Descripción resolución propuesta del Trabajo Práctico
 
+→ `Practica/resolucion-propuesta.html` — Label independiente, **opcional** (solo si se sube una carpeta ZIP con la resolución comparativa).
+
 ```html
 <div style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 20px; border-radius: 8px;
 margin-bottom: 20px; font-family: 'Segoe UI', sans-serif; color: #1a237e;">
@@ -598,7 +643,9 @@ margin-bottom: 20px; font-family: 'Segoe UI', sans-serif; color: #1a237e;">
 
 ## Microteaching
 
-### Banner y sección introductoria
+### Banner principal de la sección
+
+→ `Microteaching/00-descripcion-seccion.html` — Descripción de la sub-sección Microteaching, **no es un Label**.
 
 ```html
 <div style="text-align: center; padding: 20px 10px; border-bottom: 2px solid #FFFFFF;
@@ -607,7 +654,13 @@ margin-bottom: 20px; background-color: #001855;">
     <strong>Microteaching – [TÍTULO DEL TEMA]</strong>
   </h2>
 </div>
+```
 
+### Tarjeta introductoria (Material de la Microteaching)
+
+→ `Microteaching/01-material-microteaching.html` — Label independiente.
+
+```html
 <div style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 20px; border-radius: 8px;
 margin-bottom: 20px; width: 100%; font-family: sans-serif; color: #1a237e;">
   <h3 style="text-align: left; font-size: 1.4rem; color: #1565c0; margin-top: 0;">Material de la Microteaching</h3>
@@ -624,6 +677,8 @@ margin-bottom: 20px; width: 100%; font-family: sans-serif; color: #1a237e;">
 ```
 
 ### Sección de contenido y enlaces
+
+→ `Microteaching/02-contenido-enlaces.html` — Label independiente.
 
 ```html
 <div style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 20px; border-radius: 8px;
@@ -656,6 +711,8 @@ margin-bottom: 20px; width: 100%; font-family: sans-serif; color: #1a237e;">
 
 ### Banner principal de la sección
 
+→ `Autoevaluacion/00-descripcion-seccion.html` — Descripción de la sub-sección Autoevaluación, **no es un Label**.
+
 ```html
 <div style="text-align: center; padding: 20px 10px; border-bottom: 2px solid #FFFFFF;
 margin-bottom: 20px; background-color: #001855;">
@@ -666,6 +723,8 @@ margin-bottom: 20px; background-color: #001855;">
 ```
 
 ### Descripción del cuestionario de autoevaluación (fija, no cambia entre unidades salvo la imagen)
+
+→ `Autoevaluacion/01-autoevaluacion.html` — Label independiente.
 
 ```html
 <div style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 20px; border-radius: 8px;
@@ -695,6 +754,8 @@ actualizando — se reutiliza el mismo link, no se genera una nueva.
 
 ### Banner principal de la sección
 
+→ `EncuestaCierre/00-descripcion-seccion.html` — Descripción de la sub-sección Encuesta de cierre, **no es un Label**.
+
 ```html
 <div style="text-align: center; padding: 20px 10px; border-bottom: 2px solid #FFFFFF;
 margin-bottom: 20px; background-color: #001855;">
@@ -705,6 +766,8 @@ margin-bottom: 20px; background-color: #001855;">
 ```
 
 ### Descripción de la encuesta (fija, no modificar salvo el nombre de la unidad en el banner)
+
+→ `EncuestaCierre/01-encuesta-cierre.html` — va en la Descripción de la Encuesta (`mod_feedback`) existente.
 
 ```html
 <div style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 15px; border-radius: 8px;

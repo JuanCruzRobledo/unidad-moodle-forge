@@ -50,6 +50,11 @@ unidades:
       preguntas_xml_status: pendiente
     encuesta_cierre:
       status: pendiente
+    importacion:                # Fase 8 — opcional, solo se llena cuando el usuario pide importar al aula real
+      status: pendiente         # pendiente | en_progreso | completado
+      curso_url: ""              # URL real del curso al que se importó (vacío si nunca se corrió)
+      fecha: ""                  # fecha de la última corrida (YYYY-MM-DD)
+      reporte: ""                # ruta al reporte-importacion.md generado (vacío si nunca se corrió)
 
 evaluaciones_curso:          # Fase 7 — aparte, opcional, se activa solo si el usuario la pide
   activa: false
@@ -107,3 +112,8 @@ trabajo_practico_integrador:   # Fase 7 — curso-level, ver plantilla-tpi-stand
   `pendiente` y se le avisa, no se inventa contenido de certificado.
 - Cuando arrancás una sesión nueva, leé este archivo completo antes de preguntarle
   nada al usuario — la mayoría de "¿en qué quedamos?" se responde solo con esto.
+- `importacion.status` solo puede pasar a `en_progreso`/`completado` después de que
+  se cumplieron las 5 precondiciones de la Fase 8 (`SKILL.md`) — no es un flag que
+  se setea de antemano, es el registro de que la importación realmente ocurrió.
+  `reporte` apunta siempre a un `reporte-importacion.md` real ya escrito en la
+  carpeta de esa unidad — nunca se deja `completado` sin ese archivo.

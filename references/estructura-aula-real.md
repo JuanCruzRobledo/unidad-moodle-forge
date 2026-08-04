@@ -84,6 +84,22 @@ URL real.
   Ayuda", "Avisos de la comisión" — no existe un "Foro social" con ese nombre exacto
   en el curso real relevado.
 
+## El primer bloque de cada sub-sección es la Descripción de esa sección, no un Label
+
+Confirmado importando de punta a punta una unidad completa contra el aula real: el
+primer `<div>` de cada bloque de `references/plantillas-html.md` (el banner grande
+con el título de la sub-sección) **no es un Label** — es el campo **Descripción**
+(resumen) de esa sección/sub-sección de Moodle, editable en
+`course/editsection.php`, no un módulo aparte. Se nota porque su ⋮ trae opciones de
+sección ("Editar ajustes", "Destacar", "Ocultar tema", "Duplicar" el tema entero) en
+vez de opciones de actividad.
+
+Por eso la skill genera ese primer bloque como su propio archivo
+(`00-descripcion-seccion.html`) en vez de concatenarlo con el resto del contenido de
+la sub-sección — ver la convención completa en `references/plantillas-html.md` y el
+detalle operativo de cómo pegarlo en el lugar correcto en
+`references/importacion-moodle.md` (Fase 8 de `SKILL.md`).
+
 ## Inconsistencias reales detectadas — NO replicar
 
 - En las unidades 9 y 10 del curso relevado, la sub-sección "Práctica" aparece
