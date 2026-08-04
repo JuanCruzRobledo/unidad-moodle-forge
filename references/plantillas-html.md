@@ -772,29 +772,41 @@ margin-bottom: 20px; background-color: #001855;">
 </div>
 ```
 
+### Nombre de la actividad Encuesta (`mod_feedback`)
+
+Patrón confirmado: **`💬 Tu opinión nos interesa 🌟 U<N>`** (ej. `U1`, `U2`... el
+número de unidad, sin cero a la izquierda). Renombrá la Encuesta existente con este
+patrón — no dejes el nombre genérico del template reciclado.
+
 ### Descripción de la encuesta (fija, no modificar salvo el nombre de la unidad en el banner)
 
 → `EncuestaCierre/01-encuesta-cierre.html` — va en la Descripción de la Encuesta (`mod_feedback`) existente.
 
 ```html
-<div style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 15px; border-radius: 8px;
-margin-bottom: 20px; font-size: 1rem; color: #1a237e; font-family: sans-serif; line-height: 1.6;">
-  <p style="text-align: left;">
-    <strong>¡Hola, estudiante!</strong><br><br>
-    Gracias por tu participación en esta unidad. Nos gustaría conocer tu opinión para seguir
-    mejorando el curso y brindarte una mejor experiencia de aprendizaje.<br><br>
-    A continuación, te haremos un par de preguntas para evaluar:
-  </p>
-  <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-    <li>El desempeño del tutor</li>
-    <li>El contenido de la unidad</li>
+<div
+  style="background-color: #f4f7ff; border: 1px solid #b3cde0; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 24, 85, 0.1); margin-bottom: 20px; font-family: sans-serif;">
+  <h3
+    style="font-size: 1.5rem; font-weight: bold; color: #001855; text-align: center; margin-top: 0; margin-bottom: 20px; font-family: sans-serif;">
+    📝 ¡Tu opinión nos ayuda a mejorar!</h3>
+  <p style="color: #333; font-size: 1rem; line-height: 1.6; text-align: left;">
+    🎓 <strong>¡Hola, estudiante!</strong> 🌟 Gracias por tu participación en
+    esta unidad. Nos gustaría conocer tu opinión para seguir mejorando el curso
+    y brindarte una mejor experiencia de aprendizaje. 🚀</p>
+  <p style="color: #333; font-size: 1rem; line-height: 1.6; text-align: left;">
+    🤔 A continuación, te haremos un par de preguntas para evaluar:</p>
+  <ul
+    style="list-style: none; padding-left: 10px; font-size: 1rem; color: #333; margin-bottom: 20px;">
+    <li style="margin-bottom: 5px;">👩‍🏫 El desempeño del docente</li>
+    <li>📚 El contenido de la unidad</li>
   </ul>
-  <div style="background-color: #e3f2fd; border-left: 4px solid #1565c0; padding: 10px; border-radius: 5px; margin-top: 15px;">
-    Recuerda que esta encuesta es <strong>anónima</strong>, por lo que tus respuestas no estarán
-    asociadas a tu identidad.
-  </div>
-  <br>
-  <p style="text-align: left;">Por favor, responde con sinceridad. Tu opinión es muy importante para nosotros.</p>
+  <div
+    style="background-color: #eaf2ff; padding: 12px 15px; border-radius: 6px; border-left: 4px solid #4a7bdc; color: #001855; font-size: 1rem;">
+    🔒 <strong>Importante:</strong> Esta encuesta es <strong>anónima</strong>,
+    por lo que tus respuestas no estarán asociadas a tu identidad.</div>
+  <p
+    style="color: #333; font-size: 1.1rem; text-align: center; line-height: 1.6; margin-top: 20px; margin-bottom: 0;">
+    Por favor, responde con sinceridad. ❤️ ¡Tu opinión es muy importante para
+    nosotros! 🙌</p>
 </div>
 ```
 

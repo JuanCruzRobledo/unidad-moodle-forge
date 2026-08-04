@@ -116,7 +116,7 @@ Mismo patrón que Actividades para las preguntas, pero con **exactamente 10 preg
 
 ## Fase 6 — Encuesta de cierre
 
-Generá `EncuestaCierre/00-descripcion-seccion.html` (banner, Descripción de la sub-sección) y `EncuestaCierre/01-encuesta-cierre.html` (descripción de la encuesta, va en la Descripción del `mod_feedback` existente) como **dos archivos separados** — el contenido no cambia entre unidades salvo el nombre de la unidad en el banner. No hace falta pedirle nada al usuario acá.
+Generá `EncuestaCierre/00-descripcion-seccion.html` (banner, Descripción de la sub-sección) y `EncuestaCierre/01-encuesta-cierre.html` (descripción de la encuesta, va en la Descripción del `mod_feedback` existente) como **dos archivos separados** — el contenido no cambia entre unidades salvo el nombre de la unidad en el banner. No hace falta pedirle nada al usuario acá. Al importar (Fase 8), renombrá la Encuesta existente con el patrón `💬 Tu opinión nos interesa 🌟 U<N>` (ver `references/plantillas-html.md` § Encuesta de cierre) — no dejes el nombre genérico del template reciclado.
 
 ## Fase 7 — Evaluaciones y Trabajo Práctico Integrador (curso-level, opcional y al final)
 
