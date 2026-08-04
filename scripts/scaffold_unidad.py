@@ -83,8 +83,24 @@ def nueva_unidad_dict(numero: int, nombre: str, carpeta: str, cantidad_actividad
         "importacion": {
             "status": STATUS_PENDIENTE,
             "curso_url": "",
-            "fecha": "",
+            "seccion_raiz": None,
+            "fecha_inicio": "",
+            "fecha_ultima_corrida": "",
             "reporte": "",
+            "subsecciones": {
+                "introduccion": STATUS_PENDIENTE,
+                "actividades": {
+                    "status": STATUS_PENDIENTE,
+                    "items": [
+                        {"numero": i, "importado": STATUS_PENDIENTE}
+                        for i in range(1, cantidad_actividades + 1)
+                    ],
+                },
+                "practica": STATUS_PENDIENTE,
+                "microteaching": STATUS_PENDIENTE,
+                "autoevaluacion": STATUS_PENDIENTE,
+                "encuesta_cierre": STATUS_PENDIENTE,
+            },
         },
     }
 

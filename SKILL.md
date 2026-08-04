@@ -251,31 +251,50 @@ No avances con NINGUNA acción de escritura sobre el aula hasta tener las 5:
   aprobar Autoevaluación"), aplicalo; si no lo definió, dejá los valores por defecto
   de Moodle y confirmá con el usuario en vez de inventar un número.
 
-### Flujo
+### Flujo — con checkpoint en `estado.yml` por pestaña
+
+La unidad de progreso de esta fase es la **pestaña** (sub-sección), no la unidad
+completa — cada una se marca en `estado.yml` (`importacion.subsecciones`, ver
+`references/estado-yml-schema.md`) apenas termina, para poder cortar en cualquier
+momento y retomar después sin repetir trabajo ni re-preguntar nada ya resuelto.
 
 1. Precondiciones (arriba) — no sigas sin las 5.
-2. Releé `estado.yml` de la unidad a importar. Solo se importan sub-secciones que
-   estén `confirmado` (o `generado` con un OK explícito del usuario en el momento,
-   si todavía no llegaron a `confirmado`).
-3. Por cada sub-sección de la unidad, en orden (Introducción/raíz → Actividades →
-   Práctica → Microteaching → Autoevaluación → Encuesta de cierre): pegá
-   `00-descripcion-seccion.html` en el campo Descripción de esa sección; creá o
-   editá un Label por cada `NN-*.html` restante, en el mismo orden en que están
-   numerados; para Actividades, creá/editá el `mod_quiz` de cada actividad,
-   importá sus 5 preguntas del XML correspondiente (`question/bank/importquestions/
-   import.php`) y pegá `cuestionario-actividad-N.html` en su Descripción; para
-   Práctica, subí `documento-practica.pdf` como Archivo, pegá `consigna-practica.html`
-   en el Label que lo describe y `entrega-practica.html` en la Descripción de la
-   Tarea; para Autoevaluación, creá/editá el `mod_quiz` (no hay Label acá), importá
-   las 10 preguntas y pegá `cuestionario-autoevaluacion.html` en su Descripción; para
-   Encuesta de cierre, editá la encuesta (`mod_feedback`) existente sin tocar
-   sus preguntas propias.
-4. Confirmá visualmente cada sub-sección contra el material fuente antes de pasar a
-   la siguiente.
-5. Al terminar toda la unidad — o al cortar por cualquier motivo (bloqueo, falta de
-   confirmación, error irrecuperable) — generá el reporte (siguiente punto). Nunca
-   termines una corrida de importación sin dejarlo, aunque haya quedado a mitad de
-   camino.
+2. Releé `estado.yml` de la unidad a importar. Mirá `importacion.subsecciones`: las
+   que ya están `importado` **se saltean** (no se re-pegan) salvo que el usuario
+   pida explícitamente re-importar una en particular. Arrancá por la primera que
+   siga en `pendiente`. Solo se importan sub-secciones cuyo contenido esté
+   `confirmado` (o `generado` con un OK explícito del usuario en el momento, si
+   todavía no llegó a `confirmado`) — si una sub-sección sigue en `pendiente` de
+   generación, no hay nada que importar todavía, avisá y salteala.
+3. Por cada sub-sección pendiente, en orden (Introducción/raíz → Actividades →
+   Práctica → Microteaching → Autoevaluación → Encuesta de cierre):
+   a. Pegá/creá su contenido en el aula (ver el detalle de cada tipo más abajo).
+   b. Confirmá visualmente esa sub-sección contra el material fuente.
+   c. **Apenas queda bien, actualizá `estado.yml` en el momento**: marcá
+      `importacion.subsecciones.<subseccion>: importado` (para Actividades, marcá
+      el `items[].importado` de esa actividad puntual, y `actividades.status` pasa
+      a `completado` recién cuando TODAS sus actividades están `importado`).
+      Recalculá `importacion.status` de la unidad (`pendiente` → `en_progreso` →
+      `completado`) y `fecha_ultima_corrida`. No dejes esto para el final: si la
+      sesión se corta después de este paso, el checkpoint ya quedó guardado.
+   d. Recién ahí pasá a la siguiente sub-sección.
+
+   Detalle por tipo de sub-sección: `00-descripcion-seccion.html` va siempre al
+   campo Descripción de esa sección; creá o editá un Label por cada `NN-*.html`
+   restante, en el mismo orden en que están numerados; para Actividades, creá/editá
+   el `mod_quiz` de cada actividad, importá sus 5 preguntas del XML correspondiente
+   (`question/bank/importquestions/import.php`) y pegá `cuestionario-actividad-N.html`
+   en su Descripción; para Práctica, subí `documento-practica.pdf` como Archivo,
+   pegá `consigna-practica.html` en el Label que lo describe y `entrega-practica.html`
+   en la Descripción de la Tarea; para Autoevaluación, creá/editá el `mod_quiz` (no
+   hay Label acá), importá las 10 preguntas y pegá `cuestionario-autoevaluacion.html`
+   en su Descripción; para Encuesta de cierre, editá la encuesta (`mod_feedback`)
+   existente (nombre + Descripción, sin tocar sus preguntas propias).
+4. Al terminar toda la unidad — o al cortar por cualquier motivo (bloqueo, falta de
+   confirmación, error irrecuperable) — generá/actualizá el reporte (siguiente
+   punto), aunque `importacion.status` haya quedado en `en_progreso`. Nunca
+   termines una corrida de importación sin dejar el checkpoint de `estado.yml` al
+   día con lo que realmente se logró pegar.
 
 ### Reporte final (obligatorio, no opcional)
 

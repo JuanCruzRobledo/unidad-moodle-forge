@@ -50,11 +50,26 @@ unidades:
       preguntas_xml_status: pendiente
     encuesta_cierre:
       status: pendiente
-    importacion:                # Fase 8 — opcional, solo se llena cuando el usuario pide importar al aula real
-      status: pendiente         # pendiente | en_progreso | completado
+    importacion:                # Fase 8 — opcional, se llena solo cuando el usuario pide importar al aula real.
+      status: pendiente         # pendiente | en_progreso | completado -- SIEMPRE derivado de subsecciones de abajo, nunca se setea a mano suelto
       curso_url: ""              # URL real del curso al que se importó (vacío si nunca se corrió)
-      fecha: ""                  # fecha de la última corrida (YYYY-MM-DD)
-      reporte: ""                # ruta al reporte-importacion.md generado (vacío si nunca se corrió)
+      seccion_raiz: null         # section= de la unidad en el curso real (el mapeo confirmado en la precondición 4 de Fase 8)
+      fecha_inicio: ""           # fecha de la primera corrida sobre esta unidad (YYYY-MM-DD)
+      fecha_ultima_corrida: ""   # fecha de la corrida más reciente, se pisa cada vez
+      reporte: ""                # ruta a reporte-importacion.md (vacío si nunca se corrió)
+      subsecciones:               # granularidad por pestaña -- esto es lo que permite retomar "por dónde quedó"
+        introduccion: pendiente        # pendiente | importado
+        actividades:
+          status: pendiente            # pendiente | en_progreso | completado -- derivado de items de abajo
+          items:
+            - numero: 1
+              importado: pendiente     # pendiente | importado -- incluye Label + Cuestionario + preguntas de ESA actividad
+            - numero: 2
+              importado: pendiente
+        practica: pendiente
+        microteaching: pendiente
+        autoevaluacion: pendiente
+        encuesta_cierre: pendiente
 
 evaluaciones_curso:          # Fase 7 — aparte, opcional, se activa solo si el usuario la pide
   activa: false
@@ -112,8 +127,23 @@ trabajo_practico_integrador:   # Fase 7 — curso-level, ver plantilla-tpi-stand
   `pendiente` y se le avisa, no se inventa contenido de certificado.
 - Cuando arrancás una sesión nueva, leé este archivo completo antes de preguntarle
   nada al usuario — la mayoría de "¿en qué quedamos?" se responde solo con esto.
-- `importacion.status` solo puede pasar a `en_progreso`/`completado` después de que
-  se cumplieron las 5 precondiciones de la Fase 8 (`SKILL.md`) — no es un flag que
-  se setea de antemano, es el registro de que la importación realmente ocurrió.
+- **`importacion.subsecciones` es la unidad real de progreso de la Fase 8** — se
+  actualiza **apenas termina de pegarse/crearse esa pestaña en el aula**, no al
+  final de toda la corrida. Así, si la sesión se corta a mitad de camino (o el
+  usuario para a propósito para seguir otro día), la próxima corrida de Fase 8 lee
+  `estado.yml`, ve qué pestañas ya están `importado` y arranca directo desde la
+  primera que sigue en `pendiente` — sin volver a preguntar ni re-pegar contenido ya
+  subido. Para `actividades`, la granularidad baja hasta el nivel de cada actividad
+  individual (`items[].importado`): si se cortó a mitad de la Actividad 2, la 1
+  queda `importado` y no se re-toca al retomar.
+- **`importacion.status` (a nivel unidad) es siempre derivado, nunca se setea a
+  mano suelto**: `pendiente` si ninguna subsección está `importado`; `en_progreso`
+  si hay alguna `importado` pero no todas; `completado` solo cuando **todas** las
+  subsecciones (y todos los items de `actividades`) están `importado` **y** ya
+  existe `reporte-importacion.md`. Recalculalo cada vez que marques una subsección.
+- `curso_url` y `seccion_raiz` se completan la primera vez que se corre la Fase 8
+  sobre esa unidad (después de pasar la precondición 1 y 4) y se reutilizan tal
+  cual en corridas posteriores sobre la misma unidad — no se vuelven a preguntar
+  salvo que el usuario diga que cambió el curso/mapeo.
   `reporte` apunta siempre a un `reporte-importacion.md` real ya escrito en la
   carpeta de esa unidad — nunca se deja `completado` sin ese archivo.
