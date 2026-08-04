@@ -13,8 +13,8 @@ A partir del programa de la materia, apuntes o un tema puntual, arma unidad por 
 1. **Introducción** — banner con resultados de aprendizaje, video colapsable, link al foro, hoja de ruta con tabla Pomodoro (4 archivos separados).
 2. **Actividades** — HTML de cada actividad (con tarjetas de Infografía/PDF/Asistente IA) separado de la intro al cuestionario, 5 preguntas XML por actividad para importar al banco de Moodle, y el guion fuente para que generes cada Notebook LM a mano.
 3. **Práctica (Trabajo Práctico)** — bloque breve de consigna y formato de entrega según la carrera para la página de Moodle, más un documento aparte con membrete institucional (logo UTN, encabezado/pie repetidos) que es el que se convierte al PDF real que descarga el alumno — solo después de que confirmes que ese documento está bien.
-4. **Microteaching** — banner, tarjeta introductoria y contenido con los links de la clase (3 archivos separados).
-5. **Autoevaluación** — HTML (2 archivos separados) + 10 preguntas XML.
+4. **Microteaching** — banner (Descripción de sección) + tarjeta introductoria y contenido con los links de la clase en un único Label.
+5. **Autoevaluación** — banner (Descripción de sección) + descripción del cuestionario directo en el Cuestionario (sin Label) + 10 preguntas XML.
 6. **Encuesta de cierre** — bloque prácticamente fijo entre unidades (2 archivos separados).
 7. **Evaluaciones** (opcional, al final) — parciales y recuperatorios a nivel curso, fuera del material por unidad.
 8. **Importación al aula real** (opcional, bajo pedido explícito) — sube el material ya generado y confirmado al curso real de Moodle vía browser automation (crea/edita secciones, Labels, Cuestionarios, Tareas y Encuestas), con checklist de seguridad previo (URL del curso, rol de gestor confirmado, aviso explícito de que es una acción riesgosa) y un reporte de pendientes/incoherencias al terminar.
@@ -105,13 +105,12 @@ real de Moodle**, nunca un HTML con varios bloques concatenados:
     │   ├── 00-descripcion-seccion.html
     │   ├── consigna-practica.html + entrega-practica.html
     │   └── documento-practica.html + documento-practica.pdf
-    ├── Microteaching/
+    ├── Microteaching/                        (2 bloques, 1 solo Label)
     │   ├── 00-descripcion-seccion.html
-    │   ├── 01-material-microteaching.html
-    │   └── 02-contenido-enlaces.html
-    ├── Autoevaluacion/
+    │   └── 01-contenido-microteaching.html
+    ├── Autoevaluacion/                       (sin Label — solo el Cuestionario)
     │   ├── 00-descripcion-seccion.html
-    │   ├── 01-autoevaluacion.html
+    │   ├── cuestionario-autoevaluacion.html  (Descripción del mod_quiz)
     │   └── preguntas-autoevaluacion.xml
     ├── EncuestaCierre/
     │   ├── 00-descripcion-seccion.html

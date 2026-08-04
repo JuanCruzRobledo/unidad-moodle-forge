@@ -21,8 +21,8 @@ El usuario es docente/tutor de una materia en el campus TUP y quiere producir el
 2. Actividades        → 00-descripcion-seccion + por actividad: actividad-N.html + cuestionario-actividad-N.html
                          + XML (5 preguntas c/u) + guion NotebookLM
 3. Práctica (TP)      → documento PDF con membrete *bajo aprobación* → entrega HTML → consigna HTML (+ 00-descripcion-seccion)
-4. Microteaching      → 3 HTML separados: 00-descripcion-seccion, tarjeta intro, contenido+enlaces
-5. Autoevaluación     → 2 HTML separados (00-descripcion-seccion + descripción) + XML (10 preguntas)
+4. Microteaching      → 2 HTML separados: 00-descripcion-seccion + 01-contenido-microteaching (1 solo Label)
+5. Autoevaluación     → 00-descripcion-seccion + cuestionario-autoevaluacion (Descripción del Quiz, sin Label) + XML (10 preguntas)
 6. Encuesta de cierre → 2 HTML separados (00-descripcion-seccion + descripción)
 7. (final, opcional)  → Evaluaciones y Trabajo Práctico Integrador (curso-level)
 8. (opcional, bajo pedido explícito) → Importación del material generado al aula real de Moodle
@@ -98,17 +98,21 @@ necesita que el PDF ya exista.
 
 ## Fase 4 — Microteaching
 
-Generá los **3 bloques de `references/plantillas-html.md` § Microteaching como 3 archivos separados** dentro de `Microteaching/`:
+Generá **dos archivos** dentro de `Microteaching/` (`references/plantillas-html.md` § Microteaching):
 
 1. `00-descripcion-seccion.html` — banner de la sub-sección (Descripción, no Label).
-2. `01-material-microteaching.html` — tarjeta introductoria ("Material de la Microteaching").
-3. `02-contenido-enlaces.html` — contenido con el link al video de microteaching y al repositorio de código si aplica.
+2. `01-contenido-microteaching.html` — la tarjeta introductoria ("Material de la Microteaching") **y** el contenido con el link al video de microteaching y al repositorio de código, concatenados en ese orden dentro del mismo archivo. A diferencia del resto de las sub-secciones, acá los dos bloques de la plantilla van juntos en **un solo Label** — confirmado contra un curso real bien armado (esa sub-sección solo tiene un Label además de la Descripción de sección).
 
 Es la sección más liviana — no tiene NotebookLM ni preguntas.
 
 ## Fase 5 — Autoevaluación
 
-Generá `Autoevaluacion/00-descripcion-seccion.html` (banner, Descripción de la sub-sección) y `Autoevaluacion/01-autoevaluacion.html` (descripción del cuestionario, Label — casi fija entre unidades, solo cambia el nombre de la unidad) como **dos archivos separados**. Mismo patrón que Actividades para las preguntas, pero con **exactamente 10 preguntas** en el XML (`scripts/generar_pregunta_xml.py`), reutilizando o extendiendo el banco de preguntas de las actividades de la misma unidad (en el aula real comparten banco: los códigos de autoevaluación son un superset de los de actividades).
+Generá **dos archivos separados**:
+
+1. `Autoevaluacion/00-descripcion-seccion.html` — banner, Descripción de la sub-sección (no un Label).
+2. `Autoevaluacion/cuestionario-autoevaluacion.html` — descripción del cuestionario (casi fija entre unidades, solo cambia el nombre de la unidad). **No es un Label**: esta sub-sección no tiene ningún Label — va directo al campo Descripción del `mod_quiz` de Autoevaluación (con "Mostrar descripción en la página del curso" activado), igual que `cuestionario-actividad-N.html` en Actividades. Confirmado contra un curso real bien armado: esa sub-sección solo tiene el módulo Cuestionario, nada más.
+
+Mismo patrón que Actividades para las preguntas, pero con **exactamente 10 preguntas** en el XML (`scripts/generar_pregunta_xml.py`), reutilizando o extendiendo el banco de preguntas de las actividades de la misma unidad (en el aula real comparten banco: los códigos de autoevaluación son un superset de los de actividades).
 
 ## Fase 6 — Encuesta de cierre
 
@@ -225,7 +229,9 @@ No avances con NINGUNA acción de escritura sobre el aula hasta tener las 5:
   campo Descripción de esa sección (`course/editsection.php`), **no a un Label**.
 - El archivo `cuestionario-actividad-N.html` de cada actividad va a la Descripción
   del `mod_quiz` correspondiente (con "Mostrar descripción en la página del curso"
-  activado), **no al Label de la actividad**.
+  activado), **no al Label de la actividad**. El archivo
+  `cuestionario-autoevaluacion.html` va al mismo lugar, en el `mod_quiz` de
+  Autoevaluación — esa sub-sección **no tiene Label**, solo el Cuestionario.
 - **Nunca subas ni generes el PDF de la Práctica sin que `estado.yml` ya tenga
   `pdf_confirmado_por_usuario: true`** para esa unidad — si no está, cortá esa
   sub-sección y pedí la confirmación antes de seguir.
@@ -260,8 +266,9 @@ No avances con NINGUNA acción de escritura sobre el aula hasta tener las 5:
    import.php`) y pegá `cuestionario-actividad-N.html` en su Descripción; para
    Práctica, subí `documento-practica.pdf` como Archivo, pegá `consigna-practica.html`
    en el Label que lo describe y `entrega-practica.html` en la Descripción de la
-   Tarea; para Autoevaluación, creá/editá el `mod_quiz` e importá las 10 preguntas;
-   para Encuesta de cierre, editá la encuesta (`mod_feedback`) existente sin tocar
+   Tarea; para Autoevaluación, creá/editá el `mod_quiz` (no hay Label acá), importá
+   las 10 preguntas y pegá `cuestionario-autoevaluacion.html` en su Descripción; para
+   Encuesta de cierre, editá la encuesta (`mod_feedback`) existente sin tocar
    sus preguntas propias.
 4. Confirmá visualmente cada sub-sección contra el material fuente antes de pasar a
    la siguiente.

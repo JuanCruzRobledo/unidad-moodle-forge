@@ -21,12 +21,19 @@ concatenado con los demás bloques de la misma sub-sección:
   campo **Descripción** de esa sección/sub-sección de Moodle — se edita en
   `course/editsection.php`, **no es un Label**. Se genera siempre como
   `00-descripcion-seccion.html`.
-- **Cada bloque siguiente es un Label independiente** (`mod_label`) — se genera
-  como `01-<slug>.html`, `02-<slug>.html`, ... en el mismo orden en que aparecen
-  en esta referencia.
-- **Única excepción**: el bloque "Cuestionario de la Actividad" (dentro de
-  Actividades) no es un Label — va en el campo **Descripción** del `mod_quiz`
-  correspondiente. Se genera aparte, como `cuestionario-actividad-N.html`.
+- **Cada bloque siguiente suele ser un Label independiente** (`mod_label`) — se
+  genera como `01-<slug>.html`, `02-<slug>.html`, ... en el mismo orden en que
+  aparecen en esta referencia. **Tres excepciones confirmadas en vivo**, ninguna
+  lleva Label:
+  - El bloque "Cuestionario de la Actividad" (dentro de Actividades) va en el
+    campo **Descripción** del `mod_quiz` correspondiente —
+    `cuestionario-actividad-N.html`.
+  - El bloque "Descripción del cuestionario de autoevaluación" va en la
+    **Descripción** del `mod_quiz` de Autoevaluación — esa sub-sección no tiene
+    ningún Label — `cuestionario-autoevaluacion.html`.
+  - En **Microteaching**, los dos bloques de contenido (tarjeta introductoria +
+    contenido/enlaces) no son dos Labels separados: van **concatenados en un
+    único Label** — `01-contenido-microteaching.html`.
 
 Cada encabezado de bloque de acá abajo trae una nota `→` con el nombre de archivo
 que le corresponde y su destino real en Moodle.
@@ -658,7 +665,7 @@ margin-bottom: 20px; background-color: #001855;">
 
 ### Tarjeta introductoria (Material de la Microteaching)
 
-→ `Microteaching/01-material-microteaching.html` — Label independiente.
+→ `Microteaching/01-contenido-microteaching.html` — junto con el bloque siguiente ("Sección de contenido y enlaces"), forman **un único Label** (no dos). Confirmado contra un curso real bien armado: la sub-sección Microteaching tiene un solo Label además de la Descripción de sección — concatená los dos `<div>` de acá abajo uno después del otro dentro del mismo archivo, en ese orden.
 
 ```html
 <div style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 20px; border-radius: 8px;
@@ -678,7 +685,7 @@ margin-bottom: 20px; width: 100%; font-family: sans-serif; color: #1a237e;">
 
 ### Sección de contenido y enlaces
 
-→ `Microteaching/02-contenido-enlaces.html` — Label independiente.
+→ va en el **mismo archivo** `Microteaching/01-contenido-microteaching.html`, pegado a continuación del bloque anterior (mismo Label).
 
 ```html
 <div style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 20px; border-radius: 8px;
@@ -724,7 +731,7 @@ margin-bottom: 20px; background-color: #001855;">
 
 ### Descripción del cuestionario de autoevaluación (fija, no cambia entre unidades salvo la imagen)
 
-→ `Autoevaluacion/01-autoevaluacion.html` — Label independiente.
+→ `Autoevaluacion/cuestionario-autoevaluacion.html` — va en el campo **Descripción** del `mod_quiz` de Autoevaluación (con "Mostrar descripción en la página del curso" activado), **NO es un Label**. Confirmado contra un curso real bien armado (`tup.sied.utn.edu.ar`, Programación 3): esa sub-sección tiene un único módulo, el Cuestionario — no hay ningún Label. Mismo patrón que `cuestionario-actividad-N.html` en Actividades.
 
 ```html
 <div style="background-color: #f5f7fa; border: 1px solid #cfd8dc; padding: 20px; border-radius: 8px;

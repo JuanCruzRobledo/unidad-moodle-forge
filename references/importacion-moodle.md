@@ -201,6 +201,30 @@ Si al contar módulos (paso 1) aparece el doble de lo esperado en una sub-secci�
   criterio para esa unidad, aplicalo de forma consistente al resto sin
   re-preguntar.
 
+## 8a. Microteaching: sus 2 bloques de contenido son un único Label — verificado en vivo
+
+A diferencia del resto de las sub-secciones, en Microteaching la tarjeta
+introductoria ("Material de la Microteaching") y el bloque de contenido/enlaces
+**no son dos Labels separados** — van concatenados en **un solo Label**, además de
+la Descripción de la sección. Confirmado contando módulos reales en un curso ya
+bien armado: esa sub-sección tiene un único Label. Generá
+`01-contenido-microteaching.html` con los dos bloques ya concatenados en el orden
+de `references/plantillas-html.md`, no como dos archivos.
+
+## 8b. Autoevaluación y Encuesta de cierre no tienen Label — verificado en vivo
+
+Confirmado inspeccionando el conteo real de módulos (`li[id^="module-"]`) tanto en
+una corrida con un bug real (texto plano genérico pegado en la Descripción del
+Cuestionario en vez del HTML de la plantilla) como en un curso ya bien armado: las
+sub-secciones **Autoevaluación** y **Encuesta de cierre** tienen, cada una, **un
+único módulo real** — el Cuestionario y la Encuesta (`mod_feedback`)
+respectivamente. No hay ningún Label ahí. Todo el contenido "de más" que se ve en
+la página (aparte del banner, que es la Descripción de la sección) es el campo
+Descripción de ese único módulo, con "Mostrar descripción en la página del curso"
+activado. Si en una importación aparece un Label extra en alguna de estas dos
+sub-secciones, es una desviación — confirmá con el usuario antes de asumir que
+corresponde.
+
 ## 9. Mapeo de archivo local → destino real en Moodle (resumen)
 
 | Archivo generado | Destino en Moodle |
@@ -215,8 +239,10 @@ Si al contar módulos (paso 1) aparece el doble de lo esperado en una sub-secci�
 | `Practica/documento-practica.pdf` | Archivo (`mod_resource`) |
 | `Practica/consigna-practica.html` | Label que describe el Archivo/la consigna |
 | `Practica/entrega-practica.html` | Descripción de la Tarea (`mod_assign`) |
-| `Microteaching/00-descripcion-seccion.html`, `01-material-microteaching.html`, `02-contenido-enlaces.html` | Descripción de sección + 2 Labels |
-| `Autoevaluacion/00-descripcion-seccion.html`, `01-autoevaluacion.html` | Descripción de sección + 1 Label |
+| `Microteaching/00-descripcion-seccion.html` | Descripción de la sub-sección Microteaching |
+| `Microteaching/01-contenido-microteaching.html` | Un único Label (tarjeta intro + contenido/enlaces concatenados) |
+| `Autoevaluacion/00-descripcion-seccion.html` | Descripción de la sub-sección Autoevaluación (no hay Label acá) |
+| `Autoevaluacion/cuestionario-autoevaluacion.html` | Descripción del `mod_quiz` de Autoevaluación |
 | `Autoevaluacion/preguntas-autoevaluacion.xml` | Import al banco de preguntas + agregado al `mod_quiz` de Autoevaluación |
 | `EncuestaCierre/00-descripcion-seccion.html`, `01-encuesta-cierre.html` | Descripción de sección + Descripción del `mod_feedback` existente |
 
