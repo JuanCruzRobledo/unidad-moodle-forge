@@ -1,31 +1,38 @@
 ---
 name: unidad-moodle-forge
 description: >-
-  Genera el material didactico completo de una unidad para el aula virtual Moodle de TUP (tup.sied.utn.edu.ar) a partir del programa de la materia o apuntes: un archivo HTML por cada bloque real de cada sub-seccion (Introduccion, Actividades, Practica, Microteaching, Autoevaluacion, Encuesta de cierre) -nunca un unico HTML con varios bloques pegados-, preguntas en formato XML de Moodle para importar (5 por actividad, 10 en autoevaluacion), guiones para generar los Notebooks LM de cada actividad, la consigna y el PDF del Trabajo Practico Integrador, y -al final del proceso- el material de Evaluaciones (parciales/recuperatorios) a nivel curso. Ademas, bajo pedido explicito del usuario y con confirmacion previa, puede IMPORTAR ese material al aula real de Moodle via browser automation (crear/editar secciones, Labels, Cuestionarios, Tareas y Encuestas) dejando un reporte de pendientes/incoherencias al terminar. Usa esta skill SIEMPRE que el usuario pida armar/generar el material de una unidad para el campus/aula virtual, o subir/importar ese material ya generado al aula real: 'arma la unidad 3 de Programacion 3', 'genera el contenido Moodle de la unidad de CSS', 'necesito las preguntas XML y el HTML de la actividad 2', 'hace el TP integrador y su PDF', 'segui armando el material donde quedo', 'importa la unidad 2 al aula real', 'subi este material a Moodle' -aunque no nombre la skill. Mantiene un archivo de estado (estado.yml) por materia para retomar la generacion (y la importacion) unidad por unidad y saber que falta. NO usar para corregir entregas de alumnos (corregir/corregir-notas-planilla), ni para responder consultas en el campus (responder-alumnos), ni para generar informes de pendientes (informe-pendientes-curso).
+  Genera el material didactico completo de una unidad para el aula virtual Moodle de TUP (tup.sied.utn.edu.ar) a partir del programa de la materia o apuntes: un archivo HTML por cada bloque real de cada sub-seccion (Introduccion, Actividades, Practica, Microteaching, Autoevaluacion, Encuesta de cierre) -nunca un unico HTML con varios bloques pegados-, preguntas en formato XML de Moodle para importar (5 por actividad, 10 en autoevaluacion), el prompt para Gamma que resuelve el Material de apoyo de cada actividad, el documento y PDF de Lectura obligatoria de cada actividad, los guiones y el render automatizado (via la skill hyperframes) de los videos de cada actividad, guiones para generar los Notebooks LM de cada actividad, el guion del video de introduccion de la unidad (generado al cierre, coherente con el contenido ya completo), la consigna y el PDF del Trabajo Practico Integrador, y -al final del proceso- el material de Evaluaciones (parciales/recuperatorios) a nivel curso. Ademas, bajo pedido explicito del usuario y con confirmacion previa, puede IMPORTAR ese material al aula real de Moodle via browser automation (crear/editar secciones, Labels, Cuestionarios, Tareas y Encuestas) dejando un reporte de pendientes/incoherencias al terminar, y puede COMPLETAR los pendientes de una unidad que ya tiene material generado o importado (material de apoyo, lectura PDF, videos, notebook, guion de introduccion faltantes). Antes de generar una unidad nueva desde cero, pregunta que componentes opcionales incluir (actividad ludica, microteaching, material de apoyo, videos de actividad, autoevaluacion, encuesta de cierre), reflejado en estado.yml. Usa esta skill SIEMPRE que el usuario pida armar/generar el material de una unidad para el campus/aula virtual, completar/corregir pendientes de una unidad ya generada, o subir/importar ese material ya generado al aula real: 'arma la unidad 3 de Programacion 3', 'genera el contenido Moodle de la unidad de CSS', 'necesito las preguntas XML y el HTML de la actividad 2', 'hace el TP integrador y su PDF', 'segui armando el material donde quedo', 'completa los pendientes de la unidad 1', 'genera el prompt de Gamma para el material de apoyo', 'automatiza los videos de la actividad 2', 'importa la unidad 2 al aula real', 'subi este material a Moodle' -aunque no nombre la skill. Mantiene un archivo de estado (estado.yml) por materia para retomar la generacion (y la importacion) unidad por unidad y saber que falta. NO usar para corregir entregas de alumnos (corregir/corregir-notas-planilla), ni para responder consultas en el campus (responder-alumnos), ni para generar informes de pendientes (informe-pendientes-curso).
 license: Apache-2.0
 ---
 
 # Unidad Moodle Forge
 
-Convierte el programa de una materia (o los apuntes que le pases) en el material completo de una unidad del aula virtual, calcando la estructura real del campus TUP: no la que "se supone" que tiene una unidad, sino la que confirmamos recorriéndolo en vivo. El principio que ordena todo: **generar es barato, pero publicar contenido pedagógico mal fundamentado es caro** — por eso cada bloque parte de material real que aportó el usuario (nunca se inventan resultados de aprendizaje o consignas de la nada), y los pasos irreversibles o que dependen de una herramienta externa (PDF, NotebookLM) esperan confirmación explícita antes de ejecutarse.
+Convierte el programa de una materia (o los apuntes que le pases) en el material completo de una unidad del aula virtual, calcando la estructura real del campus TUP: no la que "se supone" que tiene una unidad, sino la que confirmamos recorriéndolo en vivo. El principio que ordena todo: **generar es barato, pero publicar contenido pedagógico mal fundamentado es caro** — por eso cada bloque parte de material real que aportó el usuario (nunca se inventan resultados de aprendizaje o consignas de la nada), y los pasos irreversibles o que dependen de una herramienta externa (PDF, NotebookLM, Gamma, la skill `hyperframes` para video) esperan confirmación explícita antes de ejecutarse.
 
 ## Cuándo aplica
 
 El usuario es docente/tutor de una materia en el campus TUP y quiere producir el contenido de una unidad completa (o retomar una a medio hacer) a partir de: el programa de la materia, apuntes propios, un PDF de cátedra, o simplemente el nombre del tema. No tiene por qué traer todo listo — puede pedir "armá la unidad 2 de CSS" y vos completás con el patrón ya validado contra el aula real, pidiendo solo lo que no se pueda derivar razonablemente (ej. el tema puntual de cada actividad si no lo aportó).
 
-## Workflow — 7 fases + 2 extensiones opcionales
+## Workflow — 7 fases + 2 extensiones opcionales + cierre + retrofit
 
 ```
-0. Relevar estado     → qué unidad/sub-sección falta (lee estado.yml)
-1. Introducción       → 4 HTML separados: 00-descripcion-seccion, video, banner-foro, hoja-de-ruta
-2. Actividades        → 00-descripcion-seccion + por actividad: actividad-N.html + cuestionario-actividad-N.html
-                         + XML (5 preguntas c/u) + guion NotebookLM
+0. Relevar estado     → qué unidad/sub-sección falta (lee estado.yml); si es unidad
+                         NUEVA, preguntar qué componentes opcionales incluir
+1. Introducción       → 3 HTML separados: 00-descripcion-seccion, banner-foro, hoja-de-ruta
+                         (el video de introducción se resuelve al CIERRE, ver abajo)
+2. Actividades        → 00-descripcion-seccion + por actividad, EN ORDEN DE DEPENDENCIA:
+                         actividad-N.html + cuestionario-actividad-N.html
+                         → Material de apoyo (prompt Gamma) → Lectura PDF (documento + PDF)
+                         → XML (5 preguntas) → Videos de actividad (3, on-demand)
+                         → guion NotebookLM (recién con todo lo anterior generado)
 3. Práctica (TP)      → documento PDF con membrete *bajo aprobación* → entrega HTML → consigna HTML (+ 00-descripcion-seccion)
-4. Microteaching      → 2 HTML separados: 00-descripcion-seccion + 01-contenido-microteaching (1 solo Label)
-5. Autoevaluación     → 00-descripcion-seccion + cuestionario-autoevaluacion (Descripción del Quiz, sin Label) + XML (10 preguntas)
-6. Encuesta de cierre → 2 HTML separados (00-descripcion-seccion + descripción)
+4. Microteaching      → 2 HTML separados: 00-descripcion-seccion + 01-contenido-microteaching (1 solo Label) — opcional
+5. Autoevaluación     → 00-descripcion-seccion + cuestionario-autoevaluacion (Descripción del Quiz, sin Label) + XML (10 preguntas) — opcional
+6. Encuesta de cierre → 2 HTML separados (00-descripcion-seccion + descripción) — opcional
+   Cierre de unidad   → guion-video-introduccion.md, recién ahora (ver "Cierre de la unidad")
 7. (final, opcional)  → Evaluaciones y Trabajo Práctico Integrador (curso-level)
 8. (opcional, bajo pedido explícito) → Importación del material generado al aula real de Moodle
+9. (opcional, bajo pedido explícito) → Completar pendientes en una unidad ya generada (retrofit)
 ```
 
 Las fases 1 a 6 son por unidad y se repiten unidad tras unidad. La fase 7 es **aparte**:
@@ -35,7 +42,9 @@ secciones de curso distintas (`Evaluaciones` y `Trabajo Practico Integrador`, no
 `Autoevaluación` ni `Práctica`). La fase 8 es **todavía más aparte**: opera sobre
 material que ya está `generado`/`confirmado` en el filesystem y lo sube al aula real
 vía browser automation — nunca se dispara sola, siempre bajo pedido explícito del
-usuario y después de pasar las precondiciones de seguridad (ver Fase 8).
+usuario y después de pasar las precondiciones de seguridad (ver Fase 8). La fase 9
+es igual de aparte: opera sobre una unidad que ya tiene material `generado` (o incluso
+ya `importado`) y solo completa lo que falta, nunca se dispara sola (ver Fase 9).
 
 **Regla de generación que aplica a las Fases 1-6**: nunca generes un único HTML con
 varios bloques (`<div>`) de nivel superior pegados uno atrás del otro. Cada bloque de
@@ -53,6 +62,12 @@ un bloque y empieza el siguiente.
 
 Antes de escribir nada, buscá `estado.yml` en la raíz de la carpeta de la materia (ver esquema completo en `references/estado-yml-schema.md`). Si no existe, es la primera unidad: creala con `scripts/scaffold_unidad.py`. Si existe, leelo para saber qué sub-secciones de qué unidad ya están `generado`, `confirmado` o `pendiente` — así no repetís trabajo ni perdés el hilo entre sesiones. Preguntale al usuario solo por lo que el estado no resuelve (ej. "¿confirmás que el HTML de la Práctica quedó bien para generar el PDF?").
 
+### Selección de componentes opcionales (solo al crear una unidad NUEVA)
+
+Antes de correr `scripts/scaffold_unidad.py` para una unidad que **todavía no existe** en `estado.yml` (nunca al retomar una ya scaffoldeada), preguntale al usuario con `AskUserQuestion` (multiSelect) qué componentes opcionales incluir en esa unidad: **Actividad lúdica**, **Microteaching**, **Material de apoyo por actividad** (prompts para Gamma), **Videos de actividad automatizados** (HyperFrames), **Autoevaluación**, **Encuesta de cierre**. No preguntes esto para unidades que ya tienen `estado.yml` — para esas, el bloque `incluir` (si no existe) se asume todo en `true` por retrocompatibilidad.
+
+Pasá la selección como flags al script (`--con-<componente>` / `--sin-<componente>`, ver el docstring de `scaffold_unidad.py`) — el script la graba en el bloque `incluir` de esa unidad dentro de `estado.yml`. A partir de ahí, cada fase de este documento que dependa de un componente opcional lo chequea ahí antes de generar nada: si está en `false`, esa fase se saltea por completo para esa unidad, sin volver a preguntar.
+
 **Heurística de clasificación (por texto, sin necesidad de scrapear nada en cada corrida)**: al leer el programa de la materia, cada unidad/bloque cae en uno de tres destinos según su título u objetivo:
 
 - Contiene "Evaluación Integradora", "Examen", "Parcial" → va a la pestaña **Evaluaciones** (Fase 7, `references/plantilla-evaluacion.md`).
@@ -66,7 +81,7 @@ Esto es puro análisis del texto del programa — no requiere volver a recorrer 
 Es la página raíz de la sección de la unidad en Moodle (no una sub-sección aparte — así es como vive en el aula real). Generá los **4 bloques de `references/plantillas-html.md` § Introducción como 4 archivos separados** dentro de `Introduccion/`, en este orden:
 
 1. `00-descripcion-seccion.html` — banner con resultados de aprendizaje (completá 3-5 resultados concretos a partir del material que trajo el usuario). Es la Descripción de la sección raíz de la unidad, no un Label.
-2. `01-video-introduccion.html` — video colapsable (dejá `URL_DEL_VIDEO_YOUTUBE` como placeholder si no hay video todavía).
+2. `01-video-introduccion.html` — video colapsable con `URL_DEL_VIDEO_YOUTUBE` como placeholder. **En esta fase generás solo el HTML con el placeholder, no el guion todavía** — el guion de grabación (`guion-video-introduccion.md`) se escribe recién al **cierre de toda la unidad** (después de Fase 6), para que pueda ser coherente con el contenido ya cerrado de Actividades/Práctica/Autoevaluación en vez de anticiparse a un material que todavía no existe. Ver "Cierre de la unidad" más abajo.
 3. `02-banner-foro.html` — sección con link al foro de la unidad.
 4. `03-hoja-de-ruta.html` — hoja de ruta con la tabla de tiempos Pomodoro (la tabla de tiempos se completa recién al final, cuando ya generaste todas las actividades y sabés cuántos minutos estimar).
 
@@ -79,9 +94,18 @@ Por cada actividad (normalmente 3-4, confirmá la cantidad con el usuario si no 
 1. `Actividades/actividad-N/actividad-N.html` — el bloque `<details>` (`references/plantillas-html.md` § Cuerpo para cada actividad) con sus 3 tarjetas (Infografía con modal+script, Lectura PDF, Asistente IA). Este es el Label de la actividad — **no le pegues el bloque de Cuestionario abajo**, va aparte (siguiente punto).
 2. `Actividades/actividad-N/cuestionario-actividad-N.html` — el bloque "Cuestionario de la Actividad" (`references/plantillas-html.md` § Descripción para cada cuestionario). No es un Label: es el contenido que va en el campo Descripción del `mod_quiz` de esa actividad.
 
-Generá también el XML de exactamente 5 preguntas para importar al banco de Moodle (`scripts/generar_pregunta_xml.py` + `references/formato-preguntas-moodle-xml.md`; seguí la convención de códigos de pregunta vista en el aula real, ej. `TEMA 1`.. `TEMA 5`). Generá también el guion de NotebookLM (`references/notebooklm-guion.md`) — **nunca crees el notebook vos**: NotebookLM no tiene API pública, así que tu entregable es el guion/fuente listo para pegar, y el link de la tarjeta queda como placeholder hasta que el usuario lo suba a mano y te devuelva la URL real.
+Generá también el XML de exactamente 5 preguntas para importar al banco de Moodle (`scripts/generar_pregunta_xml.py` + `references/formato-preguntas-moodle-xml.md`; seguí la convención de códigos de pregunta vista en el aula real, ej. `TEMA 1`.. `TEMA 5`).
 
-Si el tema se presta, sumá una Actividad Lúdica como `Actividades/actividad-ludica.html` (mismo archivo de referencia, bloque separado, un único Label — no trae Cuestionario aparte) — es opcional, no todas las unidades la tienen.
+### Cadena de dependencias por actividad: Material de apoyo → Lectura PDF → Videos → NotebookLM
+
+Los 3 recursos de la actividad que hoy quedan como placeholder (`URL_PDF`, `URL_VIDEO_1/2/3`, `URL_IA_NOTEBOOKLM`) **no se generan en cualquier orden** — cada uno depende de que el anterior ya esté al menos planificado, para no inventar contenido ni duplicarlo entre documentos. Solo corré este bloque si `incluir.material_apoyo`/`incluir.videos_actividad` de la unidad (ver Fase 0) lo habilitan.
+
+3. **Material de apoyo** (si `incluir.material_apoyo`): escribí el/los prompt(s) para Gamma que van a generar la carpeta "Material de apoyo – Actividad N" (1 o más documentos, según lo que necesite la actividad — ver `references/prompt-gamma-material-apoyo.md`). El entregable es el texto del prompt, nunca un PDF: Gamma no tiene API. Guardalo en `Actividades/actividad-N/material-apoyo/prompt-gamma-N-K.md` y marcá `material_apoyo.prompts[K].prompt_status: generado` en `estado.yml`.
+4. **Lectura PDF**: con el contenido del Material de apoyo ya planificado (no hace falta que el usuario ya lo haya corrido en Gamma, alcanza con que el prompt exista), escribí `documento-lectura-actividad-N.html` (documento sobrio con membrete, ver `references/plantilla-pdf-lectura.md`) cubriendo el contenido núcleo/obligatorio de la actividad sin repetir lo que ya va a cubrir el Material de apoyo. **Mostraselo al usuario y esperá su confirmación explícita antes de correr `scripts/render_pdf.py --materia "<materia>"`** — mismo gate que la Práctica (`lectura_pdf.pdf_confirmado_por_usuario` en `estado.yml`).
+5. **Videos de actividad** (si `incluir.videos_actividad`): los 3 videos de la actividad se generan **on-demand**, cuando el usuario pida avanzar esa actividad puntual — nunca en lote automático para varias actividades/unidades. Ver `references/automatizacion-videos-actividad.md` para el guion, la invocación de la skill `hyperframes`, y por qué se prefiere ese mecanismo al video nativo de NotebookLM. Marcá `videos[K].guion_status` y `render_status` en `estado.yml` a medida que avanza cada video.
+6. **Guion de NotebookLM**: generá `references/notebooklm-guion.md` (guion/fuente de la actividad) **solo cuando** Material de apoyo y Lectura PDF estén como mínimo `generado` y los 3 videos tengan `guion_status: generado` (no hace falta que estén renderizados) — el paquete de fuentes de NotebookLM lista esos archivos reales, así que generarlo antes documentaría fuentes que no existen. **Nunca crees el notebook vos**: NotebookLM no tiene API pública, así que tu entregable es el guion/fuente listo para pegar, y el link de la tarjeta "Asistente IA" queda como placeholder hasta que el usuario lo suba a mano y te devuelva la URL real.
+
+Si `incluir.actividad_ludica` está en `true` y el tema se presta, sumá una Actividad Lúdica como `Actividades/actividad-ludica.html` (mismo archivo de referencia, bloque separado, un único Label — no trae Cuestionario aparte).
 
 ## Fase 3 — Práctica / Trabajo Práctico
 
@@ -96,27 +120,31 @@ necesita que el PDF ya exista.
 2. **`entrega-practica.html`** — SEGUNDO, ya con la consigna confirmada a mano. El bloque de formato de entrega, usando la variante correcta según la carrera/materia: Python de archivo único (Programación 1), o estructura de paquetes en Java (Programación 2/3) — las 3 variantes están en `references/plantillas-html.md` § Trabajo Práctico. Necesita la consigna ya escrita porque describe qué archivo(s) exactos entrega el alumno (nombre del TP, cantidad de fichas/archivos, etc.), no se puede redactar bien antes. Este archivo va en la Descripción de la Tarea (`mod_assign`) de entrega.
 3. **`consigna-practica.html`** — TERCERO. El bloque `<details>` que va en la página de Moodle (resumen breve del TP) — **solo ese `<details>`, sin el banner** (el banner ya salió aparte en el punto 0). Con el documento PDF (punto 1) ya generado, este bloque es un resumen corto con un link de descarga al PDF, no la letra completa del TP. Es un Label independiente.
 
-## Fase 4 — Microteaching
+## Fase 4 — Microteaching (opcional)
 
-Generá **dos archivos** dentro de `Microteaching/` (`references/plantillas-html.md` § Microteaching):
+Solo si `incluir.microteaching` está en `true` para esta unidad (ver Fase 0) — hay materias/aulas donde esta sub-sección directamente no se usa. Generá **dos archivos** dentro de `Microteaching/` (`references/plantillas-html.md` § Microteaching):
 
 1. `00-descripcion-seccion.html` — banner de la sub-sección (Descripción, no Label).
 2. `01-contenido-microteaching.html` — la tarjeta introductoria ("Material de la Microteaching") **y** el contenido con el link al video de microteaching y al repositorio de código, concatenados en ese orden dentro del mismo archivo. A diferencia del resto de las sub-secciones, acá los dos bloques de la plantilla van juntos en **un solo Label** — confirmado contra un curso real bien armado (esa sub-sección solo tiene un Label además de la Descripción de sección).
 
 Es la sección más liviana — no tiene NotebookLM ni preguntas.
 
-## Fase 5 — Autoevaluación
+## Fase 5 — Autoevaluación (opcional)
 
-Generá **dos archivos separados**:
+Solo si `incluir.autoevaluacion` está en `true` para esta unidad (ver Fase 0). Generá **dos archivos separados**:
 
 1. `Autoevaluacion/00-descripcion-seccion.html` — banner, Descripción de la sub-sección (no un Label).
 2. `Autoevaluacion/cuestionario-autoevaluacion.html` — descripción del cuestionario (casi fija entre unidades, solo cambia el nombre de la unidad). **No es un Label**: esta sub-sección no tiene ningún Label — va directo al campo Descripción del `mod_quiz` de Autoevaluación (con "Mostrar descripción en la página del curso" activado), igual que `cuestionario-actividad-N.html` en Actividades. Confirmado contra un curso real bien armado: esa sub-sección solo tiene el módulo Cuestionario, nada más.
 
 Mismo patrón que Actividades para las preguntas, pero con **exactamente 10 preguntas** en el XML (`scripts/generar_pregunta_xml.py`), reutilizando o extendiendo el banco de preguntas de las actividades de la misma unidad (en el aula real comparten banco: los códigos de autoevaluación son un superset de los de actividades).
 
-## Fase 6 — Encuesta de cierre
+## Fase 6 — Encuesta de cierre (opcional)
 
-Generá `EncuestaCierre/00-descripcion-seccion.html` (banner, Descripción de la sub-sección) y `EncuestaCierre/01-encuesta-cierre.html` (descripción de la encuesta, va en la Descripción del `mod_feedback` existente) como **dos archivos separados** — el contenido no cambia entre unidades salvo el nombre de la unidad en el banner. No hace falta pedirle nada al usuario acá. Al importar (Fase 8), renombrá la Encuesta existente con el patrón `💬 Tu opinión nos interesa 🌟 U<N>` (ver `references/plantillas-html.md` § Encuesta de cierre) — no dejes el nombre genérico del template reciclado.
+Solo si `incluir.encuesta_cierre` está en `true` para esta unidad (ver Fase 0). Generá `EncuestaCierre/00-descripcion-seccion.html` (banner, Descripción de la sub-sección) y `EncuestaCierre/01-encuesta-cierre.html` (descripción de la encuesta, va en la Descripción del `mod_feedback` existente) como **dos archivos separados** — el contenido no cambia entre unidades salvo el nombre de la unidad en el banner. No hace falta pedirle nada al usuario acá. Al importar (Fase 8), renombrá la Encuesta existente con el patrón `💬 Tu opinión nos interesa 🌟 U<N>` (ver `references/plantillas-html.md` § Encuesta de cierre) — no dejes el nombre genérico del template reciclado.
+
+## Cierre de la unidad — guion del video de Introducción
+
+Recién ahora, con Actividades, Práctica y (si aplican) Autoevaluación/Encuesta de cierre ya generadas, escribí `Introduccion/guion-video-introduccion.md` — guion de grabación de 4-6 minutos (gancho, desarrollo, cierre) para que el usuario lo grabe cuando pueda. Generarlo acá y no en la Fase 1 es intencional: así el guion puede referenciar el contenido real y ya cerrado de toda la unidad (qué actividades tiene, qué logra el TP) en vez de anticiparse a un material que todavía no existía. Marcá `introduccion.video_guion_status: generado` en `estado.yml`. El HTML (`01-video-introduccion.html`, ya generado en Fase 1) no cambia — sigue con `URL_DEL_VIDEO_YOUTUBE` como placeholder hasta que el usuario suba el video grabado y devuelva la URL real.
 
 ## Fase 7 — Evaluaciones y Trabajo Práctico Integrador (curso-level, opcional y al final)
 
@@ -312,6 +340,36 @@ módulos del template viejo sin equivalente); y una lista de próximos pasos par
 usuario. Actualizá también el bloque `importacion` de esa unidad en `estado.yml`
 (ver `references/estado-yml-schema.md`).
 
+## Fase 9 — Completar pendientes en una unidad ya generada (retrofit, opcional, bajo pedido explícito)
+
+**Nunca se dispara sola.** Se usa cuando el usuario pide explícitamente corregir/
+completar los pendientes de una unidad que ya tiene material `generado` (incluso ya
+`importado` al aula real) — por ejemplo, unidades hechas antes de que esta skill
+tuviera el flujo de Material de apoyo/Lectura PDF/Videos/reordenamiento del guion de
+Introducción descripto en las Fases 1, 2 y "Cierre de la unidad" de arriba.
+
+1. Leé `estado.yml` de la unidad y, si existe, su `reporte-importacion.md` (raíz de
+   la carpeta de la unidad) — ahí está documentado qué placeholders quedaron sin
+   resolver. Si la unidad no tiene `reporte-importacion.md` a pesar de estar
+   `generada`/`importada`, generalo primero reconstruyéndolo desde `estado.yml` y lo
+   que se sepa del material real, para no perder ese precedente.
+2. Armá la lista de lo que falta **por actividad**, siguiendo el mismo orden de
+   dependencias de la Fase 2 (Material de apoyo → Lectura PDF → Videos →
+   NotebookLM) y, al final de la unidad, el guion de video de Introducción (ver
+   "Cierre de la unidad"). No re-generes nada que ya esté `generado` o
+   `confirmado` — el retrofit completa huecos, no repite trabajo.
+3. Recorré la lista respetando el orden de dependencias: no generes el guion de
+   NotebookLM de una actividad si todavía le falta Material de apoyo o Lectura PDF,
+   aunque el usuario pida "completá todo" de una — avisale qué sigue primero.
+4. Actualizá `estado.yml` a medida que cada pieza queda `generado`/`confirmado`,
+   igual que en las Fases 1-6 normales — el retrofit usa los mismos campos, no
+   campos aparte.
+5. Si la unidad ya fue `importada` al aula real (Fase 8) y alguno de estos pasos
+   resuelve un placeholder que ya está pegado en Moodle (ej. el usuario devuelve la
+   URL real de un video), la actualización del aula real sigue siendo un paso de
+   Fase 8 aparte — este retrofit no pega contenido en Moodle por sí solo, solo
+   genera/completa el material en el filesystem.
+
 ## Reglas duras
 
 - **Nunca inventes contenido pedagógico de la nada.** Resultados de aprendizaje, consignas y preguntas siempre parten del material que aportó el usuario (programa, apuntes, PDFs). Si falta información concreta, preguntala — no rellenes con genérico solo para completar la plantilla.
@@ -322,23 +380,30 @@ usuario. Actualizá también el bloque `importacion` de esa unidad en `estado.ym
 - **El PDF de la Práctica no es una captura de la página de Moodle.** Es un documento con membrete institucional (ver `references/plantilla-pdf-practica.md`), no el HTML con tarjetas/degradés de `consigna-practica.html`.
 - **Nunca generes un HTML con varios bloques de nivel superior pegados.** Cada bloque de `references/plantillas-html.md` (Descripción de sección, Label, Descripción de Cuestionario) es un archivo propio — ver la regla de generación al inicio del Workflow y el `→` junto a cada bloque de esa referencia.
 - **La Fase 8 (Importación) nunca arranca sin las 5 precondiciones** (URL del curso, rol de gestor confirmado, aviso explícito de que es una acción riesgosa/difícil de revertir + confirmación del usuario, mapeo unidad↔sección confirmado, conteo de módulos reales antes de tocar nada) y **nunca termina sin dejar `reporte-importacion.md`**, aunque se corte a mitad de camino.
+- **La selección de componentes opcionales (Fase 0) solo se pregunta al crear una unidad nueva.** Nunca la repreguntes al retomar una unidad que ya tiene `estado.yml` — su bloque `incluir` (o su ausencia, que equivale a todo en `true`) ya define qué fases aplican.
+- **Respetá el orden de dependencias de la Fase 2** (Material de apoyo → Lectura PDF → Videos de actividad → guion de NotebookLM) para cada actividad. No generes un paso sin que el anterior esté al menos `generado` — el objetivo es que Lectura PDF no repita lo de Material de apoyo, y que el paquete de fuentes de NotebookLM no liste archivos que todavía no existen.
+- **Los videos de actividad se generan siempre on-demand, nunca en lote automático** para varias actividades o unidades a la vez — ver `references/automatizacion-videos-actividad.md`. Lo mismo aplica al guion del video de Introducción: se genera al cierre de la unidad, no en la Fase 1.
+- **El entregable de Material de apoyo es el texto del prompt para Gamma, nunca un PDF.** Igual que con NotebookLM, Gamma no tiene API — el usuario lo corre a mano y confirma cuando subió el resultado real a la carpeta de Moodle.
 
 ## Componentes de la skill
 
 | Archivo | Para qué |
 |---|---|
-| `scripts/scaffold_unidad.py` | Crea la carpeta de una unidad nueva (6 sub-carpetas) y crea/actualiza `estado.yml` en la raíz de la materia |
+| `scripts/scaffold_unidad.py` | Crea la carpeta de una unidad nueva (6 sub-carpetas) y crea/actualiza `estado.yml` en la raíz de la materia; acepta flags `--con-*`/`--sin-*` para los componentes opcionales (ver Fase 0) |
 | `scripts/generar_pregunta_xml.py` | Convierte un YAML simple de preguntas a XML de Moodle importable |
-| `scripts/render_pdf.py` | Convierte un HTML ya confirmado a PDF fiel (Playwright + Chromium); con `--materia` agrega membrete institucional (header/footer repetidos) |
+| `scripts/render_pdf.py` | Convierte un HTML ya confirmado a PDF fiel (Playwright + Chromium); con `--materia` agrega membrete institucional (header/footer repetidos) — usado tanto por la Práctica como por Lectura PDF |
 | `references/plantillas-html.md` | Los bloques HTML oficiales de cada sub-sección, listos para completar |
 | `references/plantilla-pdf-practica.md` | Plantilla del documento con membrete que se convierte en el PDF descargable de la Práctica |
+| `references/plantilla-pdf-lectura.md` | Plantilla del documento con membrete de la tarjeta "Lectura PDF" de cada actividad (Fase 2) |
+| `references/prompt-gamma-material-apoyo.md` | Spec + plantilla del prompt para Gamma que resuelve la carpeta "Material de apoyo – Actividad N" (Fase 2) |
+| `references/automatizacion-videos-actividad.md` | Spec del pipeline de los 3 videos por actividad: guion + render on-demand con la skill `hyperframes` (Fase 2) |
 | `references/plantilla-tpi-standalone.md` | Plantilla curso-level del Trabajo Práctico Integrador (Fase 7) |
 | `references/plantilla-evaluacion.md` | Plantilla curso-level de Evaluaciones — parciales/recuperatorios (Fase 7) |
 | `references/estructura-aula-real.md` | Jerarquía real confirmada del aula + inconsistencias a no replicar |
 | `references/importacion-moodle.md` | Fase 8: técnicas de browser automation confirmadas, checklist de precondiciones y reglas duras para importar al aula real |
 | `references/plantilla-reporte-importacion.md` | Plantilla del reporte de pendientes/incoherencias que deja la Fase 8 en la carpeta de la unidad |
 | `references/formato-preguntas-moodle-xml.md` | Schema de pregunta Moodle XML + convención de códigos |
-| `references/notebooklm-guion.md` | Spec de configuración de NotebookLM por tipo de material + plantilla de guion |
+| `references/notebooklm-guion.md` | Spec de configuración de NotebookLM por tipo de material + plantilla de guion + gate de dependencias (Fase 2) |
 | `references/estado-yml-schema.md` | Esquema del archivo de estado por materia |
 | `assets/plantilla-oficial-extraida.txt` | Texto completo de la plantilla oficial (fuente original, trazabilidad) |
 | `assets/tpi-evaluaciones-html-real.txt` | HTML real relevado en vivo para TPI y Evaluaciones curso-level, con notas de qué NO replicar |

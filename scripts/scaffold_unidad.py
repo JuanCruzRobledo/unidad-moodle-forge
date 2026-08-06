@@ -18,6 +18,17 @@ Uso:
 
     # dest por defecto: carpeta actual
     # si estado.yml ya existe, se le agrega la unidad nueva sin tocar las demas
+
+Componentes opcionales (ver Fase 0 de SKILL.md -- el agente pregunta esto por
+AskUserQuestion SOLO para una unidad nueva, nunca al retomar una existente):
+    --con-actividad-ludica / --sin-actividad-ludica
+    --con-microteaching / --sin-microteaching
+    --con-material-apoyo / --sin-material-apoyo
+    --con-videos-actividad / --sin-videos-actividad
+    --con-autoevaluacion / --sin-autoevaluacion
+    --con-encuesta-cierre / --sin-encuesta-cierre
+    Todos default --con-* (True): usar el script sin estos flags se comporta
+    exactamente igual que antes de que existieran.
 """
 import argparse
 import os
@@ -28,6 +39,20 @@ SUBCARPETAS = ["Introduccion", "Actividades", "Practica", "Microteaching",
                "Autoevaluacion", "EncuestaCierre"]
 
 STATUS_PENDIENTE = "pendiente"
+
+# Componentes opcionales de una unidad -- ver Fase 0 de SKILL.md: para una unidad
+# NUEVA (no al retomar una existente) el agente le pregunta al usuario via
+# AskUserQuestion cuales de estos incluir, y pasa la respuesta como estos flags.
+# Todos parten en True por retrocompatibilidad (una unidad vieja sin este bloque
+# se comporta igual que antes).
+COMPONENTES_OPCIONALES = [
+    "actividad_ludica",
+    "microteaching",
+    "material_apoyo",
+    "videos_actividad",
+    "autoevaluacion",
+    "encuesta_cierre",
+]
 
 
 def slugify_carpeta(numero: int, nombre: str) -> str:
@@ -47,12 +72,19 @@ def crear_carpetas_actividades(materia_dir: str, carpeta_unidad: str, cantidad: 
         os.makedirs(os.path.join(base, f"actividad-{i}"), exist_ok=True)
 
 
-def nueva_unidad_dict(numero: int, nombre: str, carpeta: str, cantidad_actividades: int) -> dict:
+def nueva_unidad_dict(numero: int, nombre: str, carpeta: str, cantidad_actividades: int,
+                       incluir: dict) -> dict:
     return {
         "numero": numero,
         "nombre": nombre,
         "carpeta": carpeta,
-        "introduccion": {"status": STATUS_PENDIENTE},
+        "incluir": dict(incluir),
+        "introduccion": {
+            "status": STATUS_PENDIENTE,
+            # Se genera al CIERRE del flujo de unidad (despues de Actividades/
+            # Practica/Autoevaluacion), no en la Fase 1 -- ver SKILL.md.
+            "video_guion_status": STATUS_PENDIENTE,
+        },
         "actividades": {
             "cantidad": cantidad_actividades,
             "items": [
@@ -61,6 +93,21 @@ def nueva_unidad_dict(numero: int, nombre: str, carpeta: str, cantidad_actividad
                     "nombre": "",
                     "html_status": STATUS_PENDIENTE,
                     "preguntas_xml_status": STATUS_PENDIENTE,
+                    "material_apoyo": {"prompts": []},
+                    "lectura_pdf": {
+                        "documento_html_status": STATUS_PENDIENTE,
+                        "pdf_status": STATUS_PENDIENTE,
+                        "pdf_confirmado_por_usuario": False,
+                    },
+                    "videos": [
+                        {
+                            "numero": k,
+                            "guion_status": STATUS_PENDIENTE,
+                            "render_status": STATUS_PENDIENTE,
+                            "url_subida": False,
+                        }
+                        for k in range(1, 4)
+                    ],
                     "notebooklm": {"guion_status": STATUS_PENDIENTE, "link_pegado": False},
                 }
                 for i in range(1, cantidad_actividades + 1)
@@ -136,6 +183,15 @@ def main():
     ap.add_argument("--carrera-variante", default="prog1", choices=["prog1", "prog2", "prog3"],
                      help="Variante de formato de entrega del TP a usar")
     ap.add_argument("--dest", default=".", help="Carpeta raiz de la materia (default: carpeta actual)")
+
+    # Componentes opcionales -- ver Fase 0 de SKILL.md. Todos default True: si el
+    # agente no pregunta nada (unidad vieja, uso sin AskUserQuestion), el
+    # comportamiento es identico al de antes de este flag.
+    for comp in COMPONENTES_OPCIONALES:
+        flag = comp.replace("_", "-")
+        ap.add_argument(f"--con-{flag}", dest=comp, action="store_true", default=True)
+        ap.add_argument(f"--sin-{flag}", dest=comp, action="store_false")
+
     args = ap.parse_args()
 
     materia_dir = os.path.abspath(args.dest)
@@ -152,8 +208,9 @@ def main():
     if ya_existe:
         raise SystemExit(f"La unidad {args.numero} ya existe en estado.yml — no se modifico.")
 
+    incluir = {comp: getattr(args, comp) for comp in COMPONENTES_OPCIONALES}
     estado.setdefault("unidades", []).append(
-        nueva_unidad_dict(args.numero, args.nombre, carpeta_unidad, args.actividades)
+        nueva_unidad_dict(args.numero, args.nombre, carpeta_unidad, args.actividades, incluir)
     )
     guardar_estado(estado_path, estado)
 

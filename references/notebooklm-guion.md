@@ -4,6 +4,27 @@ NotebookLM no tiene API pública: **no se automatiza la creación del notebook**
 que la skill entrega es el **guion/fuente** listo para que el usuario lo pegue como
 fuente en NotebookLM y genere los 5 materiales él mismo, en unos minutos.
 
+## Gate: cuándo tiene sentido generar esto
+
+Este paquete de fuentes lista archivos reales de la actividad (el PDF de
+Lectura, el/los PDF(s) de Material de apoyo, y los 3 guiones de video). No tiene
+sentido generarlo antes de que esos archivos existan — estarías documentando
+fuentes que todavía no están. **No generar el guion de NotebookLM de una
+actividad hasta que**, para esa misma actividad:
+
+- `material_apoyo.prompts[]` tenga al menos un ítem `prompt_status: generado`
+  (ver `prompt-gamma-material-apoyo.md`) — o esté explícitamente vacío porque
+  esa actividad no tiene material de apoyo real.
+- `lectura_pdf.documento_html_status: generado` como mínimo (ver
+  `plantilla-pdf-lectura.md`) — no hace falta esperar al PDF confirmado, alcanza
+  con que el documento ya esté escrito.
+- Los 3 `videos[].guion_status` estén en `generado` (ver
+  `automatizacion-videos-actividad.md`) — no hace falta que estén renderizados,
+  el guion ya sirve como transcripción exacta.
+
+Si el usuario pide el guion de NotebookLM antes de que se cumpla esto, avisale
+qué falta en vez de generar un paquete de fuentes incompleto.
+
 ## Configuración exacta a usar por tipo de material (según la cátedra)
 
 | Material | Configuración a elegir en NotebookLM |
@@ -43,8 +64,14 @@ ejercicios resueltos, según la materia]
 audio/video y las tarjetas los aborden explícitamente]
 
 ## Fuentes adicionales
-[Lista de los PDFs/videos/links que ya tiene la actividad, para que el usuario los
-suba también como fuente en el mismo notebook]
+Subí estos archivos reales como fuente en el mismo notebook, además de este guion:
+- `documento-lectura-actividad-N.pdf` (Lectura obligatoria de la actividad)
+- [Cada PDF de Material de apoyo ya generado en Gamma y subido por el usuario —
+  listar los nombres reales de `material_apoyo.prompts[]`]
+- `guion-video-actividad-N-1.md`, `guion-video-actividad-N-2.md`,
+  `guion-video-actividad-N-3.md` (transcripción exacta de cada video — el TTS de
+  HyperFrames los lee literal, así que sirven como transcripción sin necesidad
+  de transcribir el `.mp4` renderizado)
 ```
 
 **Regla dura**: el contenido de "Conceptos clave", "Ejemplos" y "Errores comunes" se
@@ -58,4 +85,4 @@ generar el guion.
 Pedile la URL real (`https://notebooklm.google.com/notebook/<uuid>`) y reemplazá el
 placeholder `URL_IA_NOTEBOOKLM` de la tarjeta "Asistente IA" en el HTML de la
 actividad correspondiente. Marcá en `estado.yml` que el NotebookLM de esa actividad
-quedó `pegado: true` (ver `estado-yml-schema.md`).
+quedó `notebooklm.link_pegado: true` (ver `estado-yml-schema.md`).
