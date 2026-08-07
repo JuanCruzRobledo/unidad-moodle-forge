@@ -3,3 +3,7 @@
 # Despues de instalar playwright, correr tambien: playwright install chromium
 playwright
 pyyaml
+
+# Solo necesaria para scripts/gamma_generate.py (generacion opcional de
+# Material de apoyo via la API de Gamma, requiere cuenta paga)
+requests
