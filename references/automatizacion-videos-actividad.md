@@ -103,3 +103,14 @@ contenido por unidad (3 actividades × 3 videos = 9 por unidad, no es poco).
 - ¿La duración es razonable para un video de actividad (1-3 min), no una clase
   entera?
 - ¿La voz es consistente con los otros videos de la misma actividad/unidad?
+
+## Nota — override local de duración
+
+Este documento define el **default de la skill** (1-3 min, video corto y
+puntual, contenido = lo que ya está confirmado en la actividad). Un workspace
+puntual puede decidir un objetivo de duración distinto (y habilitar research
+verificado como insumo de contenido, no solo excepción) — eso es una decisión
+local del proyecto, no un cambio al default de la skill, y por eso se documenta
+en el `CLAUDE.md` de ese workspace, no acá. Antes de generar un video, revisar
+si el `CLAUDE.md` del proyecto define un override de duración/research para
+videos de actividad.
