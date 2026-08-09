@@ -148,25 +148,33 @@ abstracta).
 
 1. Guardar el `.md` en `Actividades/actividad-N/material-apoyo/`.
 2. Marcar `material_apoyo.prompts[K].prompt_status: generado` en `estado.yml`.
-3. Avisarle al usuario que el prompt está listo para correr en Gamma — aclarando
-   que solo debe copiar el bloque delimitado como "PROMPT LISTO PARA GAMMA", no
-   el archivo entero — no se sigue con `lectura_pdf` de esa actividad hasta que
-   el usuario confirme que ya decidió/generó el material de apoyo (no hace falta
-   esperar a que lo suba a Moodle, solo a que el contenido esté definido, para
-   poder coordinar la Lectura PDF sin pisarlo). Si el usuario tiene
-   `GAMMA_API_KEY` configurada, en vez de pegarlo a mano puede pedirte que
-   corras `scripts/gamma_generate.py` (ver sección de abajo) para generar el
-   PDF directo.
+3. Revisar el `.env` de la raíz de la skill (no lo leas vos con tus herramientas
+   de archivo — Read/Edit sobre `.env*` están bloqueados por política global;
+   simplemente corré el script y dejá que él lo lea): si `GAMMA_AUTOMATIZADO=true`,
+   corré directo `scripts/gamma_generate.py` (ver sección de abajo) sin
+   preguntarle nada al usuario — la máquina ya está configurada para eso. Si
+   no existe `.env` o `GAMMA_AUTOMATIZADO=false` (default), avisale al usuario
+   que el prompt está listo para correr en Gamma a mano — aclarando que solo
+   debe copiar el bloque delimitado como "PROMPT LISTO PARA GAMMA", no el
+   archivo entero. En los dos casos, no se sigue con `lectura_pdf` de esa
+   actividad hasta que el contenido del material de apoyo esté decidido/generado
+   (no hace falta esperar a que lo suba a Moodle, solo a que el contenido esté
+   definido, para poder coordinar la Lectura PDF sin pisarlo).
 4. Cuando el usuario confirme que subió el PDF real a la carpeta de Moodle,
    marcar `pdf_subido_por_usuario: true`.
 
 ## Generación automatizada opcional (API de Gamma)
 
-Requiere que el usuario ya tenga una cuenta Gamma paga y la variable de
-entorno `GAMMA_API_KEY` configurada (nunca la pidas en texto plano ni la
-hardcodees en ningún script — si no está seteada, `scripts/gamma_generate.py`
-corta con un mensaje claro). Si no la tiene, seguí con el camino manual
-de siempre — esto es un atajo opcional, no un requisito.
+Requiere que el usuario ya tenga una cuenta Gamma paga y haya corrido
+`python scripts/configurar.py` una vez en esta máquina para dejar
+`GAMMA_API_KEY` y `GAMMA_AUTOMATIZADO=true` en el `.env` de la raíz de la
+skill (ver `env.example` para el resto de las variables). Ese script pide la
+key con `getpass` — nunca se la pidas vos al usuario por el chat, ni la
+hardcodees en ningún script: `scripts/gamma_generate.py` la toma sola desde
+`.env` vía `python-dotenv`. Si el usuario no corrió `configurar.py` o eligió
+no activarlo, seguí con el camino manual de siempre — esto es un atajo
+opcional, no un requisito, y la propia skill no puede leer ni escribir el
+`.env` para forzarlo (bloqueo de seguridad global sobre archivos `.env*`).
 
 - **Uso**: `scripts/gamma_generate.py` lee el bloque "PROMPT LISTO PARA GAMMA"
   del `.md` ya escrito (la misma extracción que haría un humano al copiar/

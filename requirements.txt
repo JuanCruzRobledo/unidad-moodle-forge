@@ -4,6 +4,8 @@
 playwright
 pyyaml
 
-# Solo necesaria para scripts/gamma_generate.py (generacion opcional de
-# Material de apoyo via la API de Gamma, requiere cuenta paga)
+# Solo necesarias para scripts/gamma_generate.py (generacion opcional de
+# Material de apoyo via la API de Gamma, requiere cuenta paga) y
+# scripts/configurar.py (lee/escribe el .env de esta maquina)
 requests
+python-dotenv

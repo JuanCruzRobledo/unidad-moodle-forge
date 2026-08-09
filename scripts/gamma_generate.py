@@ -16,9 +16,11 @@ endpoint no admite un "gammaId" de plantilla -- controla el estilo visual con
 "themeId" (opcional) y la extension con numCards/textOptions.
 
 Requiere:
-    pip install requests
+    pip install requests python-dotenv
     Variable de entorno GAMMA_API_KEY seteada -- NUNCA hardcodeada en este
-    archivo ni pasada por linea de comandos en texto plano.
+    archivo ni pasada por linea de comandos en texto plano. Se lee desde el
+    ".env" de la raiz de la skill (ver scripts/configurar.py) o desde el
+    entorno del sistema si ya la tenias seteada de otra forma.
     Una cuenta Gamma paga (Pro/Ultra/Team/Business) -- el plan free no tiene
     acceso a la API.
 
@@ -30,18 +32,22 @@ Uso:
 
 Calibra --num-cards / --text-amount al volumen real del contenido fuente (ver
 la referencia de la skill): ~10/detailed para material nucleo bien
-desarrollado, ~5-6/medium para material acotado u opcional. No hay un default
-de --theme-id a proposito -- si se omite, Gamma usa el tema default del
-workspace del usuario; pasalo solo si el usuario te dio un tema puntual (por
-ejemplo, obtenido con GET /v1.0/gammas/{gammaId} sobre una plantilla propia).
+desarrollado, ~5-6/medium para material acotado u opcional. --theme-id no
+tiene default hardcodeado en este script -- si se omite por linea de comandos,
+se usa GAMMA_THEME_ID del ".env" de esta maquina (si esta seteado); si tampoco
+hay eso, Gamma usa el tema default del workspace del usuario en gamma.app.
 """
 import argparse
 import os
 import re
 import sys
 import time
+from pathlib import Path
 
 import requests
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 API_BASE = "https://public-api.gamma.app"
 GENERATE_ENDPOINT = f"{API_BASE}/v1.0/generations"
@@ -152,8 +158,8 @@ def main():
     ap.add_argument("--num-cards", type=int, default=10, help="Cantidad objetivo de tarjetas/paginas (default: 10; bajar para material acotado)")
     ap.add_argument("--text-amount", default="detailed", choices=["brief", "medium", "detailed", "extensive"],
                      help="Densidad de texto por tarjeta (default: detailed)")
-    ap.add_argument("--theme-id", default=None,
-                     help="Tema de Gamma a aplicar (opcional). Si se omite, Gamma usa el tema default del workspace del usuario.")
+    ap.add_argument("--theme-id", default=os.environ.get("GAMMA_THEME_ID") or None,
+                     help="Tema de Gamma a aplicar (opcional). Default: GAMMA_THEME_ID del .env de esta maquina, si esta seteado. Si no hay ninguno, Gamma usa el tema default del workspace del usuario.")
     ap.add_argument("--audience", default="estudiantes de la Tecnicatura Universitaria en Programación (TUP, UTN)",
                      help="Audiencia objetivo para textOptions.audience")
     ap.add_argument("--export-as", default="pdf", choices=["pdf", "pptx", "png"])
@@ -165,9 +171,10 @@ def main():
     api_key = os.environ.get("GAMMA_API_KEY")
     if not api_key:
         sys.exit(
-            "No encontre la variable de entorno GAMMA_API_KEY. Seteala primero "
-            "(ver references/prompt-gamma-material-apoyo.md seccion 'Generación "
-            "automatizada opcional') y abri una terminal nueva para que la tome."
+            "No encontre GAMMA_API_KEY (ni en .env ni en el entorno). Corre "
+            "'python scripts/configurar.py' para configurarla una sola vez en "
+            "esta maquina (ver references/prompt-gamma-material-apoyo.md "
+            "seccion 'Generación automatizada opcional')."
         )
 
     input_text = extraer_prompt(args.prompt_file)
