@@ -40,6 +40,29 @@ python -m pip install -r requirements.txt
 playwright install chromium
 ```
 
+### Configuración (opcional, una sola vez por máquina)
+
+Por default la skill funciona 100% manual: te entrega el prompt para pegar en Gamma, vos lo corrés y subís el resultado. Si tenés cuenta **Gamma paga** (Pro/Ultra/Team/Business) podés activar la generación automática del Material de apoyo:
+
+```bash
+cd unidad-moodle-forge
+python scripts/configurar.py
+```
+
+Te va a preguntar si querés activarlo y te pide la API key con `getpass` (no queda visible en pantalla). Esto crea un `.env` local — **gitignoreado, nunca se versiona**.
+
+> ⚠️ **Corré esto en tu propia terminal, no le pidas al agente que lo haga por vos.** Hay un bloqueo de seguridad global que le impide a Claude Code leer o editar cualquier archivo `.env`/`.env.*` — ni con Read/Edit ni con Bash — justamente para que una API key nunca termine expuesta en una conversación. Si el agente corre el script por vos, no hay forma de que la tipees sin que quede en el chat.
+
+**¿Ya tenías la key seteada de antes (ej. con `setx GAMMA_API_KEY ...`) y Gamma no te la vuelve a mostrar?** Recuperala vos mismo, en tu propia terminal, con:
+
+```powershell
+powershell.exe -Command "[Environment]::GetEnvironmentVariable('GAMMA_API_KEY','User')"
+```
+
+Copiá ese valor y pegalo cuando `configurar.py` te lo pida — así no hace falta generar una key nueva en Gamma.
+
+Una vez configurado, `scripts/gamma_generate.py` la toma sola desde `.env` (vía `python-dotenv`) y el agente corre la automatización sin volver a preguntar. Ver `env.example` para el resto de las variables (todavía sin implementar: generación de imagen de infografía y automatización de NotebookLM, quedan en `false` a propósito).
+
 ---
 
 ## Uso
@@ -68,9 +91,12 @@ unidad-moodle-forge/
 ├── SKILL.md
 ├── README.md
 ├── requirements.txt
+├── env.example              (plantilla de configuración por máquina — ver "Configuración")
 ├── scripts/
+│   ├── configurar.py        (setup interactivo, una vez por máquina)
 │   ├── scaffold_unidad.py
 │   ├── generar_pregunta_xml.py
+│   ├── gamma_generate.py
 │   └── render_pdf.py
 ├── references/
 │   ├── plantillas-html.md
