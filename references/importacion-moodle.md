@@ -230,6 +230,7 @@ corresponde.
 | Archivo generado | Destino en Moodle |
 |---|---|
 | `<Subsección>/00-descripcion-seccion.html` | Campo Descripción de esa sección (`editsection.php`) |
+| `Introduccion/imagen-banner-introduccion.png` | `<img>` embebida dentro del campo Descripción de la sección raíz, reemplazando `URL_DE_LA_IMAGEN` — ver §9e |
 | `Introduccion/01-video-introduccion.html`, `02-banner-foro.html`, `03-hoja-de-ruta.html` | Un Label cada uno, en ese orden |
 | `Actividades/00-descripcion-seccion.html` | Descripción de la sub-sección Actividades |
 | `Actividades/actividad-N/actividad-N.html` | Label de la actividad N |
@@ -374,6 +375,62 @@ solo el link roto) — en una corrida real, el widget completo de Infografía
 enteros de 3 Labels distintos, no solo el `<script>` que se pierde por comportamiento
 normal de Moodle (§9b). Reconstruir el HTML completo desde el archivo local de una
 sola vez repara ese daño colateral de paso, en vez de dejarlo pasar.
+
+## 9e. Imagen de banner de Introducción — subir al campo Descripción de la sección (confirmado en vivo, Unidad 1 Metodología I, `campustest` id=8 sección 1)
+
+1. Abrí `course/editsection.php?id=<section-id>` de la sección raíz de la
+   unidad (la misma página donde se pega `00-descripcion-seccion.html`, ver
+   §9) — llegás ahí desde el menú "⋮ → Editar ajustes" del encabezado de la
+   sección en `course/view.php?id=<curso>&section=<N>` con "Modo de edición"
+   activado, no hace falta armar la URL a mano. A diferencia de Tarea/
+   Encuesta, esta página trae **un único** editor TinyMCE — confirmado que su
+   id real es `id_summary_editor` (leelo con
+   `Array.from(document.querySelectorAll('textarea')).map(t=>t.id)` antes de
+   asumirlo, puede variar entre instancias/versiones de Moodle).
+2. El botón "Imagen" del toolbar de TinyMCE (ícono de foto, distinto del
+   botón "Enlace" que usa §9d para el PDF) abre un diálogo **"Insertar
+   imagen"** con una zona de drag-and-drop/click-to-upload directa (sin pasar
+   por "Buscar en repositorios" primero). Subí
+   `Introduccion/imagen-banner-introduccion.png` con `file_upload` sobre el
+   `<input type=file>` real de esa zona.
+3. Al subir, se abre un sub-diálogo **"Detalles de la imagen"** con preview +
+   un campo obligatorio "¿Cómo describiría esta imagen a alguien que no
+   pudiera verla?" (alt text, **límite ~125 caracteres** — un alt más largo
+   se corta a mitad de palabra, escribilo corto) + opciones de tamaño +
+   checkbox "La imagen solo es decorativa". Si intentás guardar con el alt
+   vacío, Moodle rechaza con "Una imagen debe tener una descripción salvo que
+   se haya marcado como decorativa" y el diálogo se queda abierto — completá
+   el campo (usá `find` para ubicarlo preciso, el diálogo puede quedar
+   recortado por el viewport) antes de tocar "Guardar".
+4. **Confirmado: este diálogo NO autoinserta como el de "Enlace" de §9d** —
+   inserta el `<img>` real recién al tocar "Guardar" del sub-diálogo de
+   detalles, en la posición del cursor. Eso significa que **coexiste con el
+   `<img src="URL_DE_LA_IMAGEN">` que ya estaba en el contenido** — no lo
+   reemplaza in-place. Confirmá con
+   `tinymce.get('id_summary_editor').getDoc().querySelectorAll('img')` que
+   ahora hay 2 imágenes antes de seguir.
+5. **Igual que en §9d paso 6: reconstruí el HTML completo** de
+   `00-descripcion-seccion.html` offline a partir del archivo local,
+   reemplazando `URL_DE_LA_IMAGEN` por el `src` real de la imagen recién
+   insertada (`draftfile.php/<userid>/user/draft/<itemid>/<filename>`, lo
+   sacás del primer `<img>` del paso anterior) y usando el alt text real que
+   escribiste en el paso 3. Pegalo entero con
+   `tinymce.get('id_summary_editor').setContent(htmlCompleto)` — esto además
+   saca de encima la imagen vieja/placeholder en la misma pasada, no hace
+   falta borrarla aparte.
+6. Guardá la sección ("Guardar cambios"). **Confirmado**: al guardar, Moodle
+   reescribe automáticamente el `draftfile.php` a un `pluginfile.php`
+   permanente (mismo comportamiento que §9d) — no hace falta ningún paso
+   extra. Verificá visualmente en `course/view.php?id=<curso>&section=<N>`
+   que la imagen se ve bien antes de dar nada por confirmado.
+7. Marcá `introduccion.imagen_banner.subida_por_usuario: true` en `estado.yml`
+   recién cuando la imagen ya se ve real en el aula (no alcanza con que el
+   archivo exista en el filesystem local).
+
+Si en la práctica el diálogo de imagen de esta instancia de Moodle se comporta
+distinto a lo descripto arriba (ej. autoinserta igual que el de enlace, o no
+tiene pestaña de subida), aplicá el mismo criterio de §9c: no fuerces varios
+intentos a ciegas, avisá y ajustá esta sección con lo que se confirme.
 
 ## 10. Qué NO cubre esta referencia
 

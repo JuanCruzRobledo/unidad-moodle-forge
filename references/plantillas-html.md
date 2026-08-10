@@ -70,8 +70,20 @@ box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 30px; font-family: 'Sego
 </div>
 ```
 
-Nota: la URL de la imagen se copia del componente que se está actualizando (el link
-existente) antes de reemplazarlo — no se inventa una nueva.
+Nota sobre `URL_DE_LA_IMAGEN` — dos casos distintos:
+
+- **Unidad nueva (Fase 1, primera vez)**: se genera una imagen real con el MCP
+  `gemini-nanobanana-mcp`, siguiendo `references/imagen-banner-introduccion.md`
+  (estilo, prompt y paleta ya validados contra un curso real de la TUP). El
+  archivo se guarda local (`Introduccion/imagen-banner-introduccion.png`) y el
+  `src` del HTML sigue como placeholder hasta que la Fase 8 lo sube al aula y
+  reemplaza la URL por la real.
+- **Retrofit / actualización de un componente ya vivo en el aula** (Fase 9, o
+  el usuario pide tocar una unidad ya importada): la URL se copia del
+  componente que se está actualizando (el link existente) antes de
+  reemplazarlo — no se inventa una nueva ni se regenera de oficio. Ver el
+  cierre de `references/imagen-banner-introduccion.md` para el caso en que el
+  usuario sí pide explícitamente regenerarla.
 
 ### Video de introducción a la unidad (colapsable)
 

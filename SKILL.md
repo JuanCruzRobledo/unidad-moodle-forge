@@ -89,7 +89,7 @@ Esto es puro análisis del texto del programa — no requiere volver a recorrer 
 
 Es la página raíz de la sección de la unidad en Moodle (no una sub-sección aparte — así es como vive en el aula real). Generá los **4 bloques de `references/plantillas-html.md` § Introducción como 4 archivos separados** dentro de `Introduccion/`, en este orden:
 
-1. `00-descripcion-seccion.html` — banner con resultados de aprendizaje (completá 3-5 resultados concretos a partir del material que trajo el usuario). Es la Descripción de la sección raíz de la unidad, no un Label.
+1. `00-descripcion-seccion.html` — banner con resultados de aprendizaje (completá 3-5 resultados concretos a partir del material que trajo el usuario). Es la Descripción de la sección raíz de la unidad, no un Label. Generá también la imagen del banner (`URL_DE_LA_IMAGEN`) con el MCP `gemini-nanobanana-mcp`, siguiendo `references/imagen-banner-introduccion.md` (estilo, prompt y paleta ya validados contra un curso real de la TUP) — guardala en `Introduccion/imagen-banner-introduccion.png`, mostrásela al usuario para confirmar, y marcá `introduccion.imagen_banner.status` en `estado.yml`. El `src` del HTML sigue como placeholder hasta que la Fase 8 la suba al aula real.
 2. `01-video-introduccion.html` — video colapsable con `URL_DEL_VIDEO_YOUTUBE` como placeholder. **En esta fase generás solo el HTML con el placeholder, no el guion todavía** — el guion de grabación (`guion-video-introduccion.md`) se escribe recién al **cierre de toda la unidad** (después de Fase 6), para que pueda ser coherente con el contenido ya cerrado de Actividades/Práctica/Autoevaluación en vez de anticiparse a un material que todavía no existe. Ver "Cierre de la unidad" más abajo.
 3. `02-banner-foro.html` — sección con link al foro de la unidad.
 4. `03-hoja-de-ruta.html` — hoja de ruta con la tabla de tiempos Pomodoro (la tabla de tiempos se completa recién al final, cuando ya generaste todas las actividades y sabés cuántos minutos estimar).
@@ -411,6 +411,7 @@ Introducción descripto en las Fases 1, 2 y "Cierre de la unidad" de arriba.
 | `references/plantilla-pdf-practica.md` | Plantilla del documento con membrete que se convierte en el PDF descargable de la Práctica |
 | `references/plantilla-pdf-lectura.md` | Plantilla del documento con membrete de la tarjeta "Lectura PDF" de cada actividad (Fase 2) |
 | `references/prompt-gamma-material-apoyo.md` | Spec + plantilla del prompt para Gamma que resuelve la carpeta "Material de apoyo – Actividad N" (Fase 2) |
+| `references/imagen-banner-introduccion.md` | Spec + plantilla del prompt para el MCP `gemini-nanobanana-mcp` que genera la imagen del banner de Introducción de la unidad (Fase 1) |
 | `scripts/gamma_generate.py` | Opcional (requiere cuenta Gamma paga, activado vía `GAMMA_AUTOMATIZADO=true` en `.env`): genera el PDF de Material de apoyo directo vía la API de Gamma, a partir del `prompt-gamma-N-K.md` ya escrito — ver `references/prompt-gamma-material-apoyo.md` |
 | `references/automatizacion-videos-actividad.md` | Spec del pipeline de los 3 videos por actividad: guion + render on-demand con la skill `hyperframes` (Fase 2) |
 | `references/plantilla-tpi-standalone.md` | Plantilla curso-level del Trabajo Práctico Integrador (Fase 7) |

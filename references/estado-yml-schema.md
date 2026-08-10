@@ -26,6 +26,13 @@ unidades:
       encuesta_cierre: true
     introduccion:
       status: confirmado        # pendiente | generado | confirmado
+      imagen_banner:             # imagen de URL_DE_LA_IMAGEN en 00-descripcion-seccion.html --
+                                   # generada con el MCP gemini-nanobanana-mcp, ver
+                                   # references/imagen-banner-introduccion.md (Fase 1)
+        status: pendiente         # pendiente | generado | confirmado
+        ruta: ""                  # ruta local del archivo, ej. "Introduccion/imagen-banner-introduccion.png"
+        subida_por_usuario: false # true cuando la imagen ya está pegada en el aula real (Fase 8, §9e) --
+                                   # recién ahí el src del HTML deja de ser el placeholder URL_DE_LA_IMAGEN
       video_guion_status: pendiente   # guion-video-introduccion.md -- se genera AL CIERRE del flujo
                                        # de la unidad (después de Actividades/Práctica/Autoevaluación),
                                        # nunca en la Fase 1, para que el guion sea coherente con el
@@ -176,7 +183,8 @@ trabajo_practico_integrador:   # Fase 7 — curso-level, ver plantilla-tpi-stand
   `actividad-N.html` → `material_apoyo` (prompt de Gamma) → `lectura_pdf`
   (documento + confirmación + PDF) → `videos` (guion + render on-demand) →
   `notebooklm` (paquete de fuentes). El `video_guion_status` de `introduccion`
-  se genera último, al cierre de toda la unidad.
+  se genera último, al cierre de toda la unidad. `imagen_banner` no depende de
+  esta cadena — se genera junto con `00-descripcion-seccion.html`, en la Fase 1.
 - `status` / `*_status` usan siempre los mismos tres valores: `pendiente`,
   `generado` (el agente ya escribió el archivo, pero el usuario no lo confirmó
   todavía), `confirmado` (el usuario dio el visto bueno).

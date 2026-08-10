@@ -81,6 +81,15 @@ def nueva_unidad_dict(numero: int, nombre: str, carpeta: str, cantidad_actividad
         "incluir": dict(incluir),
         "introduccion": {
             "status": STATUS_PENDIENTE,
+            # Imagen de URL_DE_LA_IMAGEN en 00-descripcion-seccion.html, generada con
+            # el MCP gemini-nanobanana-mcp -- ver references/imagen-banner-introduccion.md.
+            # Se genera junto con el resto de la Fase 1, no depende de la cadena de
+            # dependencias de Actividades.
+            "imagen_banner": {
+                "status": STATUS_PENDIENTE,
+                "ruta": "",
+                "subida_por_usuario": False,
+            },
             # Se genera al CIERRE del flujo de unidad (despues de Actividades/
             # Practica/Autoevaluacion), no en la Fase 1 -- ver SKILL.md.
             "video_guion_status": STATUS_PENDIENTE,
