@@ -88,6 +88,40 @@ en el curso:
 Antes de usar `setContent`, corré `JSON.stringify(tinymce.get().map(e => e.id))` y
 seteá el id correcto a mano — nunca asumas `activeEditor`.
 
+## 2a. Guardar el formulario: click por JS siempre, nunca por `ref`/coordenadas — verificar navegación después
+
+Confirmado en vivo (varias veces, en foros y páginas de Lección durante la misma
+corrida): hacer click en el botón de guardar con el `computer` tool, pasándole el
+`ref` que devuelve `find`/`read_page`, **falla en silencio** con bastante
+frecuencia — el click "se ejecuta" (la tool no tira error) pero el formulario no
+se envía: la página se queda en el mismo `modedit.php`/`editpage.php`, sin ningún
+mensaje de error visible. Un click por coordenada fija tiene el mismo problema si
+la página tuvo cualquier reflow entre que se midió la posición y se hizo el click
+(cambia el layout al expandir/colapsar secciones del formulario, por ejemplo).
+
+**La forma que funcionó consistente en toda la corrida**: ubicar el botón por su
+texto visible y clickearlo directo con `javascript_tool`, no con `computer`:
+
+```js
+const btn = [...document.querySelectorAll('button, input[type=submit]')]
+  .find(b => (b.textContent || b.value || '').trim() === 'Guardar cambios y regresar al curso');
+btn.click();
+```
+
+No asumas un único selector fijo (`input[name="submitbutton2"]` del §2 no
+siempre existe — varios formularios reales usan `<button>` en vez de
+`<input>`, y algunos, como el editor de páginas de Lección, tienen su propio
+texto distinto: `'Guardar página'`). Buscá siempre por el texto visible real
+del botón en esa pantalla puntual.
+
+**Verificá SIEMPRE que la navegación realmente ocurrió** antes de dar el guardado
+por bueno — no te quedes con que la tool "no tiró error": consultá la URL o el
+título de la pestaña después del click (`tabs_context_mcp` o el resultado del
+propio click, que devuelve el nuevo título) y confirmá que cambió respecto al
+`modedit.php`/`editpage.php` de edición. Si no cambió, el guardado no se hizo —
+reintentá el click por JS antes de seguir, no asumas éxito y avances a la
+siguiente pieza con un cambio que en realidad no se guardó.
+
 ## 3. Crear módulos nuevos: dos formas, elegí según el caso
 
 **a) Duplicar + editar** — cuando ya existe una actividad de ejemplo en la
