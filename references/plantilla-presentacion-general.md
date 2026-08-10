@@ -43,20 +43,39 @@ nada, se pueden generar apenas se sepa el nombre de la materia.
 → `00-descripcion-seccion.html` — Descripción de la sección 0 (`editsection.php`), **no es un Label**.
 
 ```html
-<div style="text-align: center; padding: 25px 15px; border-bottom: 2px solid #FFFFFF;
-margin-bottom: 20px; background-color: #001855; border-radius: 12px;">
-  <h1 style="color: #ffffff; font-size: 2.2rem; font-family: 'Segoe UI', sans-serif; margin: 0;">
-    <strong>[ÍCONO] [NOMBRE DE LA MATERIA]</strong>
-  </h1>
-  <p style="color: #d6e0ff; font-size: 1.1rem; margin: 10px 0 0; font-family: 'Segoe UI', sans-serif;">
-    [BAJADA DE UNA LÍNEA — qué es la materia y a quién está dirigida, ej. "Desarrollo Full Stack: Frontend + Backend + Bases de Datos"]
-  </p>
+<div style="background-color: #ffffff; border: 1px solid #ccc; padding: 30px; border-radius: 12px;
+box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 30px; font-family: 'Segoe UI', sans-serif;">
+  <div style="text-align: center;">
+    <h1 style="font-size: 2.2rem; margin-bottom: 10px; background-color: #001855; color: #ffffff;
+    padding: 15px; border-radius: 8px; font-family: sans-serif;">
+      [ÍCONO] [NOMBRE DE LA MATERIA]
+    </h1>
+    <img class="img-fluid" src="URL_DE_LA_IMAGEN" alt="[Descripción breve de la imagen, ver más abajo]"
+      style="margin-top: 15px; border-radius: 8px; max-width: 100%; height: auto;">
+    <p style="color: #2c3e50; font-size: 1.1rem; margin-top: 15px; font-family: sans-serif;">
+      [BAJADA DE UNA LÍNEA — qué es la materia y a quién está dirigida, ej. "Desarrollo Full Stack: Frontend + Backend + Bases de Datos"]
+    </p>
+  </div>
 </div>
 ```
 
-Es deliberadamente más simple que el banner de Introducción de unidad (sin tabla
-de "Resultados de Aprendizaje" ni imagen grande) — acá el objetivo es identidad y
-bienvenida, no resultados de aprendizaje de un tema puntual.
+Misma estructura visual que el banner de Introducción de unidad (tarjeta
+blanca + barra de título navy + imagen + texto debajo), sin la tabla de
+"Resultados de Aprendizaje" — acá el objetivo es identidad de toda la materia,
+no resultados de aprendizaje de un tema puntual.
+
+**La imagen (`URL_DE_LA_IMAGEN`) se genera con el mismo mecanismo que el
+banner de Introducción de unidad** — ver `references/imagen-banner-introduccion.md`
+completo antes de generarla, en particular el **Paso 0 (ofrecer 2-4 conceptos
+visuales distintos al usuario antes de generar nada — nunca generar a
+ciegas)**. La diferencia con Fase 1: acá los conceptos representan a **toda la
+materia**, no un tema de unidad puntual, y no hay paleta rotativa por número
+de unidad (no es una unidad) — elegí un color de la misma paleta que quede
+libre o que tenga sentido para la identidad general del curso. Guardá el
+archivo en `Presentacion General/imagen-banner-general.png`, forzá 600×600px
+con `scripts/resize_imagen_banner.py`, y mostrásela al usuario para confirmar
+antes de seguir — marcá `presentacion_general.imagen_banner.status` en
+`estado.yml` (ver `references/estado-yml-schema.md`).
 
 ## Bloque 2 — Los 3 Foros nativos (nombre + descripción, no HTML de página)
 
@@ -336,6 +355,9 @@ distintivo — no reuses el prefijo de ninguna unidad). Ejemplos de qué cubrir:
 
 ## Checklist antes de mostrarle el material al usuario
 
+- ¿Le ofreciste al usuario 2-4 conceptos visuales distintos para la imagen del
+  banner ANTES de generarla (nunca el cliché de cerebro/chip para todo lo de
+  IA), y generaste solo la que eligió? Ver `references/imagen-banner-introduccion.md` Paso 0.
 - ¿El banner dice el nombre real de la materia, no un placeholder?
 - ¿La Página 3 de la Lección lista las unidades reales del Programa Detallado,
   en el mismo orden, sin resumir ni inventar nombres?

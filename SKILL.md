@@ -103,7 +103,7 @@ Fase 10).
 
 Es la página raíz de la sección de la unidad en Moodle (no una sub-sección aparte — así es como vive en el aula real). Generá los **4 bloques de `references/plantillas-html.md` § Introducción como 4 archivos separados** dentro de `Introduccion/`, en este orden:
 
-1. `00-descripcion-seccion.html` — banner con resultados de aprendizaje (completá 3-5 resultados concretos a partir del material que trajo el usuario). Es la Descripción de la sección raíz de la unidad, no un Label. Generá también la imagen del banner (`URL_DE_LA_IMAGEN`) con el MCP `gemini-nanobanana-mcp`, siguiendo `references/imagen-banner-introduccion.md` (estilo, prompt y paleta ya validados contra un curso real de la TUP) — guardala en `Introduccion/imagen-banner-introduccion.png`, forzá el tamaño a 600×600px con `scripts/resize_imagen_banner.py` (obligatorio, el modelo no siempre devuelve ese tamaño), mostrásela al usuario para confirmar, y marcá `introduccion.imagen_banner.status` en `estado.yml`. El `src` del HTML sigue como placeholder hasta que la Fase 8 la suba al aula real.
+1. `00-descripcion-seccion.html` — banner con resultados de aprendizaje (completá 3-5 resultados concretos a partir del material que trajo el usuario). Es la Descripción de la sección raíz de la unidad, no un Label. Generá también la imagen del banner (`URL_DE_LA_IMAGEN`) con el MCP `gemini-nanobanana-mcp`, siguiendo `references/imagen-banner-introduccion.md` **desde el Paso 0** (ofrecerle al usuario 2-4 conceptos visuales distintos del tema real de la unidad y esperar que elija uno — nunca generar directo y mostrar después) — guardala en `Introduccion/imagen-banner-introduccion.png`, forzá el tamaño a 600×600px con `scripts/resize_imagen_banner.py` (obligatorio, el modelo no siempre devuelve ese tamaño), mostrásela al usuario para confirmar, y marcá `introduccion.imagen_banner.status` en `estado.yml`. El `src` del HTML sigue como placeholder hasta que la Fase 8 la suba al aula real.
 2. `01-video-introduccion.html` — video colapsable con `URL_DEL_VIDEO_YOUTUBE` como placeholder. **En esta fase generás solo el HTML con el placeholder, no el guion todavía** — el guion de grabación (`guion-video-introduccion.md`) se escribe recién al **cierre de toda la unidad** (después de Fase 6), para que pueda ser coherente con el contenido ya cerrado de Actividades/Práctica/Autoevaluación en vez de anticiparse a un material que todavía no existe. Ver "Cierre de la unidad" más abajo.
 3. `02-banner-foro.html` — sección con link al foro de la unidad.
 4. `03-hoja-de-ruta.html` — hoja de ruta con la tabla de tiempos Pomodoro (la tabla de tiempos se completa recién al final, cuando ya generaste todas las actividades y sabés cuántos minutos estimar).
@@ -423,8 +423,11 @@ Usá `references/plantilla-presentacion-general.md` para el detalle completo de
 cada pieza. En resumen, las 5 piezas en orden de dependencia:
 
 1. **`00-descripcion-seccion.html`** — banner de identidad de la materia (ícono +
-   nombre + bajada de una línea). Descripción de la sección 0, no un Label. No
-   depende de nada, generalo apenas sepas el nombre de la materia.
+   nombre + imagen + bajada de una línea). Descripción de la sección 0, no un
+   Label. La imagen sigue el mismo mecanismo que la de Introducción de unidad
+   (`references/imagen-banner-introduccion.md`, **Paso 0**: ofrecerle al
+   usuario 2-4 conceptos visuales distintos de la materia completa —nunca del
+   cliché genérico de cerebro/chip para "IA"— y generar solo el elegido).
 2. **Los 3 foros nativos** (`01-foro-avisos-generales.html`,
    `02-foro-punto-de-partida.html`, `03-foro-avisos-comision.html`) — nombre +
    descripción de cada `mod_forum`, confirmados en vivo: "Avisos generales 📢",

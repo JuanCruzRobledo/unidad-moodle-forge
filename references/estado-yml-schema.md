@@ -173,6 +173,13 @@ presentacion_general:        # Fase 10 — curso-level, opcional, UNA SOLA VEZ P
                                # la primera pestaña, antes de la Unidad 1. Ver plantilla-presentacion-general.md
   activa: false
   banner_html_status: pendiente        # 00-descripcion-seccion.html
+  imagen_banner:                       # imagen de URL_DE_LA_IMAGEN en 00-descripcion-seccion.html --
+                                         # generada con el MCP gemini-nanobanana-mcp, ver
+                                         # references/imagen-banner-introduccion.md (Paso 0: ofrecer
+                                         # 2-4 conceptos distintos ANTES de generar, nunca a ciegas)
+    status: pendiente                   # pendiente | generado | confirmado
+    ruta: ""                            # ruta local, ej. "Presentacion General/imagen-banner-general.png"
+    subida_por_usuario: false           # true cuando ya está pegada en el aula real (Fase 8, §11)
   foros:
     - nombre: "Avisos generales 📢"
       descripcion_status: pendiente     # 01-foro-avisos-generales.html
@@ -277,6 +284,12 @@ presentacion_general:        # Fase 10 — curso-level, opcional, UNA SOLA VEZ P
   salvo que el usuario diga que cambió el curso/mapeo.
   `reporte` apunta siempre a un `reporte-importacion.md` real ya escrito en la
   carpeta de esa unidad — nunca se deja `completado` sin ese archivo.
+- **`presentacion_general.imagen_banner` sigue el mismo mecanismo y el mismo
+  gate que `introduccion.imagen_banner`** (Fase 1) — ver
+  `references/imagen-banner-introduccion.md`. Antes de generar, siempre se le
+  ofrecen al usuario 2-4 conceptos visuales distintos (nunca se genera una
+  imagen a ciegas y se muestra recién después) — esto aplica a las dos fases
+  por igual, no es una regla exclusiva de una de las dos.
 - **`presentacion_general` es curso-level y único por materia** (Fase 10) — a
   diferencia de `evaluaciones_curso`/`trabajo_practico_integrador`, que pueden
   tener varias instancias (varios parciales), acá hay un solo bloque por
