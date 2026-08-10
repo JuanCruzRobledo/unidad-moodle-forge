@@ -141,9 +141,25 @@ completo:
    que un ítem pasa a "generando" (lo sube al tope de la lista) — usá `find` por el
    nombre exacto del botón en cada click, nunca coordenadas de un screenshot
    anterior, o vas a terminar clickeando el ítem equivocado.
-6. **Tiempos reales observados**: Tarjetas didácticas e Infografía ~1 min. Audio
-   ~7 min. Video ~5 min. Presentación (BETA) fue la más lenta, ~9-10 min — no asumas
-   que terminó solo porque las otras 4 ya están, esperá confirmación visual de las 5.
+6. **No te quedes esperando a que terminen — cortá ahí y preguntale al usuario
+   después.** Tiempos reales observados: Tarjetas didácticas e Infografía ~1 min.
+   Audio ~7 min. Video ~5 min. Presentación (BETA) fue la más lenta, ~9-10 min. Hacer
+   polling en loop (wait+screenshot repetido) durante varios minutos es un mal uso
+   del turno — a criterio explícito del usuario: **una vez que los 5 botones ya
+   fueron clickeados y confirmaste por screenshot que quedaron en estado
+   "generando", cerrá ese hilo de trabajo** (reportá qué botones tocaste — igual que
+   el resumen que le diste al usuario en la corrida real: "Resumen en audio
+   (Resumen), Resumen en video (Explicación/Clásico), Infografía
+   (Horizontal/Detallado), Presentación (detallada, default), Tarjetas didácticas
+   (Estándar/Media default)" — y esperá a que el usuario confirme que ya
+   terminaron, en vez de vos ir a chequear en loop.
+   **Límite diario**: Studio tiene un límite de generaciones por día. Si algún
+   botón tira un error de límite alcanzado al clickearlo, NO reintentes — dejá esa
+   generación como pendiente, avisale al usuario cuál quedó sin poder lanzarse, y
+   continuá esa actividad puntual otro día (no bloquea las demás actividades ya
+   generadas ni el resto del flujo).
+## Cuando el usuario confirma que los 5 materiales ya terminaron de generarse
+
 7. **Compartir — requiere confirmación explícita del usuario antes de tocarlo**,
    porque cambia la visibilidad de un documento real de su cuenta de Google: botón
    "Compartir" → "Acceso desde el cuaderno" → cambiar de "Restringido" a **"Cualquier
