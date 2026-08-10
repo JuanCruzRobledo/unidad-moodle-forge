@@ -48,9 +48,26 @@ reales, se corrigió acá:
 | Presentación (BETA) | "Presentación con diapositivas" | Formato **Presentación detallada** · idioma español (Latinoamérica) · duración **Predeterminada** |
 | Tarjetas didácticas | "Tarjetas didácticas" | Cantidad **Estándar** · dificultad **Media** |
 
-Después de generar la infografía, comprimirla antes de subirla al aula con
-https://www.iloveimg.com/es/comprimir-imagen (el aula real usa imágenes livianas para
-que el modal cargue rápido).
+**La imagen de la tarjeta "Infografía" del widget de la actividad (`URL_IMAGEN_INFOGRAFIA`
+en `plantillas-html.md`) sale de ACÁ — del material "Infografía" de Studio — nunca de
+nanobanana ni de ningún otro modelo de imagen aparte.** Nanobanana queda reservado para
+otro tipo de imágenes (banner de introducción de unidad, por ejemplo).
+
+Después de generar la infografía, comprimirla antes de subirla al aula (los PNG que
+exporta Studio pesan ~5 MB, muy pesados para que el modal cargue rápido). Validado con
+Python + Pillow, sin depender de un sitio externo:
+
+```python
+from PIL import Image
+im = Image.open("Evolución_del_desarrollo_con_IA.png").convert("RGB")
+w, h = im.size
+new_w = 1600
+im = im.resize((new_w, int(h * new_w / w)), Image.LANCZOS)
+im.save("infografia-actividad-N.jpg", "JPEG", quality=82, optimize=True)
+```
+
+Bajó ~5 MB a ~300 KB sin pérdida visible en la corrida real. Si no hay Python/Pillow
+disponible, el fallback sigue siendo https://www.iloveimg.com/es/comprimir-imagen.
 
 ## Plantilla de guion fuente por actividad
 
@@ -132,15 +149,25 @@ completo:
    "Compartir" → "Acceso desde el cuaderno" → cambiar de "Restringido" a **"Cualquier
    persona que tenga el vínculo"** → Guardar. No asumas el valor por defecto
    ("Restringido" = nadie más puede abrirlo con el link, inútil para alumnos).
-8. **Pegá la URL real** (`https://notebook.google.com/notebook/<uuid>`) reemplazando
-   el placeholder `URL_IA_NOTEBOOKLM` — tanto en el `actividad-N.html` local como en
-   el Label real de Moodle, usando la MISMA técnica de reconstrucción completa +
-   `setContent()` documentada en `importacion-moodle.md` §9d (nunca insertar el link
-   suelto sobre el Label ya renderizado). De paso, si el widget de Infografía o el
-   bloque "Código de apoyo" faltan en el Label real (daño de una sesión anterior),
-   esta reconstrucción completa los repara sin esfuerzo extra.
-9. Marcá en `estado.yml`: `notebooklm.link_pegado: true` + `notebooklm.url: <link>`
-   (ver `estado-yml-schema.md`).
+8. **Descargá la imagen de Infografía** desde el ítem "Infografía" de Studio (abrilo →
+   menú "⋮" → "Descargar") y comprimila (ver más arriba). Esta es la imagen real de
+   `URL_IMAGEN_INFOGRAFIA` — no te olvides de este paso, es fácil pegar solo el link de
+   NotebookLM y dejar la infografía en placeholder.
+9. **Subí la imagen y el PDF al draft area del Label** (botón imagen del toolbar de
+   TinyMCE / "Crear enlace" → "Subir un archivo", mismo patrón que §9d de
+   `importacion-moodle.md`) y capturá los `src`/`href` `draftfile.php` reales.
+10. **Pegá TODO junto** — la URL real del notebook (`https://notebook.google.com/notebook/<uuid>`)
+    en `URL_IA_NOTEBOOKLM` y el `draftfile.php` de la infografía en `URL_IMAGEN_INFOGRAFIA` —
+    reconstruyendo el HTML COMPLETO offline y pisándolo con `setContent()` en una sola
+    pasada, tanto en el `actividad-N.html` local como en el Label real de Moodle (§9d de
+    `importacion-moodle.md`; nunca insertar sueltos sobre el Label ya renderizado). De
+    paso, si el widget de Infografía o el bloque "Código de apoyo" faltan en el Label
+    real (daño de una sesión anterior), esta reconstrucción completa los repara sin
+    esfuerzo extra. Moodle reescribe el `draftfile.php` a `pluginfile.php` permanente al
+    guardar.
+11. Marcá en `estado.yml`: `notebooklm.link_pegado: true` + `notebooklm.url: <link>` y
+    `infografia.imagen_status: generado` + `infografia.fuente: notebooklm_studio` (ver
+    `estado-yml-schema.md`).
 
 ## Si no hay browser automation disponible
 
