@@ -310,6 +310,71 @@ checks de "cambios sin guardar" que no cierran — son esperables. Si después d
 intentos razonables algo no cede, **avisá al usuario y pedile que lo resuelva a
 mano esa vez** en lugar de seguir reintentando a ciegas contra el aula real.
 
+## 9d. Link real de "Lectura PDF" en el Label — subir al draft area + reconstruir HTML completo
+
+Cada `actividad-N.html` trae, dentro del widget de recursos, un `<a href="URL_PDF">`
+que debe apuntar al PDF real de Lectura obligatoria de esa actividad
+(`documento-lectura-actividad-N.pdf`). A diferencia del Material de apoyo (§9a, que
+tiene su propia Carpeta `mod_folder` dedicada), este link vive DENTRO del mismo Label
+de la actividad — no hay un módulo separado para alojarlo. **No uses el diálogo
+"Crear enlace" de TinyMCE para insertarlo directo**: con "Texto a mostrar" vacío, el
+botón auto-inserta la URL cruda en la posición del cursor apenas termina de subir el
+archivo (sin pasar por "Crear enlace" ni mostrar el URL para copiar antes) —
+corrompe cualquier texto que esté ahí. Es un comportamiento consistente de esta
+versión de TinyMCE, no un bug esporádico: pasa siempre que subís un archivo nuevo
+desde ese diálogo, con o sin colisión de nombre.
+
+**Descartado antes de empezar**: el Banco de contenido (`contentbank/index.php?contextid=<id-curso>`)
+NO sirve para esto — confirmado en vivo abriendo el botón "Subir" (no "Añadir", que
+solo lista tipos H5P para crear contenido nuevo): el diálogo "Subir" declara
+explícitamente "Tipos de archivo aceptados: Archivo (H5P) .h5p" — esta instancia de
+Moodle solo tiene habilitado el plugin de tipo H5P en el Banco de contenido, ningún
+plugin de archivo genérico/PDF. No hay URL permanente que sacar de ahí.
+
+**Flujo que funciona, paso a paso:**
+
+1. Abrí `course/modedit.php?update=<label-id>&return=1`. Anotá el itemid real
+   leyendo el input `introeditor[itemid]` — **cambia en cada carga de página**, no
+   reuses uno de una carga anterior ni de otra sesión.
+2. Antes de tocar nada, leé del propio DOM (`tinymce.get('id_introeditor').getDoc()`)
+   los links de Video 1/2/3 si ya están reales (el usuario suele cargarlos a mano
+   directo en Moodle antes que vos) — los vas a necesitar para reconstruir el HTML
+   completo en el paso 5, y así no los pisás con los placeholders del archivo local.
+3. Click en el botón "Enlace" del toolbar → dialog "Crear enlace". Escribí cualquier
+   texto inofensivo en "Texto a mostrar" (ej. `temp-safety`) como red de seguridad —
+   sabés que se va a auto-insertar solo, mejor que sea texto reconocible y no una URL
+   cruda. Click en "Ver repositorios..." → "Subir un archivo".
+4. Subí el PDF real con un **nombre de archivo único** en el campo "Guardar como"
+   (ej. `lectura-actividad-N-u1mf.pdf`) para evitar el diálogo "El archivo existe"
+   (que además tiene su propia rareza: reusar un archivo con el mismo nombre a veces
+   agrega un sufijo " (1)" inconsistente). Click en "Subir este archivo" — el link se
+   auto-inserta con el texto ancla del paso 3.
+5. Leé el href real recién insertado:
+   `tinymce.get('id_introeditor').getDoc().querySelector('a').getAttribute('href')`.
+   Es una URL `draftfile.php/<userid>/user/draft/<itemid>/<filename>` válida SOLO
+   dentro de esta carga de página.
+6. Reconstruí el HTML COMPLETO del Label offline, a partir del `actividad-N.html`
+   local: sustituí `URL_VIDEO_1/2/3` por los reales del paso 2, `URL_PDF` por el href
+   del paso 5, y dejá como placeholder lo que siga pendiente (`URL_IA_NOTEBOOKLM`,
+   `URL_IMAGEN_INFOGRAFIA`, etc.). Pisá TODO el contenido en una sola pasada:
+   `tinymce.get('id_introeditor').setContent(htmlCompleto)`. Nunca edites el DOM ya
+   renderizado a pedazos (`setAttribute` puntual, editor de "Código fuente" a mano) —
+   es la causa raíz de que este link se rompiera en un intento anterior.
+7. Verificá antes de guardar (summary limpio, cantidad de links esperada, el resto
+   del widget — infografía, código de apoyo — presente) y recién ahí click en
+   "Guardar cambios y regresar al curso". Moodle reescribe automáticamente el
+   `draftfile.php` a un `pluginfile.php` permanente al mover el archivo del área de
+   borrador al área de archivos definitiva del módulo — comportamiento estándar de
+   Moodle para editores de texto con archivos embebidos, no hace falta nada extra.
+
+**Por qué reconstruir todo el HTML y no parchear solo el link**: si el Label ya
+sufrió un intento fallido antes, es común que se haya perdido contenido de más (no
+solo el link roto) — en una corrida real, el widget completo de Infografía
+(botón + `<details>` modal) y el bloque "Código de apoyo" habían desaparecido
+enteros de 3 Labels distintos, no solo el `<script>` que se pierde por comportamiento
+normal de Moodle (§9b). Reconstruir el HTML completo desde el archivo local de una
+sola vez repara ese daño colateral de paso, en vez de dejarlo pasar.
+
 ## 10. Qué NO cubre esta referencia
 
 Microteaching queda habitualmente **fuera de alcance** de una importación real salvo
