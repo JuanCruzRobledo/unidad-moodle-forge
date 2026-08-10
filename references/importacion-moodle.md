@@ -247,6 +247,11 @@ corresponde.
 | `Autoevaluacion/cuestionario-autoevaluacion.html` | Descripción del `mod_quiz` de Autoevaluación |
 | `Autoevaluacion/preguntas-autoevaluacion.xml` | Import al banco de preguntas + agregado al `mod_quiz` de Autoevaluación |
 | `EncuestaCierre/00-descripcion-seccion.html`, `01-encuesta-cierre.html` | Descripción de sección + Descripción del `mod_feedback` existente |
+| `Presentacion-general/00-descripcion-seccion.html` | Descripción de la sección `section=0` ("[Materia] - General") — ver Fase 10 de `SKILL.md` |
+| `Presentacion-general/01-foro-avisos-generales.html`, `02-foro-punto-de-partida.html`, `03-foro-avisos-comision.html` | Descripción de cada `mod_forum` nativo (no Label) |
+| `Presentacion-general/04-leccion-informacion-importante.md` | Contenido de las páginas del `mod_lesson` "Información importante sobre la materia" — ver §11 |
+| `Presentacion-general/05-que-necesitas-para-estudiar.html` | Label independiente |
+| `Presentacion-general/06-cuestionario-inicial.html` + preguntas XML | Descripción del `mod_quiz` "Cuestionario Inicial Obligatorio" + import de preguntas al banco — ver §11 |
 
 ## 9a. Material de apoyo — subir el PDF real a la Carpeta (confirmado en vivo)
 
@@ -437,3 +442,53 @@ intentos a ciegas, avisá y ajustá esta sección con lo que se confirme.
 Microteaching queda habitualmente **fuera de alcance** de una importación real salvo
 que el usuario lo pida explícitamente (suele decidir no subir video/repo todavía) —
 confirmá con el usuario si entra o no en esa corrida antes de tocarlo.
+
+## 11. Presentación General (Fase 10) — Lección multi-página y Cuestionario gateado
+
+Esta sección es la primera vez que la skill importa un módulo `mod_lesson` (todo
+lo anterior era Label, Descripción de sección/módulo, Archivo, Tarea o Encuesta) y
+la primera vez que configura una restricción de acceso real (gating) en vez de
+solo documentarla — a diferencia del gating secuencial entre Cuestionarios de
+Actividades, que el aula real ya trae preconfigurado en el template reciclado y
+la skill solo documenta (ver `estructura-aula-real.md`), acá el módulo se crea
+desde cero, así que si no se configura, nunca queda gateado.
+
+**a) Crear el módulo Lección**: `course/modedit.php?add=lesson&type=&course=<courseid>&section=0&return=0&sr=0`.
+En el formulario: nombre "ℹ️ Información importante sobre la materia.", pegar la
+Descripción si aplica, y en la pestaña **"Finalización de actividad"** elegir
+"Los estudiantes pueden marcar manualmente la actividad como completada" o
+"Mostrar la actividad como completada cuando se cumplan las condiciones" (usá lo
+que ya tenga configurado el resto del curso para otras Lecciones/mod_lesson, si
+hay alguna de referencia; si no, preguntale al usuario cuál prefiere). Guardar.
+
+**b) Cargar las páginas de contenido**: dentro de la Lección recién creada,
+`mod/lesson/editpage.php?id=<cmid>&edit=1` — cada página nueva se agrega con
+"Añadir una página de contenido", pegando el HTML de cada bloque del guion
+(`04-leccion-informacion-importante.md`) vía `tinymce.get(...).setContent(html)`
+(mismo mecanismo que el resto de la skill, ver §2) en el editor de esa página, y
+un único botón "Continuar" apuntando a "Siguiente página" — no armes ramas ni
+saltos condicionales salvo pedido explícito. Guardar cada página antes de pasar
+a la siguiente.
+
+**c) Restricción de acceso del Cuestionario inicial**: crear el `mod_quiz`
+("📋 Cuestionario Inicial Obligatorio") con la técnica ya conocida (§3b), pegar
+`06-cuestionario-inicial.html` en su Descripción (con "Mostrar descripción en la
+página del curso" activado) e importar sus preguntas (§4). Después, en
+`course/modedit.php?update=<cmid_quiz>&return=1`, sección **"Restricción de
+acceso"** → "Añadir restricción..." → "Finalización de actividad" → seleccionar
+la Lección del paso (a) → condición "debe estar completa". Guardar cambios.
+Confirmá visualmente que el mensaje "No disponible hasta que..." apunte a la
+Lección correcta antes de dar el paso por terminado.
+
+**d) Si algo de (a)-(c) resulta más frágil de lo esperado** (el formulario de
+Restricción de acceso cambia de layout entre versiones de Moodle, el editor de
+páginas de Lección no carga bien): aplicá la misma regla general de la skill —
+no reintentar en loop, dejar la pieza documentada como pendiente en el reporte
+final (`presentacion_general.leccion_informacion_importante.completion_tracking_configurado`
+/ `cuestionario_inicial.restriccion_acceso_configurada` en `false`) y avisarle
+al usuario que la termine a mano, en vez de forzar un intento a ciegas.
+
+**e) Los 3 foros** se crean con la técnica genérica de §3b (`add=forum`),
+pegando cada descripción de `references/plantilla-presentacion-general.md`
+Bloque 2 en el campo Descripción del foro (sin Label, mismo patrón que
+`cuestionario-actividad-N.html`).

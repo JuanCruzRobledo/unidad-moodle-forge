@@ -8,8 +8,11 @@ jerarquía que hay que calcar — no la que se supone a priori.
 
 ```
 Curso (ej. "Programación 3", id=44)
-├── section=0  → "<MATERIA> - General" (portada del curso, NO se llama "Introducción")
-│     Foros de curso, Lección introductoria, Cuestionario inicial no calificado
+├── section=0  → "<MATERIA> - General" (portada del curso, NO se llama "Introducción",
+│     siempre la primera pestaña, antes de la Unidad 1 — ver plantilla-presentacion-general.md)
+│     Banner de identidad, 3 Foros de curso, Lección introductoria multi-página con
+│     seguimiento de finalización, Label puente, Cuestionario inicial no calificado
+│     (gateado a que la Lección esté completa)
 ├── section=N   → "N- <Nombre de la unidad>"   = página raíz de la unidad
 │                  (acá vive el contenido de "Introducción": banner, video, foro, hoja de ruta)
 ├── section=N+1 → "Actividades 🧩"     (hija de la unidad)
@@ -82,7 +85,14 @@ URL real.
   que Evaluaciones: `assets/tpi-evaluaciones-html-real.txt`.
 - Foros de nivel curso: "Avisos generales", "Punto de Partida: Instalaciones y
   Ayuda", "Avisos de la comisión" — no existe un "Foro social" con ese nombre exacto
-  en el curso real relevado.
+  en el curso real relevado. Viven en `section=0` ("General"), junto con una
+  Lección de onboarding ("Información importante sobre la materia": normas de
+  foros, organización de la materia, condiciones de aprobación) y un Cuestionario
+  inicial no calificado gateado a que esa Lección esté completa — confirmado en
+  vivo (solo lectura) contra `tup.sied.utn.edu.ar/course/view.php?id=82&section=0`,
+  "Programación III". Se genera como fase aparte, curso-level y **una sola vez
+  por materia** (a diferencia de Evaluaciones/TPI, acá no hay múltiples
+  instancias) — ver SKILL.md Fase 10 y `references/plantilla-presentacion-general.md`.
 
 ## El primer bloque de cada sub-sección es la Descripción de esa sección, no un Label
 

@@ -1,7 +1,7 @@
 ---
 name: unidad-moodle-forge
 description: >-
-  Genera el material didactico completo de una unidad para el aula virtual Moodle de TUP (tup.sied.utn.edu.ar) a partir del programa de la materia o apuntes: un archivo HTML por cada bloque real de cada sub-seccion (Introduccion, Actividades, Practica, Microteaching, Autoevaluacion, Encuesta de cierre) -nunca un unico HTML con varios bloques pegados-, preguntas en formato XML de Moodle para importar (5 por actividad, 10 en autoevaluacion), el prompt para Gamma que resuelve el Material de apoyo de cada actividad, el documento y PDF de Lectura obligatoria de cada actividad, los guiones y el render automatizado (via la skill hyperframes) de los videos de cada actividad, guiones para generar los Notebooks LM de cada actividad, el guion del video de introduccion de la unidad (generado al cierre, coherente con el contenido ya completo), la consigna y el PDF del Trabajo Practico Integrador, y -al final del proceso- el material de Evaluaciones (parciales/recuperatorios) a nivel curso. Ademas, bajo pedido explicito del usuario y con confirmacion previa, puede IMPORTAR ese material al aula real de Moodle via browser automation (crear/editar secciones, Labels, Cuestionarios, Tareas y Encuestas) dejando un reporte de pendientes/incoherencias al terminar, y puede COMPLETAR los pendientes de una unidad que ya tiene material generado o importado (material de apoyo, lectura PDF, videos, notebook, guion de introduccion faltantes). Antes de generar una unidad nueva desde cero, pregunta que componentes opcionales incluir (actividad ludica, microteaching, material de apoyo, videos de actividad, autoevaluacion, encuesta de cierre), reflejado en estado.yml. Usa esta skill SIEMPRE que el usuario pida armar/generar el material de una unidad para el campus/aula virtual, completar/corregir pendientes de una unidad ya generada, o subir/importar ese material ya generado al aula real: 'arma la unidad 3 de Programacion 3', 'genera el contenido Moodle de la unidad de CSS', 'necesito las preguntas XML y el HTML de la actividad 2', 'hace el TP integrador y su PDF', 'segui armando el material donde quedo', 'completa los pendientes de la unidad 1', 'genera el prompt de Gamma para el material de apoyo', 'automatiza los videos de la actividad 2', 'importa la unidad 2 al aula real', 'subi este material a Moodle' -aunque no nombre la skill. Mantiene un archivo de estado (estado.yml) por materia para retomar la generacion (y la importacion) unidad por unidad y saber que falta. NO usar para corregir entregas de alumnos (corregir/corregir-notas-planilla), ni para responder consultas en el campus (responder-alumnos), ni para generar informes de pendientes (informe-pendientes-curso).
+  Genera el material didactico completo de una unidad para el aula virtual Moodle de TUP (tup.sied.utn.edu.ar) a partir del programa de la materia o apuntes: un archivo HTML por cada bloque real de cada sub-seccion (Introduccion, Actividades, Practica, Microteaching, Autoevaluacion, Encuesta de cierre) -nunca un unico HTML con varios bloques pegados-, preguntas en formato XML de Moodle para importar (5 por actividad, 10 en autoevaluacion), el prompt para Gamma que resuelve el Material de apoyo de cada actividad, el documento y PDF de Lectura obligatoria de cada actividad, los guiones y el render automatizado (via la skill hyperframes) de los videos de cada actividad, guiones para generar los Notebooks LM de cada actividad, el guion del video de introduccion de la unidad (generado al cierre, coherente con el contenido ya completo), la consigna y el PDF del Trabajo Practico Integrador, y -al final del proceso- el material de Evaluaciones (parciales/recuperatorios) a nivel curso. Tambien genera, bajo pedido explicito y una sola vez por materia, la Presentacion General del curso (pestaña "[Materia] - General", seccion 0 del aula real, siempre la primera antes de cualquier unidad): banner de identidad, los 3 foros nativos de curso, la Leccion multi-pagina "Informacion importante sobre la materia" con seguimiento de finalizacion, el Label puente "Que necesitas para estudiar" y el Cuestionario inicial no calificado gateado a esa Leccion. Ademas, bajo pedido explicito del usuario y con confirmacion previa, puede IMPORTAR ese material al aula real de Moodle via browser automation (crear/editar secciones, Labels, Cuestionarios, Tareas y Encuestas) dejando un reporte de pendientes/incoherencias al terminar, y puede COMPLETAR los pendientes de una unidad que ya tiene material generado o importado (material de apoyo, lectura PDF, videos, notebook, guion de introduccion faltantes). Antes de generar una unidad nueva desde cero, pregunta que componentes opcionales incluir (actividad ludica, microteaching, material de apoyo, videos de actividad, autoevaluacion, encuesta de cierre), reflejado en estado.yml. Usa esta skill SIEMPRE que el usuario pida armar/generar el material de una unidad para el campus/aula virtual, completar/corregir pendientes de una unidad ya generada, o subir/importar ese material ya generado al aula real: 'arma la unidad 3 de Programacion 3', 'genera el contenido Moodle de la unidad de CSS', 'necesito las preguntas XML y el HTML de la actividad 2', 'hace el TP integrador y su PDF', 'segui armando el material donde quedo', 'completa los pendientes de la unidad 1', 'genera el prompt de Gamma para el material de apoyo', 'automatiza los videos de la actividad 2', 'importa la unidad 2 al aula real', 'subi este material a Moodle' -aunque no nombre la skill. Mantiene un archivo de estado (estado.yml) por materia para retomar la generacion (y la importacion) unidad por unidad y saber que falta. NO usar para corregir entregas de alumnos (corregir/corregir-notas-planilla), ni para responder consultas en el campus (responder-alumnos), ni para generar informes de pendientes (informe-pendientes-curso).
 license: Apache-2.0
 ---
 
@@ -13,7 +13,7 @@ Convierte el programa de una materia (o los apuntes que le pases) en el material
 
 El usuario es docente/tutor de una materia en el campus TUP y quiere producir el contenido de una unidad completa (o retomar una a medio hacer) a partir de: el programa de la materia, apuntes propios, un PDF de cátedra, o simplemente el nombre del tema. No tiene por qué traer todo listo — puede pedir "armá la unidad 2 de CSS" y vos completás con el patrón ya validado contra el aula real, pidiendo solo lo que no se pueda derivar razonablemente (ej. el tema puntual de cada actividad si no lo aportó).
 
-## Workflow — 7 fases + 2 extensiones opcionales + cierre + retrofit
+## Workflow — 7 fases + 2 extensiones opcionales + cierre + retrofit + presentación general
 
 ```
 0. Relevar estado     → qué unidad/sub-sección falta (lee estado.yml); si es unidad
@@ -33,6 +33,8 @@ El usuario es docente/tutor de una materia en el campus TUP y quiere producir el
 7. (final, opcional)  → Evaluaciones y Trabajo Práctico Integrador (curso-level)
 8. (opcional, bajo pedido explícito) → Importación del material generado al aula real de Moodle
 9. (opcional, bajo pedido explícito) → Completar pendientes en una unidad ya generada (retrofit)
+10. (opcional, una vez por materia) → Presentación General del curso (pestaña "[Materia] - General",
+    section=0, siempre la primera del aula real — ver más abajo)
 ```
 
 Las fases 1 a 6 son por unidad y se repiten unidad tras unidad. La fase 7 es **aparte**:
@@ -44,7 +46,11 @@ material que ya está `generado`/`confirmado` en el filesystem y lo sube al aula
 vía browser automation — nunca se dispara sola, siempre bajo pedido explícito del
 usuario y después de pasar las precondiciones de seguridad (ver Fase 8). La fase 9
 es igual de aparte: opera sobre una unidad que ya tiene material `generado` (o incluso
-ya `importado`) y solo completa lo que falta, nunca se dispara sola (ver Fase 9).
+ya `importado`) y solo completa lo que falta, nunca se dispara sola (ver Fase 9). La
+fase 10 es, como la 7, curso-level y aparte de la jerarquía de unidades — a
+diferencia de todas las anteriores, se genera **una sola vez por materia** (no una
+vez por unidad) y modela la pestaña que en el aula real siempre aparece primera,
+antes que la Unidad 1 (ver Fase 10).
 
 **Regla de generación que aplica a las Fases 1-6**: nunca generes un único HTML con
 varios bloques (`<div>`) de nivel superior pegados uno atrás del otro. Cada bloque de
@@ -84,6 +90,14 @@ Pasá la selección como flags al script (`--con-<componente>` / `--sin-<compone
 - Todo lo demás → flujo normal de unidad (Fases 1-6).
 
 Esto es puro análisis del texto del programa — no requiere volver a recorrer el aula real cada vez que arranca una unidad nueva.
+
+**La Presentación General del curso (Fase 10) es aparte de esta heurística**: no
+se detecta del texto del programa (no es "una unidad más"), es un artefacto fijo
+que existe una sola vez por materia. Si estás arrancando una materia nueva desde
+cero, podés mencionarle al usuario que existe esta opción (siempre conviene
+tenerla lista temprano, es la primera pestaña que ve el alumno), pero **nunca la
+generes de oficio** — arranca solo cuando el usuario la pide explícitamente (ver
+Fase 10).
 
 ## Fase 1 — Introducción de la unidad
 
@@ -337,6 +351,14 @@ momento y retomar después sin repetir trabajo ni re-preguntar nada ya resuelto.
    termines una corrida de importación sin dejar el checkpoint de `estado.yml` al
    día con lo que realmente se logró pegar.
 
+**Presentación General (Fase 10) importa aparte, no como una "unidad" más**: no
+tiene `importacion.subsecciones` (ese checkpoint es por unidad) — su progreso de
+importación se trackea directo en los campos de `presentacion_general` (ver
+`references/estado-yml-schema.md`). Las mismas 5 precondiciones de arriba
+aplican igual, y la técnica específica de esta fase (Lección multi-página,
+Cuestionario gateado) está en `references/importacion-moodle.md` §11 — no en el
+flujo por sub-sección de acá abajo, que es específico de una unidad.
+
 ### Reporte final (obligatorio, no opcional)
 
 Usá `references/plantilla-reporte-importacion.md`, completala y guardala como
@@ -383,6 +405,51 @@ Introducción descripto en las Fases 1, 2 y "Cierre de la unidad" de arriba.
    Fase 8 aparte — este retrofit no pega contenido en Moodle por sí solo, solo
    genera/completa el material en el filesystem.
 
+## Fase 10 — Presentación General del curso (curso-level, opcional, se genera una sola vez por materia)
+
+**Nunca se dispara sola**, igual que las fases 7-9 — solo arranca cuando el usuario
+la pide explícitamente ("armá la Presentación General", "generá la pestaña
+General", "falta la portada del curso", "armá el material de la primera
+pestaña"). No se genera de oficio al scaffoldear una materia nueva, aunque tiene
+sentido ofrecerla temprano: es la sección `section=0` del curso real, la
+**primera pestaña que ve el alumno**, antes que la Unidad 1 — se llama
+literalmente **"[NOMBRE DE LA MATERIA EN MAYÚSCULAS] - General"**, no
+"Introducción" (ver `references/estructura-aula-real.md`). Vive fuera de la
+carpeta de unidades y de `Evaluaciones`/`Trabajo Practico Integrador` — es su
+propia sección de curso, con su propio bloque en `estado.yml`
+(`presentacion_general`, ver `references/estado-yml-schema.md`).
+
+Usá `references/plantilla-presentacion-general.md` para el detalle completo de
+cada pieza. En resumen, las 5 piezas en orden de dependencia:
+
+1. **`00-descripcion-seccion.html`** — banner de identidad de la materia (ícono +
+   nombre + bajada de una línea). Descripción de la sección 0, no un Label. No
+   depende de nada, generalo apenas sepas el nombre de la materia.
+2. **Los 3 foros nativos** (`01-foro-avisos-generales.html`,
+   `02-foro-punto-de-partida.html`, `03-foro-avisos-comision.html`) — nombre +
+   descripción de cada `mod_forum`, confirmados en vivo: "Avisos generales 📢",
+   "🚀💻 Punto de Partida: Instalaciones y Ayuda", "Avisos de la comisión 📌".
+3. **Lección "Información importante sobre la materia"**
+   (`04-leccion-informacion-importante.md`) — guion de 5 páginas (Bienvenida,
+   Normas de foros, Organización de la materia, Condiciones de aprobación,
+   Cierre). La página de organización sale 1:1 del Programa Detallado. **La
+   página de condiciones de aprobación es información institucional real: si el
+   Programa Detallado no la trae explícita, preguntale al usuario — nunca
+   inventes un criterio de regularidad/promoción.** Necesita seguimiento de
+   finalización activado en Moodle (configuración, no HTML — Fase 8, ver
+   `references/importacion-moodle.md` §11).
+4. **Label "¿Qué necesitás para estudiar?"** (`05-que-necesitas-para-estudiar.html`)
+   — checklist de herramientas/cuentas necesarias para cursar, derivado del
+   Programa Detallado si trae una sección de requisitos, o preguntado al
+   usuario si no — más el texto puente hacia el Cuestionario inicial.
+5. **Cuestionario inicial obligatorio** (`06-cuestionario-inicial.html` +
+   preguntas XML) — no calificado, intentos ilimitados, exige responder todo
+   bien para continuar, **gateado a que la Lección del punto 3 esté completa**
+   (restricción de acceso, configuración de Moodle — Fase 8, ver
+   `references/importacion-moodle.md` §11). Sus 5 preguntas son
+   administrativas/de comprensión lectora sobre la propia Lección — nunca sobre
+   contenido técnico de las unidades.
+
 ## Reglas duras
 
 - **Nunca inventes contenido pedagógico de la nada.** Resultados de aprendizaje, consignas y preguntas siempre parten del material que aportó el usuario (programa, apuntes, PDFs). Si falta información concreta, preguntala — no rellenes con genérico solo para completar la plantilla.
@@ -396,6 +463,7 @@ Introducción descripto en las Fases 1, 2 y "Cierre de la unidad" de arriba.
 - **La selección de componentes opcionales (Fase 0) solo se pregunta al crear una unidad nueva.** Nunca la repreguntes al retomar una unidad que ya tiene `estado.yml` — su bloque `incluir` (o su ausencia, que equivale a todo en `true`) ya define qué fases aplican.
 - **Respetá el orden de dependencias de la Fase 2** (Material de apoyo → Lectura PDF → Videos de actividad → guion de NotebookLM) para cada actividad. No generes un paso sin que el anterior esté al menos `generado` — el objetivo es que Lectura PDF no repita lo de Material de apoyo, y que el paquete de fuentes de NotebookLM no liste archivos que todavía no existen.
 - **Los videos de actividad se generan siempre on-demand, nunca en lote automático** para varias actividades o unidades a la vez — ver `references/automatizacion-videos-actividad.md`. Lo mismo aplica al guion del video de Introducción: se genera al cierre de la unidad, no en la Fase 1.
+- **Las condiciones de aprobación de la Presentación General (Fase 10) nunca se inventan.** Si el Programa Detallado no las trae explícitas, se le preguntan al usuario antes de escribir la Página 4 de la Lección — es información institucional real que va a leer cada alumno, no relleno de plantilla. Ver `references/plantilla-presentacion-general.md`.
 - **El entregable de Material de apoyo es, por default, el texto del prompt para Gamma** — igual que con NotebookLM, el usuario lo corre a mano y confirma cuando subió el resultado real a la carpeta de Moodle. Existe un camino opcional para generar el PDF directo vía la API de Gamma (`scripts/gamma_generate.py`, ver `references/prompt-gamma-material-apoyo.md`) si el usuario tiene cuenta paga — en ambos casos el resultado se revisa antes de darlo por bueno, nunca se sube sin revisión.
 
 ## Componentes de la skill
@@ -417,6 +485,7 @@ Introducción descripto en las Fases 1, 2 y "Cierre de la unidad" de arriba.
 | `references/automatizacion-videos-actividad.md` | Spec del pipeline de los 3 videos por actividad: guion + render on-demand con la skill `hyperframes` (Fase 2) |
 | `references/plantilla-tpi-standalone.md` | Plantilla curso-level del Trabajo Práctico Integrador (Fase 7) |
 | `references/plantilla-evaluacion.md` | Plantilla curso-level de Evaluaciones — parciales/recuperatorios (Fase 7) |
+| `references/plantilla-presentacion-general.md` | Plantilla curso-level de la Presentación General del curso — pestaña "[Materia] - General", `section=0` (Fase 10) |
 | `references/estructura-aula-real.md` | Jerarquía real confirmada del aula + inconsistencias a no replicar |
 | `references/importacion-moodle.md` | Fase 8: técnicas de browser automation confirmadas, checklist de precondiciones y reglas duras para importar al aula real |
 | `references/plantilla-reporte-importacion.md` | Plantilla del reporte de pendientes/incoherencias que deja la Fase 8 en la carpeta de la unidad |

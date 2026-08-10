@@ -167,6 +167,33 @@ trabajo_practico_integrador:   # Fase 7 — curso-level, ver plantilla-tpi-stand
   entrega_status: pendiente          # assign de entrega del TPI
   certificado_status: pendiente      # si el TPI emite certificado propio; na si no aplica
   foro_status: pendiente             # foro de consultas del TPI
+
+presentacion_general:        # Fase 10 — curso-level, opcional, UNA SOLA VEZ POR MATERIA (no por unidad).
+                               # Es la sección section=0 del curso real, "[MATERIA] - General", siempre
+                               # la primera pestaña, antes de la Unidad 1. Ver plantilla-presentacion-general.md
+  activa: false
+  banner_html_status: pendiente        # 00-descripcion-seccion.html
+  foros:
+    - nombre: "Avisos generales 📢"
+      descripcion_status: pendiente     # 01-foro-avisos-generales.html
+    - nombre: "🚀💻 Punto de Partida: Instalaciones y Ayuda"
+      descripcion_status: pendiente     # 02-foro-punto-de-partida.html
+    - nombre: "Avisos de la comisión 📌"
+      descripcion_status: pendiente     # 03-foro-avisos-comision.html -- na si la materia no tiene comisiones separadas
+  leccion_informacion_importante:
+    guion_status: pendiente             # pendiente | generado | confirmado -- 04-leccion-informacion-importante.md, 5 páginas
+    condiciones_aprobacion_confirmadas_por_usuario: false   # true SOLO cuando el usuario confirmó los datos reales
+                                                              # de regularidad/promoción de la Página 4 -- si el Programa
+                                                              # Detallado no los trae, esto se pregunta, nunca se inventa
+    completion_tracking_configurado: false   # true cuando el módulo mod_lesson ya tiene el seguimiento de
+                                               # finalización activado en Moodle (Fase 8, ver importacion-moodle.md §11)
+  que_necesitas_para_estudiar:
+    html_status: pendiente              # 05-que-necesitas-para-estudiar.html
+  cuestionario_inicial:
+    descripcion_html_status: pendiente  # 06-cuestionario-inicial.html
+    preguntas_xml_status: pendiente     # 5 preguntas administrativas sobre la Lección, no sobre contenido técnico
+    restriccion_acceso_configurada: false   # true cuando el mod_quiz ya quedó gateado a que la Lección
+                                              # esté completa (Fase 8, ver importacion-moodle.md §11)
 ```
 
 ## Reglas de uso
@@ -250,3 +277,13 @@ trabajo_practico_integrador:   # Fase 7 — curso-level, ver plantilla-tpi-stand
   salvo que el usuario diga que cambió el curso/mapeo.
   `reporte` apunta siempre a un `reporte-importacion.md` real ya escrito en la
   carpeta de esa unidad — nunca se deja `completado` sin ese archivo.
+- **`presentacion_general` es curso-level y único por materia** (Fase 10) — a
+  diferencia de `evaluaciones_curso`/`trabajo_practico_integrador`, que pueden
+  tener varias instancias (varios parciales), acá hay un solo bloque por
+  materia, igual que hay una sola sección `section=0` en el curso real.
+  `leccion_informacion_importante.condiciones_aprobacion_confirmadas_por_usuario`
+  es un gate análogo a `pdf_confirmado_por_usuario`: nunca se da por
+  `generado` el guion completo de la Lección sin que este campo esté en `true`
+  primero, si el Programa Detallado no traía esas condiciones explícitas.
+  `completion_tracking_configurado` y `cuestionario_inicial.restriccion_acceso_configurada`
+  son ajustes de Moodle (no HTML) que se marcan recién en Fase 8, no antes.
