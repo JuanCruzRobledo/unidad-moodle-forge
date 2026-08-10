@@ -235,6 +235,7 @@ corresponde.
 | `Actividades/actividad-N/actividad-N.html` | Label de la actividad N |
 | `Actividades/actividad-N/cuestionario-actividad-N.html` | Descripción del `mod_quiz` "Cuestionario – Actividad N" |
 | `Actividades/actividad-N/preguntas-actividad-N.xml` | Import al banco de preguntas + agregado al `mod_quiz` |
+| `Actividades/actividad-N/material-apoyo/material-apoyo-N-K.pdf` | Archivo dentro de la Carpeta (`mod_folder`) "Material de apoyo – Actividad N" — ver §9a |
 | `Practica/00-descripcion-seccion.html` | Descripción de la sub-sección Práctica |
 | `Practica/documento-practica.pdf` | Archivo (`mod_resource`) |
 | `Practica/consigna-practica.html` | Label que describe el Archivo/la consigna |
@@ -245,6 +246,54 @@ corresponde.
 | `Autoevaluacion/cuestionario-autoevaluacion.html` | Descripción del `mod_quiz` de Autoevaluación |
 | `Autoevaluacion/preguntas-autoevaluacion.xml` | Import al banco de preguntas + agregado al `mod_quiz` de Autoevaluación |
 | `EncuestaCierre/00-descripcion-seccion.html`, `01-encuesta-cierre.html` | Descripción de sección + Descripción del `mod_feedback` existente |
+
+## 9a. Material de apoyo — subir el PDF real a la Carpeta (confirmado en vivo)
+
+Cada actividad trae, en su sub-sección Actividades, una Carpeta (`mod_folder`)
+llamada **"Material de apoyo – Actividad N (pendiente)"** — el sufijo
+"(pendiente)" viene de una corrida anterior que la dejó marcada así a
+propósito, como señal visual de que faltaba contenido real. Confirmado en vivo
+(Unidad 1, Actividad 1, `campustest` id=8) que el flujo completo es:
+
+1. **Ubicar el `module-id` real de esa Carpeta**, con la misma técnica de
+   `fetch` + regex del §1 (contar `id="module-(\d+)"`), o inspeccionando el
+   HTML alrededor del texto "Material de apoyo" para sacar el id de
+   `data-id="<id>"` del contenedor `activity-wrapper folder`.
+2. **Ir directo a `course/modedit.php?update=<module-id>&return=1`** — abre el
+   formulario de edición de la Carpeta, con una sección "Contenido" que trae
+   el filemanager de Moodle (no hace falta pasar por la vista pública de la
+   carpeta primero).
+3. **Si la carpeta ya trae archivos de otra materia/plantilla reciclada**
+   (pasó en vivo: una carpeta de Unidad 1 traía "Estructuras Secuenciales -
+   Actividad I.pdf" e "Introducción a la programación.pdf", claramente de
+   Programación 1) — es el mismo bug de contenido reciclado del §8, aplicá el
+   mismo criterio: **no asumas que se borran solos**, confirmá con el usuario
+   la primera vez que aparece en una unidad. Para borrar cada uno: click en el
+   ícono del archivo dentro del filemanager → se abre un modal "Editar
+   \<nombre\>.pdf" con un botón **"Borrar"** → confirma con el modal
+   "¿Está seguro...?" → botón **"Sí"** (es un modal propio de Moodle, no un
+   `confirm()` nativo del navegador — no bloquea la sesión).
+4. **Subir el PDF real**: click en el botón "+" del filemanager (ícono de
+   agregar, arriba a la izquierda del área de "Archivos") → se abre el
+   "Selector de archivos" ya posicionado en la pestaña **"Subir un archivo"**
+   → usá `find` para ubicar el botón "Adjunto"/"Seleccionar archivo" (es un
+   `<input type=file>` real) → `file_upload` con la ruta absoluta del
+   `material-apoyo-N-K.pdf` ya generado → botón **"Subir este archivo"**.
+5. **Sacar el sufijo "(pendiente)" del campo Nombre** (arriba del todo del
+   formulario, sección "General") una vez que la carpeta ya tiene contenido
+   real — dejarlo así sería engañoso para cualquiera que mire el curso
+   después.
+6. **Guardar con "Guardar cambios y regresar al curso"** (mismo patrón que
+   cualquier `modedit.php`).
+
+Si una actividad tiene más de un documento de Material de apoyo
+(`material_apoyo.prompts[]` con más de un ítem en `estado.yml`), repetí el
+paso 4 por cada archivo — el filemanager de una Carpeta acepta múltiples
+archivos sin problema, no hace falta crear una Carpeta por documento.
+
+Marcá `material_apoyo.prompts[K].pdf_subido_por_usuario: true` en `estado.yml`
+recién cuando el archivo ya está confirmado adentro de la Carpeta real (no
+alcanza con que el PDF exista en el filesystem local).
 
 ## 9b. El widget de infografía se pega completo, nunca se recorta
 

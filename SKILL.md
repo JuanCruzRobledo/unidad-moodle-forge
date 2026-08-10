@@ -321,7 +321,11 @@ momento y retomar después sin repetir trabajo ni re-preguntar nada ya resuelto.
    restante, en el mismo orden en que están numerados; para Actividades, creá/editá
    el `mod_quiz` de cada actividad, importá sus 5 preguntas del XML correspondiente
    (`question/bank/importquestions/import.php`) y pegá `cuestionario-actividad-N.html`
-   en su Descripción; para Práctica, subí `documento-practica.pdf` como Archivo,
+   en su Descripción; si `material_apoyo.prompts[]` tiene ítems con el PDF ya
+   generado, subilo a la Carpeta "Material de apoyo – Actividad N" (ver
+   `references/importacion-moodle.md` §9a — ahí también se saca el sufijo
+   "(pendiente)" del nombre una vez que tiene contenido real); para Práctica,
+   subí `documento-practica.pdf` como Archivo,
    pegá `consigna-practica.html` en el Label que lo describe y `entrega-practica.html`
    en la Descripción de la Tarea; para Autoevaluación, creá/editá el `mod_quiz` (no
    hay Label acá), importá las 10 preguntas y pegá `cuestionario-autoevaluacion.html`
