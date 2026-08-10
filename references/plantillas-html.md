@@ -272,31 +272,46 @@ margin-bottom: 20px; font-family: sans-serif; color: #1a237e; line-height: 1.6;"
   </p>
 
   <!-- Tarjetas de recursos: mismo formato para todas las actividades. Solo cambiar [ID] (único
-       por actividad dentro de la unidad, ej. "u1-a1") y las URLs. -->
+       por actividad dentro de la unidad, ej. "u1-a1") y las URLs.
+
+       IMPORTANTE — fuente de la imagen de Infografía: sale del material "Infografía" que
+       genera NotebookLM Studio con las mismas fuentes del notebook de esa actividad (ver
+       notebooklm-guion.md), NUNCA de nanobanana/un modelo de imagen aparte. Nanobanana queda
+       reservado para otro tipo de imágenes (ej. banner de introducción de unidad). No generar
+       la infografía hasta que el NotebookLM de la actividad ya esté creado y tenga los 5
+       materiales de Studio generados. -->
   <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 20px;">
 
-    <div id="btn-infografia-[ID]" style="flex: 1 1 140px; max-width: 180px; background: white;
-    border-radius: 12px; border: 1px solid #e6fffa; cursor: pointer;" tabindex="0" role="button">
+    <div id="btn-infografia-[ID]" style="text-decoration: none; flex: 1 1 140px; max-width: 180px;
+    min-width: 130px; background: white; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid #e6fffa; overflow: hidden; transition: transform 0.2s; cursor: pointer;"
+    tabindex="0" role="button">
       <div style="background-color: #e6fffa; height: 80px; display: flex; align-items: center; justify-content: center;">
-        <span style="font-size: 40px;"></span>
+        <span style="font-size: 40px;">📊</span>
       </div>
       <div style="padding: 12px; text-align: center;">
-        <h5 style="margin: 0; color: #00796b;">Infografía</h5>
-        <span style="font-size: 0.8em;">Ver esquema</span>
+        <h5 style="margin: 0; color: #00796b; font-size: 0.95em; font-weight: bold;">Infografía</h5>
+        <span style="font-size: 0.8em; color: #718096;">Ver esquema</span>
       </div>
     </div>
 
-    <details id="details-infografia-[ID]" style="border: none;">
+    <details id="details-infografia-[ID]" style="border: none; padding: 0; margin: 0;">
       <summary style="display:none;"></summary>
-      <div class="infografia-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-      z-index: 99999; display: flex; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 10px; max-width: 900px; width: 100%;">
-          <div style="padding: 10px; display: flex; justify-content: space-between;">
-            <strong>Infografía – [NOMBRE ACTIVIDAD]</strong>
-            <button id="btn-cerrar-infografia-[ID]" type="button">CERRAR</button>
+      <div class="infografia-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); z-index: 99999; display: flex; align-items: center; justify-content: center;
+      padding: 20px; box-sizing: border-box;">
+        <div style="background: white; border-radius: 10px; max-width: 900px; width: 100%; max-height: 90vh;
+        display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); position: relative;">
+          <div style="background: #f7fafc; padding: 10px 15px; border-bottom: 1px solid #edf2f7;
+          border-radius: 10px 10px 0 0; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: bold; color: #4a5568;">📊 Infografía: [NOMBRE ACTIVIDAD]</span>
+            <button id="btn-cerrar-infografia-[ID]" type="button" style="background-color: #cbd5e0;
+            color: #4a5568; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;
+            font-weight: bold; font-size: 0.85em;">✕ CERRAR</button>
           </div>
-          <div style="padding: 10px; text-align: center;">
-            <img src="URL_IMAGEN_INFOGRAFIA" alt="Infografía" style="max-width:100%;">
+          <div style="overflow-y: auto; padding: 10px; text-align: center; background: #fff; height: 100%;">
+            <img class="img-fluid" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
+            src="URL_IMAGEN_INFOGRAFIA" alt="Infografía [NOMBRE ACTIVIDAD]">
           </div>
         </div>
       </div>
@@ -322,26 +337,29 @@ margin-bottom: 20px; font-family: sans-serif; color: #1a237e; line-height: 1.6;"
       })();
     </script>
 
-    <a href="URL_PDF" target="_blank" rel="noopener" style="flex: 1 1 140px; max-width: 180px;
-    background: white; border-radius: 12px; border: 1px solid #fff5f5;">
+    <a href="URL_PDF" target="_blank" rel="noopener" style="text-decoration: none; flex: 1 1 140px;
+    max-width: 180px; min-width: 130px; background: white; border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #fff5f5; overflow: hidden; transition: transform 0.2s;">
       <div style="background-color: #fff5f5; height: 80px; display: flex; align-items: center; justify-content: center;">
-        <span style="font-size: 40px;"></span>
+        <span style="font-size: 40px;">📕</span>
       </div>
       <div style="padding: 12px; text-align: center;">
-        <h5 style="margin:0;">Lectura PDF</h5>
-        <span style="font-size:0.8em;">Material obligatorio</span>
+        <h5 style="margin:0; color: #9b2c2c; font-size: 0.95em; font-weight: bold;">Lectura PDF</h5>
+        <span style="font-size:0.8em; color: #718096;">Material obligatorio</span>
       </div>
     </a>
 
-    <!-- URL_IA queda como placeholder hasta que el usuario suba el Notebook a mano y devuelva el link real -->
-    <a href="URL_IA_NOTEBOOKLM" target="_blank" rel="noopener" style="flex: 1 1 140px; max-width: 180px;
-    background: white; border-radius: 12px; border: 1px solid #faf5ff;">
+    <!-- URL_IA_NOTEBOOKLM queda como placeholder hasta generar el NotebookLM de la actividad
+         (a mano o vía browser automation, ver notebooklm-guion.md) y pegar el link real -->
+    <a href="URL_IA_NOTEBOOKLM" target="_blank" rel="noopener" style="text-decoration: none; flex: 1 1 140px;
+    max-width: 180px; min-width: 130px; background: white; border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #faf5ff; overflow: hidden; transition: transform 0.2s;">
       <div style="background-color: #faf5ff; height: 80px; display: flex; align-items: center; justify-content: center;">
-        <span style="font-size: 40px;"></span>
+        <span style="font-size: 40px;">🤖</span>
       </div>
       <div style="padding: 12px; text-align: center;">
-        <h5 style="margin:0;">Asistente IA</h5>
-        <span style="font-size:0.8em;">Repaso interactivo</span>
+        <h5 style="margin:0; color: #6b46c1; font-size: 0.95em; font-weight: bold;">Asistente IA</h5>
+        <span style="font-size:0.8em; color: #718096;">Repaso interactivo</span>
       </div>
     </a>
   </div>
