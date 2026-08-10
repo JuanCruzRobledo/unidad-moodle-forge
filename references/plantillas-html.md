@@ -364,6 +364,12 @@ margin-bottom: 20px; font-family: sans-serif; color: #1a237e; line-height: 1.6;"
     </a>
   </div>
 
+  <!-- Bloque "Código de apoyo" — OPCIONAL, no generar por defecto. Solo agregarlo si la
+       actividad tiene de verdad algo real a lo que apuntar: un repositorio, código o
+       ejercicios resueltos vistos en clase. Si no hay ese material (caso de la mayoría de
+       las actividades de Metodología I/II hasta ahora), no incluir este bloque en absoluto
+       — no dejarlo con URL_CODIGO_1/URL_CODIGO_2 como placeholder eterno sin nada real
+       detrás. Si en algún momento la actividad SÍ tiene ese material, usar este bloque: -->
   <p style="margin-top: 20px; background-color: #e3f2fd; padding: 10px; border-radius: 6px;">
     <strong>Código de apoyo:</strong><br>
     <a href="URL_CODIGO_1" target="_blank">Archivo 1</a><br>
