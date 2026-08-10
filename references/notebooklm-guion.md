@@ -1,8 +1,17 @@
-# NotebookLM por actividad — spec y guion fuente
+# NotebookLM por actividad — spec, guion fuente y automatización por browser
 
-NotebookLM no tiene API pública: **no se automatiza la creación del notebook**. Lo
-que la skill entrega es el **guion/fuente** listo para que el usuario lo pegue como
-fuente en NotebookLM y genere los 5 materiales él mismo, en unos minutos.
+**Rebranding (2026-08-10):** el producto se renombró a **"Gemini Notebook"**
+(`notebook.google.com` — `notebooklm.google.com` redirige ahí). Esta referencia
+sigue llamándolo NotebookLM porque es como lo conoce la cátedra, pero cualquier UI
+que se describa acá corresponde a la marca nueva.
+
+NotebookLM no tiene API pública, pero **si el usuario tiene disponible el MCP/tool de
+browser automation (`claude-in-chrome` u otro)**, la skill SÍ puede automatizar la
+creación completa del notebook: subir fuentes, generar los 5 materiales de Studio y
+compartirlo — validado en vivo en Unidad 1/Actividad 1 (Metodología I). Si no hay
+browser automation disponible, el camino sigue siendo el de siempre: la skill entrega
+el **guion/fuente** listo para que el usuario lo pegue a mano y genere los 5
+materiales él mismo.
 
 ## Gate: cuándo tiene sentido generar esto
 
@@ -27,13 +36,17 @@ qué falta en vez de generar un paquete de fuentes incompleto.
 
 ## Configuración exacta a usar por tipo de material (según la cátedra)
 
-| Material | Configuración a elegir en NotebookLM |
-|---|---|
-| Resumen de video | Video explicativo · idioma español latino · estilo clásico |
-| Resumen de audio | Formato Breve · idioma español latino |
-| Infografía | Idioma español latino · orientación horizontal · nivel de detalle: detallado |
-| Presentación | Presentación Detallada · idioma español latino · duración predeterminada |
-| Tarjetas didácticas | Número de tarjetas: Standard · dificultad: media |
+Nombres de opciones confirmados contra la UI real de Gemini Notebook (2026-08-10) —
+la tabla vieja usaba nombres genéricos que ya no coinciden 1:1 con los controles
+reales, se corrigió acá:
+
+| Material | Control en Studio | Configuración a elegir |
+|---|---|---|
+| Resumen de video | "Resumen en video" | Formato **Explicación** · idioma español (Latinoamérica) · estilo visual **Clásico** |
+| Resumen de audio | "Resumen en audio" | Formato **Resumen** (NO "Análisis detallado", que es más largo/conversacional) · idioma español (Latinoamérica) — con formato "Resumen" no aparece selector de duración, ya es corto por diseño |
+| Infografía (BETA) | "Infografía" | Orientación **Horizontal** · idioma español (Latinoamérica) · nivel de detalle **Detallado** |
+| Presentación (BETA) | "Presentación con diapositivas" | Formato **Presentación detallada** · idioma español (Latinoamérica) · duración **Predeterminada** |
+| Tarjetas didácticas | "Tarjetas didácticas" | Cantidad **Estándar** · dificultad **Media** |
 
 Después de generar la infografía, comprimirla antes de subirla al aula con
 https://www.iloveimg.com/es/comprimir-imagen (el aula real usa imágenes livianas para
@@ -80,9 +93,60 @@ PDFs) — nunca se inventa un tema que no esté respaldado por lo que el docente
 Si falta ese material para una actividad puntual, preguntale al usuario antes de
 generar el guion.
 
-## Después de que el usuario genera el notebook
+## Automatización opcional por browser (si hay `claude-in-chrome` u otro MCP de browser)
 
-Pedile la URL real (`https://notebooklm.google.com/notebook/<uuid>`) y reemplazá el
+Validado en vivo de punta a punta (Unidad 1/Actividad 1, Metodología I). Flujo
+completo:
+
+1. **Generá primero el `guion-actividad-N.md`** con la plantilla de más abajo — es
+   una de las fuentes reales, no un paso previo descartable.
+2. Navegá a `notebook.google.com`, click en "Crear nuevo" (o "+ Crear cuaderno").
+   Gemini Notebook autotitula el cuaderno a partir de las fuentes que subas — no
+   hace falta titularlo a mano.
+3. **Subí como fuentes** (botón "Subir archivos", `input[type=file]` real, usar la
+   herramienta de upload directo con las rutas locales, no el picker nativo del SO):
+   - `Actividades/notebooklm/guion-actividad-N.md`
+   - `Actividades/actividad-N/documento-lectura-actividad-N.pdf`
+   - Cada `Actividades/actividad-N/material-apoyo/material-apoyo-N-K.pdf` que ya
+     esté generado.
+4. **Gotcha confirmado — NO subas las URLs de YouTube como fuente, aunque los 3
+   videos ya estén subidos y confirmados en Moodle.** Se probó explícitamente: las 3
+   URLs reales fallaron al importar con el error de la propia UI *"No se puede
+   importar este video. La transcripción no está disponible."* — son videos TTS de
+   HyperFrames, YouTube no les generó subtítulos automáticos. En su lugar, subí los
+   3 `Actividades/actividad-N/videos/guion-video-actividad-N-K.md` como fuente de
+   texto (son la transcripción exacta, el TTS los lee literal) — es el mismo criterio
+   que ya usaba el camino manual, simplemente confirmado como el único que funciona
+   incluso con el video ya público.
+5. **Generá los 5 materiales de Studio** con la configuración de la tabla de arriba,
+   uno por uno (no hace falta esperar a que termine uno para lanzar el siguiente,
+   corren en paralelo). Gotcha de UI: el panel Studio reordena las tarjetas cada vez
+   que un ítem pasa a "generando" (lo sube al tope de la lista) — usá `find` por el
+   nombre exacto del botón en cada click, nunca coordenadas de un screenshot
+   anterior, o vas a terminar clickeando el ítem equivocado.
+6. **Tiempos reales observados**: Tarjetas didácticas e Infografía ~1 min. Audio
+   ~7 min. Video ~5 min. Presentación (BETA) fue la más lenta, ~9-10 min — no asumas
+   que terminó solo porque las otras 4 ya están, esperá confirmación visual de las 5.
+7. **Compartir — requiere confirmación explícita del usuario antes de tocarlo**,
+   porque cambia la visibilidad de un documento real de su cuenta de Google: botón
+   "Compartir" → "Acceso desde el cuaderno" → cambiar de "Restringido" a **"Cualquier
+   persona que tenga el vínculo"** → Guardar. No asumas el valor por defecto
+   ("Restringido" = nadie más puede abrirlo con el link, inútil para alumnos).
+8. **Pegá la URL real** (`https://notebook.google.com/notebook/<uuid>`) reemplazando
+   el placeholder `URL_IA_NOTEBOOKLM` — tanto en el `actividad-N.html` local como en
+   el Label real de Moodle, usando la MISMA técnica de reconstrucción completa +
+   `setContent()` documentada en `importacion-moodle.md` §9d (nunca insertar el link
+   suelto sobre el Label ya renderizado). De paso, si el widget de Infografía o el
+   bloque "Código de apoyo" faltan en el Label real (daño de una sesión anterior),
+   esta reconstrucción completa los repara sin esfuerzo extra.
+9. Marcá en `estado.yml`: `notebooklm.link_pegado: true` + `notebooklm.url: <link>`
+   (ver `estado-yml-schema.md`).
+
+## Si no hay browser automation disponible
+
+Generá igual el `guion-actividad-N.md` (plantilla de abajo) y pedile al usuario que
+lo suba a mano como fuente en Gemini Notebook junto con el resto de los archivos
+reales de la actividad, usando la tabla de configuración de arriba. Cuando te pase
+la URL real (`https://notebook.google.com/notebook/<uuid>`), reemplazá el
 placeholder `URL_IA_NOTEBOOKLM` de la tarjeta "Asistente IA" en el HTML de la
-actividad correspondiente. Marcá en `estado.yml` que el NotebookLM de esa actividad
-quedó `notebooklm.link_pegado: true` (ver `estado-yml-schema.md`).
+actividad correspondiente y marcá `notebooklm.link_pegado: true` en `estado.yml`.
