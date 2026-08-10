@@ -247,11 +247,11 @@ corresponde.
 | `Autoevaluacion/cuestionario-autoevaluacion.html` | Descripción del `mod_quiz` de Autoevaluación |
 | `Autoevaluacion/preguntas-autoevaluacion.xml` | Import al banco de preguntas + agregado al `mod_quiz` de Autoevaluación |
 | `EncuestaCierre/00-descripcion-seccion.html`, `01-encuesta-cierre.html` | Descripción de sección + Descripción del `mod_feedback` existente |
-| `Presentacion-general/00-descripcion-seccion.html` | Descripción de la sección `section=0` ("[Materia] - General") — ver Fase 10 de `SKILL.md` |
-| `Presentacion-general/01-foro-avisos-generales.html`, `02-foro-punto-de-partida.html`, `03-foro-avisos-comision.html` | Descripción de cada `mod_forum` nativo (no Label) |
-| `Presentacion-general/04-leccion-informacion-importante.md` | Contenido de las páginas del `mod_lesson` "Información importante sobre la materia" — ver §11 |
-| `Presentacion-general/05-que-necesitas-para-estudiar.html` | Label independiente |
-| `Presentacion-general/06-cuestionario-inicial.html` + preguntas XML | Descripción del `mod_quiz` "Cuestionario Inicial Obligatorio" + import de preguntas al banco — ver §11 |
+| `Presentacion General/00-descripcion-seccion.html` | Descripción de la sección `section=0` ("[Materia] - General") — ver Fase 10 de `SKILL.md` |
+| `Presentacion General/01-foro-avisos-generales.html`, `02-foro-punto-de-partida.html`, `03-foro-avisos-comision.html` | Descripción de cada `mod_forum` nativo (no Label) |
+| `Presentacion General/04-leccion-informacion-importante.md` | Contenido de las páginas del `mod_lesson` "Información importante sobre la materia" — ver §11 |
+| `Presentacion General/05-que-necesitas-para-estudiar.html` | Label independiente |
+| `Presentacion General/06-cuestionario-inicial.html` + preguntas XML | Descripción del `mod_quiz` "Cuestionario Inicial Obligatorio" + import de preguntas al banco — ver §11 |
 
 ## 9a. Material de apoyo — subir el PDF real a la Carpeta (confirmado en vivo)
 
