@@ -4,6 +4,10 @@
 playwright
 pyyaml
 
+# Solo necesaria para scripts/resize_imagen_banner.py (forzar la imagen de
+# banner de Introduccion, Fase 1, a 600x600px exactos tras generarla)
+Pillow
+
 # Solo necesarias para scripts/gamma_generate.py (generacion opcional de
 # Material de apoyo via la API de Gamma, requiere cuenta paga) y
 # scripts/configurar.py (lee/escribe el .env de esta maquina)

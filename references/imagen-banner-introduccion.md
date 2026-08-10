@@ -105,13 +105,26 @@ alrededor, composición limpia y equilibrada, apta para achicarse a thumbnail
 sin perder legibilidad. IMPORTANTE: no incluyas ningún texto, letra, palabra
 ni número dentro de la imagen. No uses logos ni íconos que se parezcan a la
 marca de una empresa comercial real, salvo que se pida explícitamente un logo
-oficial de tecnología libre de uso. Relación de aspecto panorámica (16:9).
+oficial de tecnología libre de uso. Composición cuadrada (proporción 1:1),
+con los elementos centrados dejando margen parejo en los cuatro bordes.
 ```
 
 Completá `{COLOR_HEX}` con la paleta de arriba y `{ELEMENTOS_VISUALES}` con
 los 1-3 elementos concretos del tema (ver tabla de arriba), descriptos en una
 frase corta cada uno (ej. "un robot simple de líneas limpias", "un documento
 con una lista de tareas tildadas", "dos flechas formando un ciclo").
+
+## Tamaño final: 600×600px exactos
+
+El archivo que termina en `Introduccion/imagen-banner-introduccion.png` tiene
+que quedar en **600×600 píxeles exactos** — tamaño definido por el usuario
+para esta imagen puntual (no un default de la skill para otro tipo de
+imagen). **No confíes en que el modelo lo devuelva ya en ese tamaño**:
+confirmado en vivo que aunque el prompt pida composición cuadrada, nanobanana
+(vía OpenRouter) puede devolver otra resolución cuadrada distinta (ej.
+1024×1024) sin avisar. Por eso el tamaño se **fuerza siempre** como paso
+aparte después de generar, nunca se da por bueno el archivo tal cual sale del
+modelo — ver el paso 2 de "Después de generar la imagen" más abajo.
 
 ## Invocación
 
@@ -139,16 +152,22 @@ resto del flujo normal.
 
 1. Guardá el archivo en `Introduccion/imagen-banner-introduccion.png` (o la
    extensión que devuelva la tool).
-2. Marcá `introduccion.imagen_banner.status: generado` y completá
+2. **Forzá el tamaño a 600×600px** corriendo
+   `python scripts/resize_imagen_banner.py --entrada "<ruta>/Introduccion/imagen-banner-introduccion.png"`
+   (sobrescribe el mismo archivo con un recorte centrado + resize a 600×600).
+   Este paso es obligatorio siempre, no solo cuando el archivo "se ve" de otro
+   tamaño — no lo saltees asumiendo que el modelo ya devolvió 600×600.
+3. Marcá `introduccion.imagen_banner.status: generado` y completá
    `introduccion.imagen_banner.ruta` en `estado.yml` (ver
    `references/estado-yml-schema.md`).
-3. **Mostrale la imagen al usuario y esperá su confirmación** antes de pasar
+4. **Mostrale la imagen al usuario y esperá su confirmación** antes de pasar
    `status` a `confirmado` — mismo principio de revisión que el resto de la
    skill (Práctica, Lectura PDF, Material de apoyo): generar es barato,
    publicar algo que no queda bien es más caro de deshacer. Si no convence,
    volvé a generar ajustando el prompt (otro elemento visual, otro color)
-   antes de seguir.
-4. El `src="URL_DE_LA_IMAGEN"` del HTML **no se resuelve todavía** en este
+   antes de seguir — igual corré de nuevo el resize del paso 2 sobre el nuevo
+   archivo.
+5. El `src="URL_DE_LA_IMAGEN"` del HTML **no se resuelve todavía** en este
    paso — sigue siendo un placeholder hasta la Fase 8 (Importación), donde se
    sube el archivo real a Moodle y se reemplaza por la URL real (ver
    `references/importacion-moodle.md` § 9e).
