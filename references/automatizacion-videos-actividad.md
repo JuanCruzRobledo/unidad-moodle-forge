@@ -90,10 +90,14 @@ contenido por unidad (3 actividades × 3 videos = 9 por unidad, no es poco).
    renderizado y el usuario lo revisó (se reproduce bien, respeta el guion,
    audio sincronizado).
 
-5. El `.mp4` **nunca se sube a YouTube automáticamente** — la skill no tiene
-   ese paso. El usuario lo sube a mano y devuelve la URL real, que reemplaza el
-   placeholder `URL_VIDEO_K` en `actividad-N.html`. Recién ahí `url_subida:
-   true`.
+5. Por default el `.mp4` lo sube el usuario a mano y devuelve la URL real, que
+   reemplaza el placeholder `URL_VIDEO_K` en `actividad-N.html`. Recién ahí
+   `url_subida: true`. Existe un camino opcional automatizado vía la YouTube
+   Data API v3 (mismo criterio que Gamma: opt-in, requiere que el usuario haya
+   configurado sus propias credenciales) — ver
+   `references/automatizacion-subida-youtube.md`, que incluye la regla del
+   título real (distinto al texto del link "Video N – ..." del HTML) y por qué
+   la organización en playlists nunca se asume ni se hardcodea.
 
 ## Checklist antes de dar un video por terminado
 

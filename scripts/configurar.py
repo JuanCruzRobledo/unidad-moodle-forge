@@ -102,6 +102,55 @@ def configurar_gamma(saltear_key: bool) -> None:
           "no se le mostro al agente).")
 
 
+def configurar_youtube(saltear_key: bool) -> None:
+    lineas = leer_env()
+
+    if saltear_key:
+        print(
+            "\n--skip-key: no toco YOUTUBE_AUTOMATIZADO. Completalo a mano en .env "
+            "cuando quieras activar la subida automatizada de videos."
+        )
+        return
+
+    print("\n--- Subida de videos (YouTube Data API v3) ---")
+    print(
+        "Este paso NO lo resuelve este script -- requiere que ya hayas creado un "
+        "proyecto en Google Cloud Console, habilitado la YouTube Data API v3, "
+        "configurado la pantalla de consentimiento OAuth y descargado un "
+        "client_secret.json de un cliente tipo 'App de escritorio'. Ver el paso a "
+        "paso completo en references/automatizacion-subida-youtube.md."
+    )
+    respuesta = input(
+        "¿Ya tenés ese client_secret.json guardado como "
+        "scripts/.youtube_client_secret.json y querés activar la subida "
+        "automatizada? (y/N): "
+    ).strip().lower()
+    if respuesta != "y":
+        print("Ok, queda en modo manual (YOUTUBE_AUTOMATIZADO=false) -- vos seguís "
+              "subiendo los videos a mano y devolviendo la URL real.")
+        return
+
+    client_secret_path = SKILL_ROOT / "scripts" / ".youtube_client_secret.json"
+    if not client_secret_path.exists():
+        print(
+            f"No encontré {client_secret_path} -- guardalo ahí primero (ver "
+            "references/automatizacion-subida-youtube.md, paso 6-7) y volvé a "
+            "correr este script."
+        )
+        return
+
+    lineas = escribir_valor(lineas, "YOUTUBE_AUTOMATIZADO", "true")
+
+    with open(ENV_PATH, "w", encoding="utf-8") as f:
+        f.writelines(lineas)
+
+    print(
+        "Listo -- YOUTUBE_AUTOMATIZADO=true. La primera subida real va a abrir tu "
+        "navegador para autorizar una sola vez (queda cacheado en "
+        "scripts/.youtube_token.json)."
+    )
+
+
 def mostrar_resumen() -> None:
     print("\n--- Estado final de .env ---")
     for linea in leer_env():
@@ -127,6 +176,7 @@ def main() -> None:
 
     asegurar_env()
     configurar_gamma(saltear_key=args.skip_key)
+    configurar_youtube(saltear_key=args.skip_key)
     mostrar_resumen()
 
 

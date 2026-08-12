@@ -36,7 +36,24 @@ unidades:
       video_guion_status: pendiente   # guion-video-introduccion.md -- se genera AL CIERRE del flujo
                                        # de la unidad (después de Actividades/Práctica/Autoevaluación),
                                        # nunca en la Fase 1, para que el guion sea coherente con el
-                                       # contenido ya cerrado de toda la unidad
+                                       # contenido ya cerrado de toda la unidad. Por default (skill) es
+                                       # un guion de GRABACIÓN para que el docente lo lea en cámara.
+      video_render_status: pendiente  # SOLO aplica si el workspace optó por generar este video con
+                                       # HyperFrames en vez de dejarlo para grabación humana (ver "Video
+                                       # de Introducción" en SKILL.md Fase 1 -- es un comportamiento
+                                       # opt-in, no el default). Si aplica, el guion tiene que estar en
+                                       # formato "texto exacto para el TTS" (mismo formato que
+                                       # guion-video-actividad-N-K.md), no notas/bullets de grabación --
+                                       # si un workspace cambia de criterio a mitad de camino, revisar
+                                       # que el guion viejo se haya reescrito antes de marcar esto
+                                       # "generado". Si el workspace no usa este flujo, dejar en
+                                       # "pendiente" no es un pendiente real -- simplemente no aplica.
+    playlist_youtube:              # opcional -- ver references/automatizacion-subida-youtube.md.
+                                    # Se decide UNA VEZ por unidad (AskUserQuestion, nunca asumido) y
+                                    # se reutiliza para el resto de los videos de esa misma unidad.
+      habilitada: false            # true si esta unidad organiza sus videos en una playlist de YouTube
+      id: ""                       # ID real de la playlist (vacío si habilitada: false)
+      nombre: ""                   # nombre de la playlist, de referencia humana
     actividades:
       cantidad: 4
       items:
@@ -63,16 +80,23 @@ unidades:
               guion_status: pendiente     # pendiente | generado -- guion-video-actividad-N-1.md
               render_status: pendiente    # pendiente | generado -- el .mp4 ya se renderizó con
                                            # la skill hyperframes (se genera ON DEMAND, nunca en lote)
-              url_subida: false           # true cuando el usuario subió el .mp4 a YouTube y pegó
-                                           # la URL real en el HTML
+              url_subida: false           # true cuando el video ya está en YouTube y el HTML tiene
+                                           # la URL real -- da igual si fue el usuario a mano o la
+                                           # automatización opcional (ver
+                                           # references/automatizacion-subida-youtube.md), el campo
+                                           # es el mismo en los dos caminos
+              url: ""                     # URL real (https://youtu.be/...), vacío mientras
+                                           # url_subida sea false
             - numero: 2
               guion_status: pendiente
               render_status: pendiente
               url_subida: false
+              url: ""
             - numero: 3
               guion_status: pendiente
               render_status: pendiente
               url_subida: false
+              url: ""
           notebooklm:
             guion_status: generado    # el paquete de fuentes NO se genera hasta que material_apoyo
                                        # y lectura_pdf estén como mínimo "generado" y los 3 videos
@@ -249,9 +273,24 @@ presentacion_general:        # Fase 10 — curso-level, opcional, UNA SOLA VEZ P
 - `videos[].render_status` pasa a `generado` cuando la skill ya renderizó el
   `.mp4` con la skill `hyperframes` (siempre on-demand, nunca en lote para
   varias actividades/unidades a la vez — ver
-  `references/automatizacion-videos-actividad.md`). `url_subida` es aparte y
-  quiere decir que el usuario ya subió ese `.mp4` a YouTube y devolvió la URL
-  real para reemplazar el placeholder `URL_VIDEO_N`.
+  `references/automatizacion-videos-actividad.md`). `url_subida` + `url` son
+  aparte y quieren decir que el video ya está en YouTube — por default el
+  usuario lo sube a mano, pero existe un camino opcional automatizado (ver
+  `references/automatizacion-subida-youtube.md`); en los dos casos se llenan
+  los mismos dos campos, la skill no distingue cuál camino se usó.
+- `introduccion.video_render_status` (unidad) sigue el mismo patrón que
+  `videos[].render_status` de actividad, pero **solo aplica si el workspace
+  activó el flujo de generar el video de Introducción con HyperFrames** en vez
+  de dejarlo como guion de grabación humana (comportamiento opt-in, ver
+  SKILL.md Fase 1) — si el workspace no lo activó, ese campo directamente no
+  se usa y no representa un pendiente real.
+- `playlist_youtube` (unidad) es **siempre una decisión del usuario, nunca un
+  default de la skill** — ni "una playlist por unidad" ni "todo en una sola"
+  están hardcodeados. Se pregunta una vez, antes de subir el primer video de
+  esa unidad (automatizado o no), y la respuesta queda acá para no volver a
+  preguntar por cada video siguiente de la misma unidad. Si el usuario tiene
+  una convención fija para su propio workspace (ej. "siempre uso una playlist
+  por unidad"), eso se documenta en el `CLAUDE.md` de ese proyecto — no acá.
 - El mismo gate de `pdf_status` aplica en `evaluaciones_curso.parciales[]`,
   `evaluaciones_curso.recuperatorios[]` y `trabajo_practico_integrador`: nunca
   pasa a `generado` sin `pdf_confirmado_por_usuario: true` seteado primero, y la
