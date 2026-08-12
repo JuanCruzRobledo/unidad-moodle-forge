@@ -48,6 +48,14 @@ unidades:
                                        # que el guion viejo se haya reescrito antes de marcar esto
                                        # "generado". Si el workspace no usa este flujo, dejar en
                                        # "pendiente" no es un pendiente real -- simplemente no aplica.
+      url_subida: false               # mismo campo y mismo significado que videos[].url_subida --
+                                       # true cuando el video de Introducción ya está en YouTube
+                                       # (manual o vía automatización opcional, da igual cuál).
+      url: ""                         # URL real (https://youtu.be/...), vacío mientras url_subida
+                                       # sea false. Ojo: es fácil olvidar estos dos campos porque
+                                       # introducción no tiene un `videos[]` con numeración como las
+                                       # actividades -- no dejar el video de Introducción subido sin
+                                       # que esto quede reflejado acá.
     playlist_youtube:              # opcional -- ver references/automatizacion-subida-youtube.md.
                                     # Se decide UNA VEZ por unidad (AskUserQuestion, nunca asumido) y
                                     # se reutiliza para el resto de los videos de esa misma unidad.
@@ -283,7 +291,11 @@ presentacion_general:        # Fase 10 — curso-level, opcional, UNA SOLA VEZ P
   activó el flujo de generar el video de Introducción con HyperFrames** en vez
   de dejarlo como guion de grabación humana (comportamiento opt-in, ver
   SKILL.md Fase 1) — si el workspace no lo activó, ese campo directamente no
-  se usa y no representa un pendiente real.
+  se usa y no representa un pendiente real. `introduccion.url_subida` +
+  `introduccion.url` son aparte, mismo campo/significado que en `videos[]` —
+  fácil de olvidar precisamente porque Introducción no tiene numeración como
+  las actividades; si el video de Introducción ya está en YouTube, esto tiene
+  que quedar reflejado acá tanto como en cualquier `videos[K]`.
 - `playlist_youtube` (unidad) es **siempre una decisión del usuario, nunca un
   default de la skill** — ni "una playlist por unidad" ni "todo en una sola"
   están hardcodeados. Se pregunta una vez, antes de subir el primer video de
