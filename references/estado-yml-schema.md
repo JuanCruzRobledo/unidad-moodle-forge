@@ -82,6 +82,19 @@ unidades:
             pdf_status: pendiente     # mismo gate que practica.pdf_status: nunca "generado" sin
                                        # pdf_confirmado_por_usuario en true primero
             pdf_confirmado_por_usuario: false
+          infografia:                 # imagen real de la tarjeta "Infografía" del widget --
+                                       # URL_IMAGEN_INFOGRAFIA en plantillas-html.md. Sale del
+                                       # material "Infografía" que genera NotebookLM Studio con
+                                       # las fuentes de esta misma actividad, nunca de nanobanana
+                                       # ni de otro modelo de imagen -- ver notebooklm-guion.md.
+            imagen_status: pendiente  # pendiente | generado -- "generado" = ya está el .jpg
+                                       # comprimido (PIL, resize 1600px + JPEG q82) en
+                                       # Actividades/actividad-N/infografia-actividad-N.jpg,
+                                       # sea cual sea quién lo bajó de Studio
+            fuente: notebooklm_studio # fijo, documenta de dónde sale la imagen
+            imagen_subida_por_usuario: false  # true recién cuando el .jpg YA está pegado como
+                                       # pluginfile.php real en el Label de Moodle (Fase 8) --
+                                       # nunca por haberla descargado, eso lo cubre imagen_status
           videos:                     # 3 videos de la actividad (URL_VIDEO_1/2/3) -- ver
                                        # references/automatizacion-videos-actividad.md
             - numero: 1
@@ -268,6 +281,19 @@ presentacion_general:        # Fase 10 — curso-level, opcional, UNA SOLA VEZ P
   generado` — el paquete de fuentes de NotebookLM lista esos archivos reales
   (ver `references/notebooklm-guion.md`), así que generarlo antes sería
   documentar fuentes que todavía no existen.
+- `infografia.imagen_status` pasa a `generado` en cuanto el archivo comprimido
+  existe en el filesystem (`infografia-actividad-N.jpg`) — no depende de que
+  ya esté pegada en el aula real. Si hay `claude-in-chrome` disponible, la
+  descarga desde NotebookLM Studio la hace el agente (mismo mecanismo
+  automatizado que el resto del flujo de `notebooklm-guion.md`, incluso
+  cuando el notebook y sus 5 materiales de Studio ya se generaron en una
+  sesión anterior — no hace falta recrear nada, solo abrir el notebook
+  existente, ir al ítem Infografía y descargar); sin browser automation, es
+  el usuario quien la baja a mano y la pasa. `imagen_subida_por_usuario` es
+  un campo aparte que solo pasa a `true` cuando el `.jpg` ya quedó como
+  `pluginfile.php` real en el Label de Moodle (Fase 8) — el nombre es
+  heredado de cuando este paso era manual y hoy sigue significando "ya está
+  en el aula real", no "quién la bajó".
 - `lectura_pdf.pdf_status` usa el mismo gate que `practica.pdf_status`: nunca
   pasa a `generado` sin `lectura_pdf.pdf_confirmado_por_usuario: true` seteado
   primero, y la confirmación es sobre `documento-lectura-actividad-N.html` (ver

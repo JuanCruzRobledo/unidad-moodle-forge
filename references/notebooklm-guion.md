@@ -185,6 +185,20 @@ completo:
     `infografia.imagen_status: generado` + `infografia.fuente: notebooklm_studio` (ver
     `estado-yml-schema.md`).
 
+## Atajo: el notebook y sus 5 materiales ya existen, solo falta bajar la infografía
+
+Caso frecuente en retrofit (Fase 9): en una sesión anterior ya se creó el
+notebook, se subieron las fuentes y se lanzaron los 5 materiales de Studio —
+pero se cortó el hilo antes del paso 8 (descargar la infografía) o antes del
+paso 10 (pegar todo en el HTML). Si eso ya pasó, **no repitas los pasos 1-7**:
+andá directo al paso 8 con la URL del notebook ya existente (`notebooklm.url`
+en `estado.yml`) — abrí ese notebook, entrá a Studio, abrí el ítem Infografía
+por su nombre real (no el genérico "Infografía": Studio lo autotitula con el
+tema, ej. "Anatomía de un Prompt Profesional") → menú "⋮" → "Descargar",
+comprimila y seguí desde ahí. Esto aplica aunque el `link_pegado` de esa
+actividad todavía esté en `false` — bajar la infografía no depende de que el
+link ya esté pegado en Moodle, son pasos independientes del mismo paquete.
+
 ## Si no hay browser automation disponible
 
 Generá igual el `guion-actividad-N.md` (plantilla de abajo) y pedile al usuario que
