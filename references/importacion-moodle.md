@@ -122,6 +122,23 @@ propio click, que devuelve el nuevo título) y confirmá que cambió respecto al
 reintentá el click por JS antes de seguir, no asumas éxito y avances a la
 siguiente pieza con un cambio que en realidad no se guardó.
 
+## 2b. Nunca tocar la visibilidad de un módulo/sección sin que se pida
+
+Antes de tocar `setContent` en cualquier `modedit.php?update=<id>` o
+`editsection.php?id=<id>`, leé el estado actual del campo de visibilidad
+(`document.querySelector('select[name="visible"]').value` — `"0"` = oculto,
+`"1"` = visible) y volvé a leerlo justo antes de hacer click en "Guardar
+cambios..." para confirmar que sigue igual. `setContent` sobre el editor de
+texto no debería tocar ese campo (son inputs de formulario distintos), pero
+verificarlo en las dos puntas es gratis y evita revelar sin querer contenido
+que el docente todavía no quiere mostrar a los alumnos — confirmado que
+importa en la práctica: no todos los módulos de una misma unidad están en el
+mismo estado (en una corrida real, el Label de Introducción estaba oculto
+pero los Labels de Actividades estaban visibles, sin ningún patrón asumible).
+Si el usuario pide explícitamente mantener todo oculto durante una corrida,
+esta verificación es la forma de cumplirlo sin tener que revisar a mano
+módulo por módulo al final.
+
 ## 3. Crear módulos nuevos: dos formas, elegí según el caso
 
 **a) Duplicar + editar** — cuando ya existe una actividad de ejemplo en la
