@@ -169,6 +169,22 @@ confirmado en vivo que aunque el prompt pida composición cuadrada, nanobanana
 aparte después de generar, nunca se da por bueno el archivo tal cual sale del
 modelo — ver el paso 2 de "Después de generar la imagen" más abajo.
 
+**Este resize local no es cosmético — es lo que hace que Fase 8 sea un
+trámite en vez de un paso manual.** Confirmado en vivo (Unidad 2 Metodología
+I, 2026-08-17): el punto donde Moodle fija el tamaño real de despliegue es
+el diálogo "Detalles de la imagen" al insertarla en la sección (radio
+"Tamaño original" vs. "Personalizar tamaño" — ver
+`references/importacion-moodle.md` §9e paso 3a). Si el archivo local ya está
+en 600×600, "Tamaño original" ya es 600×600 y no hay nada que tocar en ese
+diálogo. Si no se corrió este resize, el paso 3a de Fase 8 sigue permitiendo
+forzarlo ahí a mano (tipeando 600 en "Personalizar tamaño") — pero eso
+implica: (a) un paso manual extra durante la importación real en vez de
+quedar resuelto de antemano, y (b) el navegador sigue descargando el archivo
+grande original (ej. 1024×1024) aunque se muestre achicado a 600×600 vía los
+atributos `width`/`height` del `<img>` — más peso de página sin necesidad.
+Por eso este paso sigue siendo obligatorio acá, aunque el tamaño "real" en
+términos de qué ve el alumno se termine de fijar recién en Fase 8.
+
 ## Invocación
 
 ```

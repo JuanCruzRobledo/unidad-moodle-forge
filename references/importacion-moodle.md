@@ -458,6 +458,22 @@ sola vez repara ese daño colateral de paso, en vez de dejarlo pasar.
    se haya marcado como decorativa" y el diálogo se queda abierto — completá
    el campo (usá `find` para ubicarlo preciso, el diálogo puede quedar
    recortado por el viewport) antes de tocar "Guardar".
+3a. **El tamaño 600×600 final se fija ACÁ, en este diálogo — no alcanza con
+   haber corrido `resize_imagen_banner.py` sobre el archivo local.**
+   Confirmado en vivo (Unidad 2, 2026-08-17): las opciones de tamaño son
+   radio buttons **"Tamaño original"** / **"Personalizar tamaño"** (con
+   campos Ancho × Alto y un checkbox "Mantener proporción"). Si el archivo
+   local ya está en 600×600 (paso obligatorio de más arriba en esta
+   referencia), "Tamaño original" ya muestra/aplica 600×600 sin tocar nada
+   — es lo que pasó en la corrida real. Si por algún motivo el archivo que
+   se sube NO está pre-resizeado (se saltó ese paso, o se subió uno distinto
+   a mano), click en "Personalizar tamaño" y escribí `600` en Ancho — con
+   "Mantener proporción" tildado, Alto se autocompleta a 600 si el archivo es
+   cuadrado. En cualquiera de los dos casos, **el `<img>` que Moodle inserta
+   al guardar el sub-diálogo trae `width="600" height="600"` como atributos
+   HTML explícitos** — confirmalo con
+   `[...tinymce.get('id_summary_editor').getDoc().querySelectorAll('img')].map(i=>({w:i.getAttribute('width'), h:i.getAttribute('height')}))`
+   antes de seguir al paso 5.
 4. **Confirmado: este diálogo NO autoinserta como el de "Enlace" de §9d** —
    inserta el `<img>` real recién al tocar "Guardar" del sub-diálogo de
    detalles, en la posición del cursor. Eso significa que **coexiste con el
@@ -469,17 +485,46 @@ sola vez repara ese daño colateral de paso, en vez de dejarlo pasar.
    `00-descripcion-seccion.html` offline a partir del archivo local,
    reemplazando `URL_DE_LA_IMAGEN` por el `src` real de la imagen recién
    insertada (`draftfile.php/<userid>/user/draft/<itemid>/<filename>`, lo
-   sacás del primer `<img>` del paso anterior) y usando el alt text real que
-   escribiste en el paso 3. Pegalo entero con
-   `tinymce.get('id_summary_editor').setContent(htmlCompleto)` — esto además
-   saca de encima la imagen vieja/placeholder en la misma pasada, no hace
-   falta borrarla aparte.
-6. Guardá la sección ("Guardar cambios"). **Confirmado**: al guardar, Moodle
+   sacás del primer `<img>` del paso anterior, junto con `width`/`height` del
+   paso 3a) y usando el alt text real que escribiste en el paso 3. **No uses
+   `string.replace()` con el `<img src="URL_DE_LA_IMAGEN" ...>` armado a
+   mano** — confirmado en vivo (Unidad 2) que el `<img>` real de la plantilla
+   trae `class` y `style` ANTES de `src` (`<img class="img-fluid"
+   style="..." src="URL_DE_LA_IMAGEN" alt="...">`), así que un replace que
+   asuma `src` primero no matchea nunca y el placeholder queda sin
+   reemplazar sin que se note (el `setContent` igual "funciona", solo que no
+   cambió nada). Usá manipulación de DOM en su lugar:
+   ```js
+   const d = new DOMParser().parseFromString(origHTML, 'text/html');
+   const img = d.querySelector('img[src="URL_DE_LA_IMAGEN"]');
+   img.setAttribute('src', nuevoSrc);
+   img.setAttribute('width', '600');
+   img.setAttribute('height', '600');
+   img.setAttribute('alt', nuevoAlt);
+   tinymce.get('id_summary_editor').setContent(d.body.innerHTML);
+   ```
+   Esto además saca de encima la imagen vieja/placeholder en la misma
+   pasada, no hace falta borrarla aparte. **Verificá después de setear** que
+   sigue habiendo un único `<img>` con `draftfile.php` en el `src` — si
+   `setContent` no cambió nada (mismo bug de arriba, o cualquier otro typo),
+   vas a perder la imagen recién insertada sin aviso.
+6. Si al reintentar el paso 2 Moodle muestra **"El archivo existe"** (pasa
+   si un intento anterior ya subió un archivo con ese mismo nombre al mismo
+   draft item, aunque `setContent` haya descartado la referencia después):
+   no es un error — el archivo sigue en el draft area. Andá a la pestaña
+   **"Archivos recientes"** del selector, click en el archivo, "Seleccionar
+   este archivo", y en el modal de conflicto click **"Sobrescribir"** — recién
+   ahí se abre de nuevo "Detalles de la imagen" con el archivo real (mismo
+   patrón que §9d para el link de Lectura PDF, ver ese `if` de "el archivo
+   existe").
+7. Guardá la sección ("Guardar cambios"). **Confirmado**: al guardar, Moodle
    reescribe automáticamente el `draftfile.php` a un `pluginfile.php`
    permanente (mismo comportamiento que §9d) — no hace falta ningún paso
    extra. Verificá visualmente en `course/view.php?id=<curso>&section=<N>`
-   que la imagen se ve bien antes de dar nada por confirmado.
-7. Marcá `introduccion.imagen_banner.subida_por_usuario: true` en `estado.yml`
+   que la imagen se ve bien antes de dar nada por confirmado, y confirmá con
+   un `fetch` o inspeccionando el DOM que el `<img>` real trae
+   `width="600" height="600"`.
+8. Marcá `introduccion.imagen_banner.subida_por_usuario: true` en `estado.yml`
    recién cuando la imagen ya se ve real en el aula (no alcanza con que el
    archivo exista en el filesystem local).
 
