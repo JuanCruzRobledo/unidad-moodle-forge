@@ -151,6 +151,49 @@ def configurar_youtube(saltear_key: bool) -> None:
     )
 
 
+def configurar_pdf_logo(saltear_key: bool) -> None:
+    lineas = leer_env()
+
+    if saltear_key:
+        print(
+            "\n--skip-key: no toco PDF_HEADER_LOGO. Los PDF con membrete quedan "
+            "sin imagen en el encabezado (default) salvo que lo completes a mano en .env."
+        )
+        return
+
+    print("\n--- Imagen de encabezado de los PDF con membrete ---")
+    print(
+        "Por default, los PDF de Practica/Lectura/Evaluaciones/TPI llevan "
+        "encabezado institucional SIN imagen (solo el texto)."
+    )
+    respuesta = input(
+        "¿Querés agregar una imagen (por ejemplo, el logo de UTN/TUP incluido "
+        "en la skill) a ese encabezado? (y/N): "
+    ).strip().lower()
+    if respuesta != "y":
+        print("Ok, queda sin imagen (PDF_HEADER_LOGO vacío).")
+        return
+
+    logo_default = str(SKILL_ROOT / "assets" / "logo-utn-tup.jpg")
+    ruta = input(
+        f"Ruta a la imagen (Enter para usar el logo institucional incluido: {logo_default}): "
+    ).strip() or logo_default
+
+    if not Path(ruta).exists():
+        print(f"No encontré {ruta} -- dejo PDF_HEADER_LOGO vacío (sin imagen). "
+              "Volvé a correr este script cuando la imagen exista.")
+        return
+
+    lineas = escribir_valor(lineas, "PDF_HEADER_LOGO", ruta)
+
+    with open(ENV_PATH, "w", encoding="utf-8") as f:
+        f.writelines(lineas)
+
+    print(f"Listo -- PDF_HEADER_LOGO={ruta}. Los próximos PDF con membrete van a "
+          "incluir esa imagen (se puede overridear puntualmente con "
+          "render_pdf.py --logo <otra-ruta>, sin tocar este default).")
+
+
 def mostrar_resumen() -> None:
     print("\n--- Estado final de .env ---")
     for linea in leer_env():
@@ -177,6 +220,7 @@ def main() -> None:
     asegurar_env()
     configurar_gamma(saltear_key=args.skip_key)
     configurar_youtube(saltear_key=args.skip_key)
+    configurar_pdf_logo(saltear_key=args.skip_key)
     mostrar_resumen()
 
 

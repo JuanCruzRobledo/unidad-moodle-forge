@@ -33,9 +33,10 @@ PDF sin esa confirmación — mismo gate que `practica.pdf_status` /
 `<head><style>` sobrio de `documento-practica.html` (blanco y negro con acentos
 azules #4F81BD / #365F91, sin degradés ni tarjetas — reusar el mismo bloque
 `<style>` de `plantilla-pdf-practica.md` tal cual, no reinventar otro). El
-membrete (logo UTN + institución arriba, barra de color + materia + número de
-página abajo) tampoco va en este HTML — lo agrega `render_pdf.py --materia`
-igual que en la Práctica.
+membrete (institución arriba, con imagen opcional según `PDF_HEADER_LOGO` en
+`.env` — ver `plantilla-pdf-practica.md` § Generar el PDF —, barra de color +
+materia + número de página abajo) tampoco va en este HTML — lo agrega
+`render_pdf.py --materia` igual que en la Práctica.
 
 A diferencia del documento de Práctica (que puede tener "Caso Práctico" con
 pasos, o preguntas de análisis), este es más corto y lineal — es una **lectura**,

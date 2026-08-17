@@ -9,7 +9,9 @@ pyyaml
 Pillow
 
 # Solo necesarias para scripts/gamma_generate.py (generacion opcional de
-# Material de apoyo via la API de Gamma, requiere cuenta paga) y
-# scripts/configurar.py (lee/escribe el .env de esta maquina)
+# Material de apoyo via la API de Gamma, requiere cuenta paga),
+# scripts/configurar.py (lee/escribe el .env de esta maquina) y
+# scripts/render_pdf.py (lee PDF_HEADER_LOGO, la imagen opcional del
+# encabezado de los PDF con membrete)
 requests
 python-dotenv

@@ -30,9 +30,10 @@ el orden completo.
 ## Estructura del documento
 
 `documento-practica.html` es un HTML **standalone** (con su propio
-`<head><style>`, no un fragmento para pegar en Moodle). El encabezado (logo
-UTN + "TECNICATURA UNIVERSITARIA EN PROGRAMACIÓN") y el pie de página (barra
-de color con el nombre de la materia + número de página) **no van en este
+`<head><style>`, no un fragmento para pegar en Moodle). El encabezado
+("TECNICATURA UNIVERSITARIA EN PROGRAMACIÓN", con una imagen opcional — ver
+"Generar el PDF" más abajo) y el pie de página (barra de color con el nombre
+de la materia + número de página) **no van en este
 HTML** — los agrega automáticamente `render_pdf.py` vía
 `header_template`/`footer_template` de Playwright, que es la única forma de
 lograr que se repitan en cada hoja del PDF (el CSS de impresión de un
@@ -177,12 +178,17 @@ python scripts/render_pdf.py \
   --materia "Metodologia I"
 ```
 
-`--materia` es lo que dispara el membrete completo (encabezado con logo +
-institución, pie con la barra de color y ese texto). El logo institucional ya
-está en `assets/logo-utn-tup.jpg` (extraído del PDF real de cátedra, no hace
-falta pedirlo de nuevo). Si algún día hace falta convertir un HTML sin
-membrete (caso legacy), se puede omitir `--materia` y el script hace una
-conversión simple.
+`--materia` es lo que dispara el membrete completo (encabezado institucional,
+pie con la barra de color y ese texto). La imagen del encabezado es
+**opcional y, por default, no va ninguna** — solo queda el texto "TECNICATURA
+UNIVERSITARIA EN PROGRAMACION". Si el usuario configuró una imagen (logo
+institucional u otra) vía `PDF_HEADER_LOGO` en `.env` (Fase -1,
+`scripts/configurar.py`), se usa esa automáticamente; para overridearla
+puntualmente en una corrida sin tocar ese default, pasá `--logo <ruta>` (el
+logo institucional real ya está en `assets/logo-utn-tup.jpg`, no hace falta
+pedirlo de nuevo si el usuario quiere reactivarlo). Si algún día hace falta
+convertir un HTML sin membrete (caso legacy), se puede omitir `--materia` y
+el script hace una conversión simple.
 
 ## Checklist antes de mostrarle el documento al usuario
 
